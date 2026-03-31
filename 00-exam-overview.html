@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-102 Exam Overview & Service Map | Cram Sheet</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232733;
+    --border: #2e3345;
+    --text: #e4e6ef;
+    --text-dim: #8b8fa3;
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.15);
+    --green: #34d399;
+    --green-dim: rgba(52,211,153,0.15);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96,165,250,0.15);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.15);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.15);
+    --cyan: #22d3ee;
+    --cyan-dim: rgba(34,211,238,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--amber);
+  }
+  .header h1 {
+    font-family: 'Syne', 'Segoe UI', sans-serif;
+    font-size: 2.2rem;
+    color: var(--amber);
+    margin-bottom: 0.3rem;
+  }
+  .header .subtitle {
+    color: var(--text-dim);
+    font-size: 1rem;
+  }
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); }
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); }
+  .badge-red { background: var(--red-dim); color: var(--red); }
+  .badge-purple { background: var(--purple-dim); color: var(--purple); }
+  .badge-cyan { background: var(--cyan-dim); color: var(--cyan); }
+
+  .grid { display: grid; gap: 1.5rem; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--amber); }
+  .card h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .card h3 {
+    font-size: 0.95rem;
+    color: var(--amber);
+    margin: 1rem 0 0.5rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  th, td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    color: var(--amber);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  tr:hover td { background: var(--surface2); }
+
+  .weight-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+  }
+  .weight-bar .bar {
+    height: 24px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #000;
+    min-width: 40px;
+  }
+  .weight-bar .label {
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .key-fact {
+    background: var(--surface2);
+    border-left: 3px solid var(--amber);
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.85rem;
+  }
+  .key-fact strong { color: var(--amber); }
+
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+  .service-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+    text-align: center;
+  }
+  .service-chip .name { font-weight: 600; color: var(--text); }
+  .service-chip .detail { font-size: 0.7rem; color: var(--text-dim); margin-top: 2px; }
+
+  .nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .nav-links a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .nav-links a:hover { background: var(--blue-dim); }
+
+  .tip {
+    background: var(--green-dim);
+    border: 1px solid rgba(52,211,153,0.3);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    margin: 0.75rem 0;
+  }
+  .tip strong { color: var(--green); }
+
+  .warning {
+    background: var(--red-dim);
+    border: 1px solid rgba(248,113,113,0.3);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    margin: 0.75rem 0;
+  }
+  .warning strong { color: var(--red); }
+
+  @media print {
+    body { background: #fff; color: #000; padding: 1rem; }
+    .card { border: 1px solid #ccc; break-inside: avoid; }
+    th { color: #333; }
+    .header h1 { color: #333; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>AI-102 Exam Overview & Service Map</h1>
+  <div class="subtitle">Microsoft Certified: Azure AI Engineer Associate &mdash; Passing Score: 700/1000 &mdash; Updated Dec 23, 2025</div>
+</div>
+
+<!-- Exam Weight Breakdown -->
+<div class="card" style="margin-bottom:1.5rem;">
+  <h2>Domain Weight Breakdown</h2>
+  <div style="display:flex;flex-direction:column;gap:0.6rem;">
+    <div class="weight-bar">
+      <div class="bar" style="width:25%;background:var(--amber);">20-25%</div>
+      <div class="label"><strong>D1:</strong> Plan & Manage an Azure AI Solution</div>
+    </div>
+    <div class="weight-bar">
+      <div class="bar" style="width:20%;background:var(--blue);">15-20%</div>
+      <div class="label"><strong>D2:</strong> Implement Generative AI Solutions</div>
+    </div>
+    <div class="weight-bar">
+      <div class="bar" style="width:10%;background:var(--purple);">5-10%</div>
+      <div class="label"><strong>D3:</strong> Implement an Agentic Solution</div>
+    </div>
+    <div class="weight-bar">
+      <div class="bar" style="width:15%;background:var(--green);">10-15%</div>
+      <div class="label"><strong>D4:</strong> Implement Computer Vision Solutions</div>
+    </div>
+    <div class="weight-bar">
+      <div class="bar" style="width:20%;background:var(--cyan);">15-20%</div>
+      <div class="label"><strong>D5:</strong> Implement NLP Solutions</div>
+    </div>
+    <div class="weight-bar">
+      <div class="bar" style="width:20%;background:var(--red);">15-20%</div>
+      <div class="label"><strong>D6:</strong> Knowledge Mining & Information Extraction</div>
+    </div>
+  </div>
+
+  <div class="tip" style="margin-top:1rem;">
+    <strong>Strategy:</strong> D1 + D2 + D5 + D6 = 65-85% of the exam. Focus study time here. D3 (Agents) is smallest but newest &mdash; expect conceptual questions.
+  </div>
+</div>
+
+<div class="grid grid-2">
+
+  <!-- Domain 1 -->
+  <div class="card" style="border-left: 3px solid var(--amber);">
+    <h2><span class="badge badge-amber">D1</span> Plan & Manage (20-25%)</h2>
+    <table>
+      <tr><th colspan="2">Key Topics</th></tr>
+      <tr><td>1.1</td><td>Select appropriate Foundry Services for each scenario</td></tr>
+      <tr><td>1.2</td><td>Create & deploy resources, SDKs, APIs, containers, CI/CD</td></tr>
+      <tr><td>1.3</td><td>Monitor, manage costs, secure keys, manage auth</td></tr>
+      <tr><td>1.4</td><td>Responsible AI: content moderation, filters, blocklists, prompt shields</td></tr>
+    </table>
+    <div class="key-fact"><strong>Must Know:</strong> Multi-service vs single-service resources, key rotation, managed identity, RBAC roles (Cognitive Services User/Contributor), diagnostic logging, cost alerts</div>
+  </div>
+
+  <!-- Domain 2 -->
+  <div class="card" style="border-left: 3px solid var(--blue);">
+    <h2><span class="badge badge-blue">D2</span> Generative AI (15-20%)</h2>
+    <table>
+      <tr><th colspan="2">Key Topics</th></tr>
+      <tr><td>2.1</td><td>Foundry hub/project, prompt flow, RAG, evaluation, SDK</td></tr>
+      <tr><td>2.2</td><td>Azure OpenAI: provision, deploy, prompts, DALL-E, multimodal</td></tr>
+      <tr><td>2.3</td><td>Parameters, monitoring, tracing, containers, fine-tuning, prompt engineering</td></tr>
+    </table>
+    <div class="key-fact"><strong>Must Know:</strong> temperature vs top_p, token limits per model, deployment types (Standard/Provisioned/Global), RAG data source config, evaluation metrics (groundedness, relevance, coherence)</div>
+  </div>
+
+  <!-- Domain 3 -->
+  <div class="card" style="border-left: 3px solid var(--purple);">
+    <h2><span class="badge badge-purple">D3</span> Agentic Solutions (5-10%)</h2>
+    <table>
+      <tr><th colspan="2">Key Topics</th></tr>
+      <tr><td>3.1</td><td>Agent use cases, Foundry Agent Service, Agent Framework, multi-agent orchestration, testing & deployment</td></tr>
+    </table>
+    <div class="key-fact"><strong>Must Know:</strong> Agent tools (code interpreter, file search, function calling), thread/run model, multi-agent orchestration patterns, when to use agents vs standard completions</div>
+  </div>
+
+  <!-- Domain 4 -->
+  <div class="card" style="border-left: 3px solid var(--green);">
+    <h2><span class="badge badge-green">D4</span> Computer Vision (10-15%)</h2>
+    <table>
+      <tr><th colspan="2">Key Topics</th></tr>
+      <tr><td>4.1</td><td>Image analysis: features, objects, tags, OCR, handwriting</td></tr>
+      <tr><td>4.2</td><td>Custom Vision: classification vs detection, training, metrics, publishing</td></tr>
+      <tr><td>4.3</td><td>Video Indexer, Spatial Analysis</td></tr>
+    </table>
+    <div class="key-fact"><strong>Must Know:</strong> Visual features enum, image size limits, OCR vs Read API, Custom Vision domains (compact vs non-compact), min training images, export formats</div>
+  </div>
+
+  <!-- Domain 5 -->
+  <div class="card" style="border-left: 3px solid var(--cyan);">
+    <h2><span class="badge badge-cyan">D5</span> NLP Solutions (15-20%)</h2>
+    <table>
+      <tr><th colspan="2">Key Topics</th></tr>
+      <tr><td>5.1</td><td>Text Analytics: sentiment, key phrases, entities, PII, language detection, translation</td></tr>
+      <tr><td>5.2</td><td>Speech: STT, TTS, SSML, custom speech, intent/keyword recognition, translation</td></tr>
+      <tr><td>5.3</td><td>CLU: intents/entities/utterances, QnA: knowledge bases, multi-turn, custom translator</td></tr>
+    </table>
+    <div class="key-fact"><strong>Must Know:</strong> SSML elements (prosody, break, emphasis), CLU workflow, QnA sources, text limits per document (5120 chars), sentiment scoring model, PII categories</div>
+  </div>
+
+  <!-- Domain 6 -->
+  <div class="card" style="border-left: 3px solid var(--red);">
+    <h2><span class="badge badge-red">D6</span> Knowledge Mining (15-20%)</h2>
+    <table>
+      <tr><th colspan="2">Key Topics</th></tr>
+      <tr><td>6.1</td><td>AI Search: index, skillset, indexer, queries, knowledge store, vector/semantic search</td></tr>
+      <tr><td>6.2</td><td>Document Intelligence: prebuilt models, custom models, composed models</td></tr>
+      <tr><td>6.3</td><td>Content Understanding: OCR pipeline, classify, extract entities/tables/images</td></tr>
+    </table>
+    <div class="key-fact"><strong>Must Know:</strong> Index field attributes (searchable, filterable, sortable, facetable), query syntax (simple vs Lucene), built-in skillset names, prebuilt Doc Intel model types, composed model limits</div>
+  </div>
+</div>
+
+<!-- Service Map -->
+<div class="card" style="margin-top:1.5rem;">
+  <h2>Azure AI Services at a Glance</h2>
+  <table>
+    <tr>
+      <th>Service</th>
+      <th>What It Does</th>
+      <th>Domain(s)</th>
+      <th>Key SDK Package</th>
+    </tr>
+    <tr>
+      <td style="color:var(--blue);font-weight:600;">Azure OpenAI</td>
+      <td>GPT models, DALL-E, embeddings, Whisper</td>
+      <td><span class="badge badge-blue">D2</span></td>
+      <td><code>openai</code></td>
+    </tr>
+    <tr>
+      <td style="color:var(--green);font-weight:600;">Azure AI Vision</td>
+      <td>Image analysis, OCR, spatial analysis</td>
+      <td><span class="badge badge-green">D4</span></td>
+      <td><code>azure-ai-vision-imageanalysis</code></td>
+    </tr>
+    <tr>
+      <td style="color:var(--green);font-weight:600;">Custom Vision</td>
+      <td>Custom image classification & object detection</td>
+      <td><span class="badge badge-green">D4</span></td>
+      <td><code>azure-cognitiveservices-vision-customvision</code></td>
+    </tr>
+    <tr>
+      <td style="color:var(--green);font-weight:600;">Video Indexer</td>
+      <td>Extract insights from video</td>
+      <td><span class="badge badge-green">D4</span></td>
+      <td>REST API</td>
+    </tr>
+    <tr>
+      <td style="color:var(--cyan);font-weight:600;">Azure AI Language</td>
+      <td>Sentiment, entities, key phrases, PII, CLU, QnA</td>
+      <td><span class="badge badge-cyan">D5</span></td>
+      <td><code>azure-ai-textanalytics</code></td>
+    </tr>
+    <tr>
+      <td style="color:var(--cyan);font-weight:600;">Azure AI Speech</td>
+      <td>STT, TTS, translation, SSML, custom speech</td>
+      <td><span class="badge badge-cyan">D5</span></td>
+      <td><code>azure-cognitiveservices-speech</code></td>
+    </tr>
+    <tr>
+      <td style="color:var(--cyan);font-weight:600;">Azure Translator</td>
+      <td>Text & document translation, transliteration</td>
+      <td><span class="badge badge-cyan">D5</span></td>
+      <td><code>azure-ai-translation-text</code></td>
+    </tr>
+    <tr>
+      <td style="color:var(--red);font-weight:600;">Azure AI Search</td>
+      <td>Full-text, vector, semantic search, skillsets</td>
+      <td><span class="badge badge-red">D6</span></td>
+      <td><code>azure-search-documents</code></td>
+    </tr>
+    <tr>
+      <td style="color:var(--red);font-weight:600;">Document Intelligence</td>
+      <td>Extract structured data from documents</td>
+      <td><span class="badge badge-red">D6</span></td>
+      <td><code>azure-ai-formrecognizer</code></td>
+    </tr>
+    <tr>
+      <td style="color:var(--amber);font-weight:600;">Content Safety</td>
+      <td>Content moderation, prompt shields</td>
+      <td><span class="badge badge-amber">D1</span></td>
+      <td><code>azure-ai-contentsafety</code></td>
+    </tr>
+    <tr>
+      <td style="color:var(--purple);font-weight:600;">AI Foundry</td>
+      <td>Hub/project, model catalog, prompt flow, agents</td>
+      <td><span class="badge badge-blue">D2</span> <span class="badge badge-purple">D3</span></td>
+      <td><code>azure-ai-projects</code></td>
+    </tr>
+  </table>
+</div>
+
+<!-- Azure AI Portal Gallery -->
+<div class="card" style="margin-top:1.5rem;">
+  <h2>Azure AI Portal Gallery &mdash; Exact Service Names</h2>
+  <div class="warning"><strong>Exam Alert:</strong> The exam uses <strong>"in Foundry Tools"</strong> to refer to services accessed through the AI Foundry portal (e.g., "Azure Vision in Foundry Tools"). The underlying APIs and SDKs are identical &mdash; it's the portal access path, not a different service.</div>
+  <table>
+    <tr><th>Portal / Gallery Name</th><th>Also Known As</th><th>What It Does</th><th>Domain</th></tr>
+    <tr>
+      <td style="color:var(--purple);font-weight:600;">Azure AI Foundry</td>
+      <td>Formerly Azure AI Studio</td>
+      <td>Hub/project management, model catalog (1,900+ models), prompt flow, agents, evaluation</td>
+      <td><span class="badge badge-blue">D2</span> <span class="badge badge-purple">D3</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--amber);font-weight:600;">Azure AI services</td>
+      <td>Multi-service resource</td>
+      <td>Single endpoint + key for Vision, Language, Speech, Content Safety. Resource type: <code>CognitiveServices</code></td>
+      <td><span class="badge badge-amber">D1</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--blue);font-weight:600;">Azure OpenAI</td>
+      <td>Azure OpenAI Service</td>
+      <td>GPT-4o, DALL-E 3, Whisper, embeddings. Always a <strong>separate</strong> resource (not part of multi-service)</td>
+      <td><span class="badge badge-blue">D2</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--green);font-weight:600;">Azure AI Vision</td>
+      <td>Azure Vision in Foundry Tools</td>
+      <td>Image Analysis 4.0, OCR (164 printed / 9 handwritten langs), spatial analysis, smart crops</td>
+      <td><span class="badge badge-green">D4</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--green);font-weight:600;">Custom Vision</td>
+      <td>Custom Vision Service</td>
+      <td>Custom image classification &amp; object detection with your own training data</td>
+      <td><span class="badge badge-green">D4</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--green);font-weight:600;">Azure Video Indexer</td>
+      <td>Azure AI Video Indexer, VI</td>
+      <td>Video insights: faces, OCR (50K words), speakers (16 max), scenes, emotions, topics, audio effects</td>
+      <td><span class="badge badge-green">D4</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--cyan);font-weight:600;">Azure AI Language</td>
+      <td>Azure Language in Foundry Tools</td>
+      <td>Text Analytics (sentiment, entities, PII, key phrases), CLU, Custom QnA, entity linking</td>
+      <td><span class="badge badge-cyan">D5</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--cyan);font-weight:600;">Azure AI Speech</td>
+      <td>Azure Speech in Foundry Tools</td>
+      <td>STT, TTS, SSML, custom speech, pronunciation assessment, speaker recognition</td>
+      <td><span class="badge badge-cyan">D5</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--cyan);font-weight:600;">Azure AI Translator</td>
+      <td>Azure Translator in Foundry Tools</td>
+      <td>Text &amp; document translation (100+ languages), transliteration, custom translator</td>
+      <td><span class="badge badge-cyan">D5</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--red);font-weight:600;">Azure AI Search</td>
+      <td>Formerly Azure Cognitive Search</td>
+      <td>Full-text, vector, semantic search; skillset enrichment pipeline; knowledge store</td>
+      <td><span class="badge badge-red">D6</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--red);font-weight:600;">Azure AI Document Intelligence</td>
+      <td>Formerly Form Recognizer</td>
+      <td>Extract structured data from forms/documents. Prebuilt (invoice, receipt, ID) + custom models</td>
+      <td><span class="badge badge-red">D6</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--red);font-weight:600;">Azure AI Content Understanding</td>
+      <td>&mdash;</td>
+      <td>Multimodal content analysis, semantic chunking for RAG pipelines</td>
+      <td><span class="badge badge-red">D6</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--amber);font-weight:600;">Azure AI Content Safety</td>
+      <td>&mdash;</td>
+      <td>Text/image moderation (4 categories), prompt shields, blocklists, protected material detection</td>
+      <td><span class="badge badge-amber">D1</span></td>
+    </tr>
+  </table>
+  <div class="key-fact"><strong>Video Indexer:</strong> Appears in the portal as <strong>"Azure Video Indexer"</strong>. It is NOT part of the Azure AI Services multi-service resource &mdash; it requires its own dedicated resource. Supports upload via device (2 GB max) or URL (30 GB max), up to 6 hours duration.</div>
+  <div class="key-fact"><strong>Service Renames:</strong> Azure AI Search = formerly "Azure Cognitive Search." Document Intelligence = formerly "Form Recognizer." AI Foundry = formerly "Azure AI Studio." The exam may use either name.</div>
+</div>
+
+<!-- Quick Decision Tree -->
+<div class="card" style="margin-top:1.5rem;">
+  <h2>Service Selection Decision Tree</h2>
+  <div class="grid grid-2" style="gap:1rem;">
+    <div class="key-fact"><strong>"I need to generate text/code/images"</strong> &rarr; Azure OpenAI (GPT-4o, DALL-E 3)</div>
+    <div class="key-fact"><strong>"I need to analyze images for objects/tags"</strong> &rarr; Azure AI Vision (Image Analysis)</div>
+    <div class="key-fact"><strong>"I need to read text from images/PDFs"</strong> &rarr; Azure AI Vision (Read/OCR) or Document Intelligence</div>
+    <div class="key-fact"><strong>"I need to classify custom images"</strong> &rarr; Custom Vision</div>
+    <div class="key-fact"><strong>"I need sentiment/entities from text"</strong> &rarr; Azure AI Language (Text Analytics)</div>
+    <div class="key-fact"><strong>"I need to understand user intent"</strong> &rarr; CLU (Conversational Language Understanding)</div>
+    <div class="key-fact"><strong>"I need FAQ/QnA bot"</strong> &rarr; Custom Question Answering</div>
+    <div class="key-fact"><strong>"I need speech-to-text or text-to-speech"</strong> &rarr; Azure AI Speech</div>
+    <div class="key-fact"><strong>"I need to translate text"</strong> &rarr; Azure Translator</div>
+    <div class="key-fact"><strong>"I need to search documents with AI"</strong> &rarr; Azure AI Search + Skillsets</div>
+    <div class="key-fact"><strong>"I need to extract form data"</strong> &rarr; Document Intelligence (prebuilt or custom)</div>
+    <div class="key-fact"><strong>"I need to moderate content"</strong> &rarr; Azure Content Safety</div>
+    <div class="key-fact"><strong>"I need an AI agent with tools"</strong> &rarr; Foundry Agent Service</div>
+    <div class="key-fact"><strong>"I need RAG (search + generate)"</strong> &rarr; Azure OpenAI + AI Search (On Your Data)</div>
+  </div>
+</div>
+
+<!-- Exam Tips -->
+<div class="card" style="margin-top:1.5rem;">
+  <h2>Exam Strategy Tips</h2>
+  <div class="grid grid-3" style="gap:0.75rem;">
+    <div class="tip"><strong>Passing Score:</strong> 700/1000. You do NOT need to be perfect. Focus on high-weight domains first.</div>
+    <div class="tip"><strong>Question Types:</strong> Multiple choice, drag-and-drop, case studies, hot area (click on image), build list (reorder steps).</div>
+    <div class="tip"><strong>Time:</strong> ~120 minutes for ~40-60 questions. Budget ~2 min per question.</div>
+    <div class="warning"><strong>Retires June 30, 2026.</strong> This exam is being retired. Plan to take it before that date.</div>
+    <div class="tip"><strong>Dec 2025 Update:</strong> "Azure AI Foundry" renamed to "Microsoft Foundry" throughout. Content largely same.</div>
+    <div class="tip"><strong>Practice:</strong> Free practice assessment at <code>learn.microsoft.com</code></div>
+  </div>
+</div>
+
+<!-- Resource Tiers -->
+<div class="card" style="margin-top:1.5rem;">
+  <h2>Resource Types & Authentication</h2>
+  <div class="grid grid-2" style="gap:1rem;">
+    <div>
+      <h3>Multi-Service vs Single-Service</h3>
+      <table>
+        <tr><th>Type</th><th>Details</th></tr>
+        <tr><td style="color:var(--amber);">Multi-service</td><td>One endpoint + key for Vision, Language, Speech, etc. Resource type: <code>CognitiveServices</code></td></tr>
+        <tr><td style="color:var(--blue);">Single-service</td><td>Dedicated endpoint per service. Use when you need separate billing, keys, or regions.</td></tr>
+        <tr><td style="color:var(--green);">Azure OpenAI</td><td>Always a separate resource. Requires application approval for some models.</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Authentication Methods</h3>
+      <table>
+        <tr><th>Method</th><th>When to Use</th></tr>
+        <tr><td style="color:var(--amber);">API Key</td><td>Quick dev/test. Header: <code>Ocp-Apim-Subscription-Key</code></td></tr>
+        <tr><td style="color:var(--green);">Azure AD Token</td><td>Production. RBAC: <code>Cognitive Services User</code></td></tr>
+        <tr><td style="color:var(--blue);">Managed Identity</td><td>Service-to-service (no keys in code)</td></tr>
+      </table>
+      <div class="key-fact" style="margin-top:0.5rem;"><strong>Key Rotation:</strong> Two keys per resource. Rotate one while using the other &mdash; zero downtime.</div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-links">
+  <a href="index.html">&larr; All Sheets</a>
+  <a href="01-azure-openai.html">Azure OpenAI &rarr;</a>
+  <a href="02-computer-vision.html">Computer Vision &rarr;</a>
+  <a href="03-nlp-speech.html">NLP & Speech &rarr;</a>
+  <a href="04-search-knowledge.html">AI Search &rarr;</a>
+  <a href="05-responsible-ai.html">Responsible AI &rarr;</a>
+  <a href="06-foundry-agents.html">Foundry & Agents &rarr;</a>
+  <a href="07-sdk-reference.html">SDK Reference &rarr;</a>
+  <a href="08-portal-workflows.html">Portal Workflows &rarr;</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Workflows &amp; Step-by-Step Guides | AI-102 Cram Sheet</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #232733; --border: #2e3345;
+    --text: #e4e6ef; --text-dim: #8b8fa3;
+    --amber: #f5a623; --amber-dim: rgba(245,166,35,0.15);
+    --green: #34d399; --green-dim: rgba(52,211,153,0.15);
+    --blue: #60a5fa; --blue-dim: rgba(96,165,250,0.15);
+    --red: #f87171; --red-dim: rgba(248,113,113,0.15);
+    --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.15);
+    --cyan: #22d3ee; --cyan-dim: rgba(34,211,238,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--green); }
+  .header h1 { font-size: 2.2rem; color: var(--green); margin-bottom: 0.3rem; }
+  .header .subtitle { color: var(--text-dim); font-size: 1rem; }
+  .grid { display: grid; gap: 1.5rem; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+  .card:hover { border-color: var(--green); }
+  .card h2 { font-size: 1.1rem; margin-bottom: 1rem; }
+  .card h3 { font-size: 0.95rem; color: var(--green); margin: 1rem 0 0.5rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--green); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+  tr:hover td { background: var(--surface2); }
+  code { background: var(--surface2); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.8rem; color: var(--cyan); }
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.5; margin: 0.75rem 0; }
+  pre code { background: none; padding: 0; }
+  .key-fact { background: var(--surface2); border-left: 3px solid var(--green); padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0; font-size: 0.85rem; }
+  .key-fact strong { color: var(--green); }
+  .tip { background: var(--green-dim); border: 1px solid rgba(52,211,153,0.3); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; }
+  .tip strong { color: var(--green); }
+  .warning { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.3); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; }
+  .warning strong { color: var(--red); }
+  .step { display: flex; gap: 0.75rem; margin: 0.5rem 0; align-items: flex-start; }
+  .step-num { background: var(--green); color: #000; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+  .step-text { font-size: 0.85rem; padding-top: 3px; }
+  .nav-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .nav-links a { color: var(--blue); text-decoration: none; font-size: 0.8rem; padding: 0.3rem 0.8rem; border: 1px solid var(--blue); border-radius: 6px; }
+  .nav-links a:hover { background: var(--blue-dim); }
+  @media print { body { background: #fff; color: #000; } .card { border: 1px solid #ccc; break-inside: avoid; } }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- HEADER                                                        -->
+<!-- ============================================================ -->
+<div class="header">
+  <h1>Portal Workflows &amp; Step-by-Step Guides</h1>
+  <div class="subtitle">AI-102 Cram Sheet &mdash; Portal navigation for every major Azure AI service</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ROW 1: AI Services + OpenAI Deployment                        -->
+<!-- ============================================================ -->
+<div class="grid grid-2">
+
+<!-- 1. CREATE AN AZURE AI SERVICES RESOURCE -->
+<div class="card">
+  <h2>1. Create an Azure AI Services Resource</h2>
+  <div class="key-fact"><strong>Portal:</strong> <code>portal.azure.com</code></div>
+
+  <h3>Steps</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Click <strong>Create a resource</strong> in the Azure portal</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Search for <code>Azure AI services</code> and select it</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Select your <strong>Subscription</strong> and <strong>Resource Group</strong> (or create new)</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Choose a <strong>Region</strong> (affects available services and latency)</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text">Enter a globally unique <strong>Resource name</strong></div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-text">Select <strong>Pricing tier</strong> &mdash; typically <code>S0</code> (Standard)</div></div>
+  <div class="step"><div class="step-num">7</div><div class="step-text">Click <strong>Review + Create</strong>, then <strong>Create</strong></div></div>
+
+  <h3>Key Settings</h3>
+  <table>
+    <tr><th>Setting</th><th>Notes</th></tr>
+    <tr><td>Resource name</td><td>Must be globally unique across Azure</td></tr>
+    <tr><td>Region</td><td>Determines which AI services are available</td></tr>
+    <tr><td>Pricing tier</td><td><code>F0</code> (free, 1 per subscription) or <code>S0</code> (standard)</td></tr>
+  </table>
+
+  <div class="tip"><strong>After creation:</strong> Go to <strong>Keys and Endpoint</strong> to get credentials. You get two keys for zero-downtime key rotation.</div>
+</div>
+
+<!-- 2. DEPLOY AN AZURE OPENAI MODEL -->
+<div class="card">
+  <h2>2. Deploy an Azure OpenAI Model</h2>
+  <div class="key-fact"><strong>Portal:</strong> <code>ai.azure.com</code> (Azure AI Foundry)</div>
+
+  <h3>Steps</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Open your project in Azure AI Foundry</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Navigate to <strong>Models + endpoints</strong></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Click <strong>Deploy model</strong> &rarr; <strong>Deploy base model</strong></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Select model (e.g., <code>gpt-4o</code>, <code>gpt-4o-mini</code>, <code>text-embedding-ada-002</code>)</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text">Configure a <strong>Deployment name</strong> (this is used in API calls)</div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-text">Set <strong>Deployment type</strong>: Standard (pay-per-token) or Provisioned (reserved throughput)</div></div>
+  <div class="step"><div class="step-num">7</div><div class="step-text">Set <strong>Tokens-per-minute (TPM)</strong> rate limit</div></div>
+  <div class="step"><div class="step-num">8</div><div class="step-text">Click <strong>Deploy</strong></div></div>
+
+  <h3>Key Settings</h3>
+  <table>
+    <tr><th>Setting</th><th>Notes</th></tr>
+    <tr><td>Deployment name</td><td>Referenced in <code>model</code> parameter of API calls</td></tr>
+    <tr><td>TPM quota</td><td>Rate limit per deployment; shared across subscription + region</td></tr>
+    <tr><td>Content filter</td><td>Default applied automatically; can assign custom filter</td></tr>
+  </table>
+
+  <div class="warning"><strong>Exam tip:</strong> The deployment name is NOT the same as the model name. API calls use the deployment name.</div>
+</div>
+
+</div><!-- end grid -->
+
+<!-- ============================================================ -->
+<!-- ROW 2: Content Filters + AI Search Index                      -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top: 1.5rem;">
+
+<!-- 3. CONFIGURE CONTENT FILTERS -->
+<div class="card">
+  <h2>3. Configure Content Filters</h2>
+  <div class="key-fact"><strong>Portal:</strong> <code>ai.azure.com</code> (Azure AI Foundry)</div>
+
+  <h3>Steps</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Open your Foundry resource and go to <strong>Safety + security</strong> &rarr; <strong>Content filters</strong></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Click <strong>Create content filter</strong> and give it a name</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Configure <strong>Input filters</strong>: set severity level for each of the 4 categories (Hate, Sexual, Violence, Self-harm)</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Configure <strong>Output filters</strong> with the same 4 categories</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text">Enable or disable <strong>Prompt Shields</strong> (jailbreak detection) and <strong>Protected Material</strong> detection</div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-text">Optionally add <strong>Blocklists</strong> for custom blocked terms</div></div>
+  <div class="step"><div class="step-num">7</div><div class="step-text"><strong>Save</strong> the filter, then <strong>associate it with a deployment</strong></div></div>
+
+  <h3>Severity Levels</h3>
+  <table>
+    <tr><th>Level</th><th>Behavior</th></tr>
+    <tr><td><code>Low</code></td><td>Blocks low, medium, and high severity</td></tr>
+    <tr><td><code>Medium</code></td><td>Blocks medium and high severity</td></tr>
+    <tr><td><code>High</code></td><td>Blocks only high severity</td></tr>
+  </table>
+
+  <div class="warning"><strong>Important:</strong> Turning filters completely OFF requires <strong>Limited Access</strong> approval from Microsoft. This is a common exam question.</div>
+</div>
+
+<!-- 4. CREATE AN AZURE AI SEARCH INDEX -->
+<div class="card">
+  <h2>4. Create an Azure AI Search Index</h2>
+  <div class="key-fact"><strong>Portal:</strong> <code>portal.azure.com</code></div>
+
+  <h3>Manual Index Creation</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Create an <strong>Azure AI Search</strong> resource and choose a tier (Free, Basic, Standard, etc.)</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Go to the resource &rarr; <strong>Indexes</strong> &rarr; <strong>Add index</strong></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Define fields: name, type (<code>Edm.String</code>, <code>Edm.Int32</code>, etc.), and attributes</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Set one field as the <strong>Key</strong> (must be <code>Edm.String</code>)</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text">Configure per-field attributes: <strong>Searchable</strong>, <strong>Filterable</strong>, <strong>Sortable</strong>, <strong>Facetable</strong>, <strong>Retrievable</strong></div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-text">Click <strong>Create</strong></div></div>
+
+  <h3>Import Data Wizard (Alternative)</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Connect to data source</strong> (Blob Storage, SQL, Cosmos DB, etc.)</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Add cognitive skills</strong> &mdash; attach a skillset for AI enrichment</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Customize target index</strong> &mdash; adjust fields and attributes</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Create indexer</strong> to populate the index</div></div>
+
+  <div class="tip"><strong>Exam tip:</strong> The key field must be <code>Edm.String</code>. Every index requires exactly one key field.</div>
+</div>
+
+</div><!-- end grid -->
+
+<!-- ============================================================ -->
+<!-- ROW 3: Indexer/Skillset + CLU                                 -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top: 1.5rem;">
+
+<!-- 5. SET UP A SEARCH INDEXER WITH SKILLSET -->
+<div class="card">
+  <h2>5. Set Up a Search Indexer with Skillset</h2>
+  <div class="key-fact"><strong>Portal:</strong> <code>portal.azure.com</code> &rarr; AI Search resource</div>
+
+  <h3>Steps</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">In your AI Search resource, go to <strong>Indexers</strong> &rarr; <strong>New indexer</strong></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Select a <strong>Data source</strong> (Azure Blob Storage, SQL Database, Cosmos DB, Table Storage)</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Attach an AI Services resource</strong> for billing (required for built-in skills beyond 20 free enrichments/day)</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Configure <strong>skills</strong>: OCR, Key Phrase Extraction, Entity Recognition, Language Detection, Sentiment, Image Analysis, etc.</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text"><strong>Map enriched output fields</strong> to your target index fields</div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-text">Set indexer <strong>schedule</strong> (once, hourly, daily, or custom)</div></div>
+  <div class="step"><div class="step-num">7</div><div class="step-text"><strong>Run</strong> the indexer</div></div>
+
+  <h3>Skillset Pipeline</h3>
+  <div class="key-fact"><strong>Flow:</strong> Data Source &rarr; Indexer &rarr; Skillset (enrichment) &rarr; Index</div>
+
+  <table>
+    <tr><th>Component</th><th>Purpose</th></tr>
+    <tr><td>Data source</td><td>Where raw documents live</td></tr>
+    <tr><td>Skillset</td><td>AI enrichment pipeline (built-in + custom skills)</td></tr>
+    <tr><td>Output field mappings</td><td>Connect enriched fields to index schema</td></tr>
+    <tr><td>Knowledge store</td><td>Optional: persist enrichments to Blob/Table storage</td></tr>
+  </table>
+
+  <div class="tip"><strong>Tip:</strong> Use the <strong>Import data</strong> wizard for guided setup, or the REST API / SDK for full programmatic control.</div>
+</div>
+
+<!-- 6. CREATE A CLU PROJECT -->
+<div class="card">
+  <h2>6. Create a CLU Project (Conversational Language Understanding)</h2>
+  <div class="key-fact"><strong>Portal:</strong> <code>language.cognitive.azure.com</code> (Language Studio)</div>
+
+  <h3>Steps</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Open <strong>Language Studio</strong> and select your Language resource</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Choose <strong>Conversational Language Understanding</strong></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Create new project</strong> &mdash; set name and primary language</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Add intents</strong> (e.g., <code>ReportPothole</code>, <code>CheckStatus</code>)</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text"><strong>Add entities</strong> (e.g., <code>Location</code>, <code>IssueType</code>)</div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-text"><strong>Add utterances</strong> to each intent and label entities within them</div></div>
+  <div class="step"><div class="step-num">7</div><div class="step-text"><strong>Train</strong> the model (Standard or Advanced training)</div></div>
+  <div class="step"><div class="step-num">8</div><div class="step-text"><strong>Evaluate</strong> results: review Precision, Recall, and F1 scores</div></div>
+  <div class="step"><div class="step-num">9</div><div class="step-text"><strong>Deploy</strong> the model to a named deployment slot</div></div>
+  <div class="step"><div class="step-num">10</div><div class="step-text"><strong>Test</strong> with sample queries in the testing pane</div></div>
+
+  <div class="key-fact"><strong>Minimum requirements:</strong> At least 1 intent defined, entities labeled in utterances, model must be trained before deployment.</div>
+
+  <div class="warning"><strong>Exam tip:</strong> CLU replaces the older LUIS service. LUIS is now deprecated &mdash; migrate to CLU.</div>
+</div>
+
+</div><!-- end grid -->
+
+<!-- ============================================================ -->
+<!-- ROW 4: QA + Custom Vision                                     -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top: 1.5rem;">
+
+<!-- 7. CUSTOM QUESTION ANSWERING -->
+<div class="card">
+  <h2>7. Create a Custom Question Answering Project</h2>
+  <div class="key-fact"><strong>Portal:</strong> <code>language.cognitive.azure.com</code> (Language Studio)</div>
+
+  <h3>Steps</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Open <strong>Language Studio</strong> &rarr; <strong>Custom Question Answering</strong></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Create new project</strong> (requires an AI Search resource for the knowledge base)</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Add sources</strong>: URLs, uploaded files (PDF, DOCX, TXT), or pre-built chit-chat</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Review auto-extracted <strong>QnA pairs</strong> and edit as needed</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text">Add <strong>alternate phrasings</strong> to improve matching</div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-text">Add <strong>follow-up prompts</strong> to create multi-turn conversations</div></div>
+  <div class="step"><div class="step-num">7</div><div class="step-text">Optionally add <strong>metadata</strong> tags for filtering answers</div></div>
+  <div class="step"><div class="step-num">8</div><div class="step-text"><strong>Test</strong> in the test pane, then <strong>Deploy</strong></div></div>
+
+  <h3>Source Limits</h3>
+  <table>
+    <tr><th>Source Type</th><th>Limit</th></tr>
+    <tr><td>URL crawl depth</td><td>Up to 20 levels deep</td></tr>
+    <tr><td>File upload size</td><td>Up to 25 MB per PDF</td></tr>
+    <tr><td>Chit-chat</td><td>Pre-built personality sets (Professional, Friendly, etc.)</td></tr>
+  </table>
+
+  <div class="tip"><strong>Tip:</strong> Custom QA requires an Azure AI Search resource as its backing store. Plan for this when provisioning.</div>
+</div>
+
+<!-- 8. DEPLOY A CUSTOM VISION MODEL -->
+<div class="card">
+  <h2>8. Deploy a Custom Vision Model</h2>
+  <div class="key-fact"><strong>Portal:</strong> <code>customvision.ai</code></div>
+
+  <h3>Steps</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Create project</strong>: choose <strong>Classification</strong> or <strong>Object Detection</strong></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Choose a <strong>domain</strong> (General, Food, Landmarks, Retail, or Compact variants for export)</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Upload images</strong> and <strong>tag/label</strong> them (draw bounding boxes for detection)</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Train</strong>: Quick Training (faster) or Advanced Training (set time budget)</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text">Review <strong>metrics</strong>: Precision, Recall, mAP (mean Average Precision for detection)</div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-text">Set <strong>probability threshold</strong> to tune precision vs. recall</div></div>
+  <div class="step"><div class="step-num">7</div><div class="step-text"><strong>Publish</strong> the iteration to a prediction resource</div></div>
+  <div class="step"><div class="step-num">8</div><div class="step-text">Get the <strong>Prediction URL</strong> and <strong>Prediction Key</strong></div></div>
+
+  <h3>Minimum Image Requirements</h3>
+  <table>
+    <tr><th>Project Type</th><th>Minimum Images per Tag</th></tr>
+    <tr><td>Classification</td><td>5 images per tag</td></tr>
+    <tr><td>Object Detection</td><td>15 images per tag</td></tr>
+  </table>
+
+  <div class="tip"><strong>Exam tip:</strong> Use a <strong>Compact</strong> domain if you need to export the model to run on edge devices (ONNX, TensorFlow, CoreML).</div>
+</div>
+
+</div><!-- end grid -->
+
+<!-- ============================================================ -->
+<!-- ROW 5: Document Intelligence + RAG                            -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top: 1.5rem;">
+
+<!-- 9. CREATE A DOCUMENT INTELLIGENCE MODEL -->
+<div class="card">
+  <h2>9. Create a Document Intelligence Model</h2>
+  <div class="key-fact"><strong>Portal:</strong> <code>documentintelligence.ai.azure.com</code> (Document Intelligence Studio)</div>
+
+  <h3>Prebuilt Models</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Open <strong>Document Intelligence Studio</strong> and select your resource</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Choose a <strong>prebuilt model</strong> (Invoice, Receipt, ID Document, Business Card, W-2, etc.)</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Upload a sample document and <strong>analyze</strong></div></div>
+
+  <h3>Custom Models</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Select <strong>Custom model</strong> &rarr; create new project</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Upload training documents</strong> to a Blob Storage container</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Label fields</strong> in each document using the labeling tool</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Train</strong> the model (minimum 5 labeled documents recommended)</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text"><strong>Test</strong> with new documents, then <strong>deploy</strong></div></div>
+
+  <h3>Composed Models</h3>
+  <div class="key-fact"><strong>Composed model:</strong> Combine multiple custom models into a single endpoint. The service automatically routes documents to the best sub-model. Up to <strong>500 models</strong> on S0 tier.</div>
+
+  <div class="tip"><strong>Exam tip:</strong> Know the difference between prebuilt (zero training), custom template (fixed layout), and custom neural (variable layout) models.</div>
+</div>
+
+<!-- 10. SET UP RAG (ON YOUR DATA) -->
+<div class="card">
+  <h2>10. Set Up RAG (On Your Data)</h2>
+  <div class="key-fact"><strong>Portal:</strong> <code>ai.azure.com</code> (Azure AI Foundry &mdash; Chat Playground)</div>
+
+  <h3>Steps</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Open the <strong>Chat playground</strong> in Azure AI Foundry</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Click <strong>Add your data</strong></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Select <strong>data source</strong>: existing AI Search index, upload files, or URL</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Configure <strong>index field mappings</strong>: content field, title field, filename field, URL field</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text">Set <strong>search type</strong>: Keyword, Semantic, Vector, or Hybrid</div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-text">Set <strong>Strictness</strong> (1&ndash;5): higher = fewer but more relevant results</div></div>
+  <div class="step"><div class="step-num">7</div><div class="step-text">Set <strong>Retrieved documents</strong> count (3&ndash;20)</div></div>
+  <div class="step"><div class="step-num">8</div><div class="step-text"><strong>Save and close</strong>, then chat with your grounded model</div></div>
+
+  <h3>Search Type Comparison</h3>
+  <table>
+    <tr><th>Search Type</th><th>How It Works</th><th>Best For</th></tr>
+    <tr><td>Keyword</td><td>BM25 term matching</td><td>Exact term lookups</td></tr>
+    <tr><td>Semantic</td><td>Reranks keyword results with deep learning</td><td>Natural language queries</td></tr>
+    <tr><td>Vector</td><td>Embedding similarity search</td><td>Conceptual / cross-language queries</td></tr>
+    <tr><td>Hybrid + Semantic</td><td>Keyword + Vector + Semantic reranking</td><td>Best overall relevance</td></tr>
+  </table>
+
+  <div class="tip"><strong>Best practice:</strong> Use <strong>Hybrid + Semantic ranking</strong> for the best relevance. This combines BM25, vector similarity, and neural reranking.</div>
+</div>
+
+</div><!-- end grid -->
+
+<!-- ============================================================ -->
+<!-- ROW 6: Foundry Agent + Monitoring                             -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top: 1.5rem;">
+
+<!-- 11. CREATE A FOUNDRY AGENT -->
+<div class="card">
+  <h2>11. Create a Foundry Agent</h2>
+  <div class="key-fact"><strong>Portal:</strong> <code>ai.azure.com</code> (Azure AI Foundry)</div>
+  <div class="key-fact"><strong>Formula:</strong> Agent = Model + Instructions + Tools</div>
+
+  <h3>Steps</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Open your project &rarr; <strong>Agents</strong> &rarr; <strong>Create agent</strong></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Give the agent a <strong>name</strong></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Select the <strong>model</strong> (e.g., <code>gpt-4o</code>)</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Write <strong>instructions</strong> (system prompt defining the agent's behavior)</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text">Add <strong>tools</strong>: Code Interpreter, File Search, Azure AI Search, custom Functions</div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-text"><strong>Upload files</strong> if using File Search or Code Interpreter</div></div>
+  <div class="step"><div class="step-num">7</div><div class="step-text"><strong>Test</strong> in the playground and review execution traces</div></div>
+  <div class="step"><div class="step-num">8</div><div class="step-text"><strong>Evaluate</strong> with test datasets, then <strong>Publish</strong></div></div>
+
+  <h3>Available Tools</h3>
+  <table>
+    <tr><th>Tool</th><th>Purpose</th><th>When to Use</th></tr>
+    <tr><td style="color:var(--green);">Code Interpreter</td><td>Run Python in a sandbox</td><td>Data analysis, charts, math, file conversion</td></tr>
+    <tr><td style="color:var(--green);">File Search</td><td>Vector search over uploaded files</td><td>RAG over PDFs/docs the user provides</td></tr>
+    <tr><td style="color:var(--green);">Azure AI Search</td><td>Query your search indexes</td><td>Ground on enterprise data (hybrid/semantic)</td></tr>
+    <tr><td style="color:var(--green);">Web Search</td><td>Real-time Bing grounding</td><td>Current events, live information</td></tr>
+    <tr><td style="color:var(--green);">Function Calling</td><td>Custom functions (you define + handle)</td><td>Call your APIs, databases, or business logic</td></tr>
+    <tr><td style="color:var(--green);">Azure Functions</td><td>Serverless backend actions</td><td>Auto-executed custom code (no client handling)</td></tr>
+    <tr><td style="color:var(--cyan);">Image Generation</td><td>DALL-E in-conversation</td><td>Create images from text descriptions</td></tr>
+    <tr><td style="color:var(--cyan);">Browser Automation</td><td>Navigate websites via natural language</td><td>Web scraping, form filling (preview)</td></tr>
+    <tr><td style="color:var(--cyan);">SharePoint</td><td>Chat over SharePoint docs</td><td>Enterprise document Q&amp;A (preview)</td></tr>
+  </table>
+  <div class="key-fact"><strong>Function Calling vs Azure Functions:</strong> With Function Calling, the agent returns the function name + args and <em>you</em> execute it client-side. With Azure Functions, the agent calls the function <em>directly</em> &mdash; no client code needed.</div>
+</div>
+
+<!-- 12. MONITOR AI RESOURCES -->
+<div class="card">
+  <h2>12. Monitor AI Resources</h2>
+  <div class="key-fact"><strong>Portal:</strong> <code>portal.azure.com</code></div>
+
+  <h3>Enable Diagnostic Logging</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Go to your AI resource &rarr; <strong>Monitoring</strong> section &rarr; <strong>Diagnostic settings</strong></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Click <strong>Add diagnostic setting</strong></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Select which <strong>logs</strong> and <strong>metrics</strong> to collect</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Choose destination: <strong>Send to Log Analytics workspace</strong></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text"><strong>Save</strong> the diagnostic setting</div></div>
+
+  <h3>Create Alert Rules</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Go to <strong>Alerts</strong> &rarr; <strong>Create alert rule</strong></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Select a <strong>metric</strong> (e.g., Total Calls, Total Errors, Latency)</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Set <strong>condition and threshold</strong> (e.g., errors &gt; 10 in 5 min)</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Configure an <strong>action group</strong> (email, SMS, webhook, Logic App, etc.)</div></div>
+
+  <h3>Key Metrics to Monitor</h3>
+  <table>
+    <tr><th>Metric</th><th>What It Tells You</th></tr>
+    <tr><td>Total Calls</td><td>Request volume / usage patterns</td></tr>
+    <tr><td>Successful Calls</td><td>Healthy request count</td></tr>
+    <tr><td>Total Errors</td><td>Failures (4xx, 5xx, throttling)</td></tr>
+    <tr><td>Latency</td><td>Response time (P50, P99)</td></tr>
+    <tr><td>Token Usage</td><td>Consumption for OpenAI models</td></tr>
+  </table>
+</div>
+
+</div><!-- end grid -->
+
+<!-- ============================================================ -->
+<!-- ROW 7: Keys/Auth + Network Security                           -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top: 1.5rem;">
+
+<!-- 13. MANAGE KEYS AND AUTHENTICATION -->
+<div class="card">
+  <h2>13. Manage Keys and Authentication</h2>
+  <div class="key-fact"><strong>Portal:</strong> <code>portal.azure.com</code></div>
+
+  <h3>Key-Based Authentication</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Go to your resource &rarr; <strong>Keys and Endpoint</strong></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Copy <strong>Key 1</strong> or <strong>Key 2</strong> (both are valid simultaneously)</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">To rotate: click <strong>Regenerate Key 1</strong>, update apps to use Key 2, then regenerate Key 2 later</div></div>
+
+  <h3>Managed Identity (Recommended for Production)</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Go to your compute resource (App Service, VM, etc.) &rarr; <strong>Identity</strong></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Set <strong>System assigned</strong> status to <strong>On</strong> &rarr; Save</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Go to the AI resource &rarr; <strong>Access control (IAM)</strong> &rarr; <strong>Add role assignment</strong></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Assign <code>Cognitive Services User</code> role to the managed identity</div></div>
+
+  <h3>Authentication Comparison</h3>
+  <table>
+    <tr><th>Method</th><th>Use Case</th><th>Security</th></tr>
+    <tr><td>API Keys</td><td>Development, quick start</td><td>Rotate regularly, never commit to code</td></tr>
+    <tr><td>Managed Identity</td><td>Production Azure-to-Azure</td><td>No credentials to manage</td></tr>
+    <tr><td>Azure AD Token</td><td>User-delegated access</td><td>Fine-grained RBAC</td></tr>
+  </table>
+
+  <div class="warning"><strong>Exam tip:</strong> Two keys exist for zero-downtime rotation. Regenerating Key 1 does NOT affect Key 2.</div>
+</div>
+
+<!-- 14. CONFIGURE NETWORK SECURITY -->
+<div class="card">
+  <h2>14. Configure Network Security</h2>
+  <div class="key-fact"><strong>Portal:</strong> <code>portal.azure.com</code></div>
+
+  <h3>Network Access Options</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Go to your AI resource &rarr; <strong>Networking</strong></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Choose access level:</div></div>
+
+  <table>
+    <tr><th>Option</th><th>Description</th></tr>
+    <tr><td><strong>All networks</strong></td><td>Public internet access (default, least secure)</td></tr>
+    <tr><td><strong>Selected networks</strong></td><td>Allow specific VNets/IPs only</td></tr>
+    <tr><td><strong>Disabled</strong></td><td>Private endpoint only (most secure)</td></tr>
+  </table>
+
+  <h3>Set Up Private Endpoint</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Go to <strong>Networking</strong> &rarr; <strong>Private endpoint connections</strong> &rarr; <strong>Create</strong></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Select the <strong>target sub-resource</strong> (e.g., <code>account</code>)</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Link to a <strong>VNet</strong> and <strong>subnet</strong></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Configure <strong>Private DNS zone</strong> integration for name resolution</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text"><strong>Create</strong> the private endpoint</div></div>
+
+  <h3>Add VNet Rules</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Under <strong>Selected networks</strong>, click <strong>Add existing virtual network</strong></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Select allowed <strong>VNets</strong> and <strong>subnets</strong></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Optionally add specific <strong>IP address ranges</strong></div></div>
+
+  <div class="tip"><strong>Best practice:</strong> Use <strong>Private Endpoints</strong> for production. Traffic stays on the Microsoft backbone network and never traverses the public internet.</div>
+</div>
+
+</div><!-- end grid -->
+
+<!-- ============================================================ -->
+<!-- NAVIGATION                                                    -->
+<!-- ============================================================ -->
+<div class="nav-links">
+  <a href="index.html">&larr; All Sheets</a>
+  <a href="00-exam-overview.html">00 Exam Overview</a>
+  <a href="01-azure-openai.html">01 Azure OpenAI</a>
+  <a href="02-computer-vision.html">02 Computer Vision</a>
+  <a href="03-nlp-speech.html">03 NLP &amp; Speech</a>
+  <a href="04-search-knowledge.html">04 AI Search</a>
+  <a href="05-responsible-ai.html">05 Responsible AI</a>
+  <a href="06-foundry-agents.html">06 Foundry &amp; Agents</a>
+  <a href="07-sdk-reference.html">07 SDK Reference</a>
+  <a href="08-portal-workflows.html"><strong>08 Portal Workflows</strong></a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D3: Agentic Solutions | AI-102 Practice Test</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #232733; --border: #2e3345;
+    --text: #e4e6ef; --text-dim: #8b8fa3;
+    --amber: #f5a623; --amber-dim: rgba(245,166,35,0.25);
+    --green: #34d399; --green-dim: rgba(52,211,153,0.25);
+    --blue: #60a5fa; --blue-dim: rgba(96,165,250,0.25);
+    --red: #f87171; --red-dim: rgba(248,113,113,0.25);
+    --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.25);
+    --cyan: #22d3ee; --cyan-dim: rgba(34,211,238,0.25);
+    --accent: var(--purple); --accent-dim: var(--purple-dim);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 900px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--accent); }
+  .header h1 { font-size: 2rem; color: var(--accent); margin-bottom: 0.3rem; }
+  .header .subtitle { color: var(--text-dim); font-size: 0.95rem; }
+  .badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); }
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-red { background: var(--red-dim); color: var(--red); }
+  .badge-purple { background: var(--purple-dim); color: var(--purple); }
+  .badge-cyan { background: var(--cyan-dim); color: var(--cyan); }
+  code { background: var(--surface2); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.8rem; color: var(--cyan); }
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.5; margin: 0.75rem 0; }
+  pre code { background: none; padding: 0; }
+
+  /* Controls Bar */
+  .controls { position: sticky; top: 0; z-index: 100; background: rgba(26,29,39,0.95); border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .progress-wrap { flex: 1; min-width: 120px; }
+  .progress-bar { height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.3s; width: 0%; }
+  .progress-text { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+  .score-display { font-size: 0.9rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+  .timer { font-family: 'Consolas', 'Courier New', monospace; font-size: 1rem; color: var(--accent); white-space: nowrap; }
+  .timer.warning { color: var(--red); }
+
+  /* Buttons */
+  .btn { padding: 0.4rem 1rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.75rem; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .option-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .order-select:focus-visible, .match-select:focus-visible, .code-fill-select:focus-visible { outline: 2px solid var(--accent); }
+  .hotarea-line:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  /* Question Cards */
+  .question-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem; transition: border-color 0.2s; }
+  .question-card.has-answer { border-top: 2px solid var(--accent); }
+  .question-card.correct { border-left: 3px solid var(--green); }
+  .question-card.incorrect { border-left: 3px solid var(--red); }
+  .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+  .q-meta { display: flex; gap: 0.5rem; align-items: center; }
+  .q-num { font-size: 0.75rem; color: var(--text-dim); }
+  .q-text { font-size: 0.95rem; margin-bottom: 1rem; line-height: 1.6; }
+  .q-instruction { font-size: 0.8rem; color: var(--accent); margin-bottom: 0.75rem; font-style: italic; }
+
+  /* Scenario Box */
+  .scenario-box { background: var(--surface2); border-left: 3px solid var(--accent); padding: 1rem; margin-bottom: 1rem; border-radius: 0 8px 8px 0; font-size: 0.85rem; line-height: 1.6; }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem; }
+  .option-row { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer; transition: background 0.15s; border: 1px solid transparent; user-select: none; min-height: 40px; }
+  .option-row:hover { background: var(--surface2); }
+  .option-row.selected { background: var(--accent-dim); border-color: var(--accent); }
+  .option-row.correct-answer { background: var(--green-dim); border-color: var(--green); }
+  .option-row.wrong-answer { background: var(--red-dim); border-color: var(--red); }
+  .option-row.disabled { pointer-events: none; opacity: 0.8; }
+  .option-key { font-weight: 700; color: var(--accent); min-width: 20px; }
+  .option-text { font-size: 0.85rem; }
+  .option-indicator { margin-left: auto; font-size: 0.85rem; }
+
+  /* Order Items */
+  .order-items { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem; }
+  .order-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 1rem; background: var(--surface2); border-radius: 8px; border: 1px solid transparent; min-height: 40px; }
+  .order-item.correct-pos { border-color: var(--green); background: var(--green-dim); }
+  .order-item.wrong-pos { border-color: var(--red); background: var(--red-dim); }
+  .order-select { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 0.3rem 0.5rem; font-size: 0.8rem; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+  .order-text { font-size: 0.85rem; }
+
+  /* Match type */
+  .match-container { display: flex; gap: 1.5rem; margin-bottom: 0.75rem; }
+  .match-col { flex: 1; display: flex; flex-direction: column; gap: 0.4rem; }
+  .match-col-header { font-size: 0.75rem; color: var(--accent); text-transform: uppercase; font-weight: 600; margin-bottom: 0.25rem; }
+  .match-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; background: var(--surface2); border-radius: 8px; font-size: 0.85rem; border: 1px solid transparent; min-height: 40px; }
+  .match-item.correct-match { border-color: var(--green); background: var(--green-dim); }
+  .match-item.wrong-match { border-color: var(--red); background: var(--red-dim); }
+  .match-select { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 0.3rem 0.5rem; font-size: 0.8rem; min-width: 40px; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+  .match-num { font-weight: 700; color: var(--accent); min-width: 20px; }
+
+  /* Code-fill type */
+  .code-fill-pre { position: relative; overflow: visible; }
+  .code-fill-select { font-family: 'Consolas', 'Courier New', monospace; background: var(--surface); color: var(--cyan); border: 1px solid var(--accent); border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.8rem; z-index: 10; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+  .code-fill-select.correct-blank { border-color: var(--green); background: var(--green-dim); }
+  .code-fill-select.wrong-blank { border-color: var(--red); background: var(--red-dim); }
+
+  /* Hotarea type */
+  .hotarea-lines { font-family: 'Consolas', 'Courier New', monospace; font-size: 0.8rem; margin-bottom: 0.75rem; }
+  .hotarea-line { display: flex; align-items: center; gap: 0.75rem; padding: 0.4rem 0.75rem; cursor: pointer; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; user-select: none; min-height: 40px; }
+  .hotarea-line:hover { background: var(--surface2); }
+  .hotarea-line.selected { background: var(--accent-dim); border-color: var(--accent); }
+  .hotarea-line.correct-line { background: var(--green-dim); border-color: var(--green); }
+  .hotarea-line.wrong-line { background: var(--red-dim); border-color: var(--red); }
+  .hotarea-line.missed-line { border: 1px dashed var(--green); }
+  .hotarea-linenum { color: var(--text-dim); min-width: 24px; text-align: right; }
+  .hotarea-code { white-space: pre; }
+
+  /* Case study type */
+  .casestudy-scenario { background: var(--surface2); border-left: 3px solid var(--accent); padding: 1rem; margin-bottom: 1rem; border-radius: 0 8px 8px 0; font-size: 0.85rem; line-height: 1.6; max-height: 250px; overflow-y: auto; }
+  .casestudy-subq { padding: 0.75rem 0; border-top: 1px solid var(--border); }
+  .casestudy-subq:first-child { border-top: none; }
+  .casestudy-subq-label { font-size: 0.75rem; color: var(--accent); margin-bottom: 0.5rem; }
+
+  /* Feedback */
+  .feedback { border-radius: 8px; padding: 0.75rem 1rem; margin-top: 0.75rem; font-size: 0.85rem; display: none; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: var(--green-dim); border: 1px solid rgba(52,211,153,0.3); }
+  .feedback.incorrect { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.3); }
+  .feedback strong { display: block; margin-bottom: 0.3rem; }
+  .feedback .cram-link { margin-top: 0.5rem; }
+  .feedback .cram-link a { color: var(--blue); text-decoration: none; font-size: 0.8rem; }
+  .feedback .cram-link a:hover { text-decoration: underline; }
+
+  /* Summary */
+  #summary { display: none; }
+  .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; text-align: center; margin-bottom: 1.5rem; }
+  .score-big { font-size: 3.5rem; font-weight: 800; line-height: 1; }
+  .score-big.pass { color: var(--green); }
+  .score-big.fail { color: var(--red); }
+  .score-label { font-size: 1rem; color: var(--text-dim); margin-top: 0.25rem; }
+  .pass-fail { font-size: 1.2rem; font-weight: 700; margin-top: 0.5rem; }
+  .pass-fail.pass { color: var(--green); }
+  .pass-fail.fail { color: var(--red); }
+  .breakdown { text-align: left; margin-top: 1.5rem; }
+  .breakdown h3 { font-size: 0.95rem; color: var(--accent); margin-bottom: 0.75rem; }
+  .breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+  .breakdown-bar { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; margin: 0 1rem; }
+  .breakdown-bar-fill { height: 100%; border-radius: 3px; }
+  .review-list { text-align: left; margin-top: 1.5rem; }
+  .review-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0; font-size: 0.8rem; cursor: pointer; }
+  .review-item:hover { color: var(--accent); }
+  .review-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .review-dot.correct { background: var(--green); }
+  .review-dot.incorrect { background: var(--red); }
+  .review-dot.unanswered { background: var(--text-dim); }
+
+  /* Nav Links */
+  .nav-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .nav-links a { color: var(--blue); text-decoration: none; font-size: 0.8rem; padding: 0.3rem 0.8rem; border: 1px solid var(--blue); border-radius: 6px; }
+  .nav-links a:hover { background: var(--blue-dim); }
+
+  @media (max-width: 640px) {
+    body { padding: 1rem; }
+    .header h1 { font-size: 1.5rem; }
+    .controls { flex-direction: column; gap: 0.5rem; padding: 0.5rem 0.75rem; }
+    .match-container { flex-direction: column; gap: 0.75rem; }
+    .btn-group { width: 100%; justify-content: center; }
+    .q-text { font-size: 0.9rem; }
+    .option-row { padding: 0.75rem 1rem; }
+    .hotarea-line { padding: 0.6rem 0.75rem; }
+    .score-display, .timer { font-size: 0.8rem; }
+    pre { font-size: 0.7rem; }
+  }
+
+  @media print {
+    body { background: #fff; color: #000; padding: 1rem; }
+    .controls, .btn, .timer { display: none !important; }
+    .question-card { border: 1px solid #ccc; break-inside: avoid; }
+    .feedback { display: block !important; background: #f0f0f0; border: 1px solid #ccc; }
+    .option-row.correct-answer { border: 2px solid #000; }
+    .header h1 { color: #333; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Domain 3: Implement an Agentic Solution</h1>
+  <div class="subtitle">13 Questions &bull; ~20 minutes &bull; <span class="badge badge-purple">5-10% of Exam</span></div>
+</div>
+
+<div class="controls" id="controls">
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText" aria-live="polite">0 of 0 answered</div>
+  </div>
+  <div class="score-display" id="scoreDisplay" aria-live="polite">Score: 0/0</div>
+  <div class="timer" id="timer">30:00</div>
+  <div class="btn-group">
+    <button class="btn btn-secondary btn-sm" onclick="toggleShuffle()">Shuffle</button>
+    <button class="btn btn-secondary btn-sm" onclick="gradeAll()">Grade All</button>
+    <button class="btn btn-primary btn-sm" onclick="finishExam()">Finish Exam</button>
+  </div>
+</div>
+
+<div id="questions"></div>
+
+<div id="summary"></div>
+
+<div class="nav-links">
+  <a href="index.html">&larr; All Tests</a>
+  <a href="test-d1.html">D1</a>
+  <a href="test-d2.html">D2</a>
+  <a href="test-d3.html">D3</a>
+  <a href="test-d4.html">D4</a>
+  <a href="test-d5.html">D5</a>
+  <a href="test-d6.html">D6</a>
+  <a href="test-full.html">Full Exam</a>
+  <a href="../index.html">Cram Library</a>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    id: "d3-001",
+    type: "single",
+    domain: "D3",
+    topic: "Agent Architecture",
+    question: "In Azure AI Foundry Agent Service, what happens when a function calling tool determines that external data is needed during a conversation?",
+    options: [
+      { key: "A", text: "The agent automatically executes the function on the server side" },
+      { key: "B", text: "The agent returns metadata with the function name and arguments for your application code to execute" },
+      { key: "C", text: "The agent pauses and waits for the user to manually provide the data" },
+      { key: "D", text: "The agent delegates execution to the Code Interpreter tool" }
+    ],
+    answer: "B",
+    explanation: "With function calling, the LLM does <strong>not</strong> execute functions directly. When the agent determines a function is needed, it returns a request containing the function name and arguments. Your <strong>application code</strong> must detect this request, execute the function, and submit the results back to the agent. Run executions expire 10 minutes after creation.",
+    cramRef: "../06-foundry-agents.html"
+  },
+  {
+    id: "d3-002",
+    type: "single",
+    domain: "D3",
+    topic: "Conversations API",
+    question: "In the new Foundry Agent Service developer experience, what replaced the concept of 'Threads' for managing conversation state?",
+    options: [
+      { key: "A", text: "Sessions" },
+      { key: "B", text: "Conversations" },
+      { key: "C", text: "Channels" },
+      { key: "D", text: "Dialogues" }
+    ],
+    answer: "B",
+    explanation: "The new Foundry Agent Service API replaces <strong>Threads</strong> with <strong>Conversations</strong>, and <strong>Runs</strong> with <strong>Responses</strong>. Conversations support streams of items (not just messages), and are durable objects with unique identifiers that can be reused across sessions.",
+    cramRef: "../06-foundry-agents.html"
+  },
+  {
+    id: "d3-003",
+    type: "single",
+    domain: "D3",
+    topic: "File Search Tool",
+    question: "When using the File Search tool in Standard agent setup, where are uploaded files and vector stores stored?",
+    options: [
+      { key: "A", text: "In the agent's local memory cache" },
+      { key: "B", text: "In Microsoft-managed storage and search resources" },
+      { key: "C", text: "In your connected Azure Blob Storage and Azure AI Search resources" },
+      { key: "D", text: "In Azure Cosmos DB attached to the project" }
+    ],
+    answer: "C",
+    explanation: "In <strong>Standard agent setup</strong>, File Search uses <strong>your connected Azure Blob Storage</strong> (for file storage) and <strong>your connected Azure AI Search</strong> (for vector stores). In Basic setup, Microsoft-managed resources are used instead. The code is identical for both; only the storage location differs.",
+    cramRef: "../06-foundry-agents.html"
+  },
+  {
+    id: "d3-004",
+    type: "multi",
+    domain: "D3",
+    topic: "Multi-Agent Orchestration",
+    question: "Which THREE are supported multi-agent orchestration patterns in Semantic Kernel's Agent Framework? (Select 3)",
+    selectCount: 3,
+    options: [
+      { key: "A", text: "Sequential" },
+      { key: "B", text: "Broadcast-Subscribe" },
+      { key: "C", text: "Handoff" },
+      { key: "D", text: "Magentic" },
+      { key: "E", text: "Round-Robin" }
+    ],
+    answer: ["A", "C", "D"],
+    explanation: "Semantic Kernel supports five orchestration patterns: <strong>Concurrent</strong> (broadcasts to all agents), <strong>Sequential</strong> (passes results in order), <strong>Handoff</strong> (dynamic control passing), <strong>Group Chat</strong> (coordinated group conversation), and <strong>Magentic</strong> (inspired by MagenticOne). Broadcast-Subscribe and Round-Robin are not named patterns in the framework.",
+    cramRef: "../06-foundry-agents.html"
+  },
+  {
+    id: "d3-005",
+    type: "order",
+    domain: "D3",
+    topic: "Agent Lifecycle",
+    question: "Place the steps for implementing a function calling agent in the correct order:",
+    options: [
+      { key: "A", text: "Submit the function output back to the agent" },
+      { key: "B", text: "Define function tools with name, parameters, and description" },
+      { key: "C", text: "Detect the requires_action status and extract function name and arguments" },
+      { key: "D", text: "Create the agent with function tool definitions and start a run" },
+      { key: "E", text: "Execute the function in your application code" }
+    ],
+    answer: ["B", "D", "C", "E", "A"],
+    explanation: "The correct sequence is: <strong>Define functions</strong> &rarr; <strong>Create agent and start run</strong> &rarr; <strong>Detect requires_action</strong> (poll run status) &rarr; <strong>Execute function locally</strong> &rarr; <strong>Submit output back</strong>. The agent never executes functions itself; your app code handles execution.",
+    cramRef: "../06-foundry-agents.html"
+  },
+  {
+    id: "d3-006",
+    type: "scenario",
+    domain: "D3",
+    topic: "Tool Selection",
+    scenario: "The Memphis Zoo is building an AI agent that helps zookeepers analyze daily animal feeding logs stored in CSV files. The agent needs to compute average food consumption per species, identify outliers in feeding patterns, and generate bar charts visualizing weekly trends.",
+    question: "Which agent tool should you configure for this use case?",
+    options: [
+      { key: "A", text: "File Search" },
+      { key: "B", text: "Code Interpreter" },
+      { key: "C", text: "Azure AI Search" },
+      { key: "D", text: "Function Calling with a custom analytics API" }
+    ],
+    answer: "B",
+    explanation: "<strong>Code Interpreter</strong> enables agents to write and run Python code in a sandboxed environment for data analysis, chart generation, and iterative problem-solving. It can upload CSV files, process data, compute statistics, and generate PNG charts. File Search is for document retrieval, not data analysis.",
+    cramRef: "../06-foundry-agents.html"
+  },
+  {
+    id: "d3-007",
+    type: "scenario",
+    domain: "D3",
+    topic: "Orchestration Patterns",
+    scenario: "AutoZone headquarters is building a multi-agent system to handle customer vehicle repair inquiries. One agent specializes in parts lookup, another in labor estimation, and a third in warranty verification. The system needs a coordinator that dynamically decides which specialist agent should handle each sub-task based on the evolving conversation context.",
+    question: "Which Semantic Kernel orchestration pattern best fits this requirement?",
+    options: [
+      { key: "A", text: "Sequential orchestration" },
+      { key: "B", text: "Concurrent orchestration" },
+      { key: "C", text: "Magentic orchestration" },
+      { key: "D", text: "Handoff orchestration" }
+    ],
+    answer: "C",
+    explanation: "<strong>Magentic orchestration</strong> (inspired by MagenticOne from AutoGen) uses a dedicated manager that coordinates specialized agents by selecting which agent acts next based on evolving context, task progress, and agent capabilities. It is designed for complex, open-ended tasks where the solution path is not known in advance. Handoff is for simpler escalation scenarios; Sequential follows a fixed order.",
+    cramRef: "../06-foundry-agents.html"
+  },
+  {
+    id: "d3-008",
+    type: "scenario",
+    domain: "D3",
+    topic: "Agent Memory",
+    scenario: "FedEx customer service is building an agent that should remember customer shipping preferences across multiple sessions. When a returning customer contacts support, the agent should recall their preferred delivery options and past issues without the customer repeating information.",
+    question: "Which Foundry Agent Service feature should the developer configure?",
+    options: [
+      { key: "A", text: "Increase the model's context window size" },
+      { key: "B", text: "Store preferences in a conversation and reuse the conversation ID" },
+      { key: "C", text: "Attach a memory store to the agent" },
+      { key: "D", text: "Use File Search with a customer profile document" }
+    ],
+    answer: "C",
+    explanation: "Foundry Agent Service provides managed <strong>memory stores</strong> (preview) that let agents retain information across sessions. You create a memory store defining which types of information to retain, attach it to the agent, and the agent uses stored memories as additional context during response generation. Conversations alone reset per session.",
+    cramRef: "../06-foundry-agents.html"
+  },
+  {
+    id: "d3-009",
+    type: "match",
+    domain: "D3",
+    topic: "API Migration",
+    question: "Match each classic Foundry Agent Service concept to its replacement in the new developer experience.",
+    pairs: [
+      { left: "Threads", right: "Conversations" },
+      { left: "Runs", right: "Responses" },
+      { left: "Assistants", right: "Agents (new)" },
+      { left: "client.agents.messages.create()", right: "conversations.items.create()" }
+    ],
+    answer: [0, 1, 2, 3],
+    explanation: "The new Foundry Agent Service API replaces: <strong>Threads &rarr; Conversations</strong> (support item streams, not just messages), <strong>Runs &rarr; Responses</strong> (synchronous input/output model), <strong>Assistants &rarr; Agents</strong> (enterprise-ready with stateful context), and message creation uses <strong>conversations.items.create()</strong> instead of agents.messages.create().",
+    cramRef: "../06-foundry-agents.html"
+  },
+  {
+    id: "d3-010",
+    type: "code-fill",
+    domain: "D3",
+    topic: "Agent Creation",
+    question: "Complete the Python code to create a Foundry agent with Code Interpreter enabled.",
+    codeTemplate: "from azure.ai.projects import AIProjectClient\n\ncode_interpreter = [BLANK1]\n\nagent = project_client.agents.create_agent(\n    model=os.environ[\"MODEL_DEPLOYMENT_NAME\"],\n    name=\"data-analyst\",\n    instructions=\"You are a helpful data analyst\",\n    tools=[BLANK2],\n    tool_resources=code_interpreter.resources,\n)",
+    blanks: [
+      {
+        id: "BLANK1",
+        options: ["CodeInterpreterTool()", "Tool(type=\"code_interpreter\")", "create_code_interpreter()", "CodeInterpreter.initialize()"],
+        answer: "CodeInterpreterTool()"
+      },
+      {
+        id: "BLANK2",
+        options: ["code_interpreter.definitions", "code_interpreter.tools", "[\"code_interpreter\"]", "code_interpreter.config"],
+        answer: "code_interpreter.definitions"
+      }
+    ],
+    explanation: "To create an agent with Code Interpreter: instantiate <code>CodeInterpreterTool()</code>, then pass <code>code_interpreter.definitions</code> to the <code>tools</code> parameter and <code>code_interpreter.resources</code> to <code>tool_resources</code>. This pattern is consistent across all tool types in the Foundry Agent SDK.",
+    cramRef: "../06-foundry-agents.html"
+  },
+  // ── NEW: REST & PORTAL (3) ──────────────────────────────────
+  {
+    id: "d3-011",
+    type: "code-fill",
+    domain: "D3",
+    topic: "REST API: Agent Creation",
+    question: "Complete this curl command to create an agent using the Azure AI Foundry Agent Service REST API:",
+    codeTemplate: "curl -X POST \"https://myproject.services.ai.azure.com/agents?api-version=2025-05-01\" \\\n  -H \"Authorization: Bearer $TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"model\": \"gpt-4o\",\n    \"name\": \"memphis-311-agent\",\n    \"instructions\": \"You are a helpful city services assistant.\",\n    \"[BLANK1]\": [\n      {\"type\": \"[BLANK2]\"}\n    ]\n  }'",
+    blanks: [
+      {
+        id: "BLANK1",
+        options: ["tools", "capabilities", "plugins", "extensions"],
+        answer: "tools"
+      },
+      {
+        id: "BLANK2",
+        options: ["code_interpreter", "CodeInterpreter", "code-interpreter", "codeInterpreter"],
+        answer: "code_interpreter"
+      }
+    ],
+    explanation: "The Agent Service REST API uses <code>tools</code> as the array field for tool definitions. Code Interpreter is specified as <code>{\"type\": \"code_interpreter\"}</code> using snake_case. The API follows OpenAI-compatible conventions. Other tool types include <code>file_search</code> and <code>function</code>.",
+    cramRef: "../06-foundry-agents.html"
+  },
+  {
+    id: "d3-012",
+    type: "single",
+    domain: "D3",
+    topic: "Portal: Agent Playground",
+    question: "In Azure AI Foundry, a developer wants to test their Memphis 311 agent interactively before deploying it to production. Where should they navigate?",
+    options: [
+      { key: "A", text: "The Agents section in the left navigation, then select the agent and click the Playground tab" },
+      { key: "B", text: "The Prompt flow section, then create a Standard flow with an Agent node" },
+      { key: "C", text: "The Models + endpoints section, then click Test on the deployed model" },
+      { key: "D", text: "The Evaluation section, then create a manual evaluation run" }
+    ],
+    answer: "A",
+    explanation: "Azure AI Foundry provides an <strong>Agents</strong> section in the left navigation where you can create, configure, and test agents. Each agent has a <strong>Playground tab</strong> for interactive testing where you can send messages, observe tool calls, and inspect the agent's reasoning. The Models + endpoints section manages model deployments, not agent testing.",
+    cramRef: "../06-foundry-agents.html"
+  },
+  {
+    id: "d3-013",
+    type: "order",
+    domain: "D3",
+    topic: "File Search Configuration",
+    question: "Place the steps to configure File Search with Azure Blob Storage for a Standard agent setup in the correct order:",
+    options: [
+      { key: "A", text: "Connect an Azure Blob Storage account and Azure AI Search resource to your AI Foundry project" },
+      { key: "B", text: "Upload files to a vector store using the agent's file upload API" },
+      { key: "C", text: "Create the agent with file_search tool enabled and attach the vector store as a tool resource" },
+      { key: "D", text: "Verify the vector store status shows as 'completed' (chunking and indexing finished)" }
+    ],
+    answer: ["A", "B", "D", "C"],
+    explanation: "The correct sequence: (1) Connect Azure Blob Storage and AI Search to your project (required for Standard setup — these store files and vector indexes), (2) Upload files to create a vector store (the service automatically chunks and indexes them), (3) Wait for the vector store to complete processing, (4) Create the agent with file_search enabled and the completed vector store attached. Creating the agent before the vector store is ready would result in empty search results.",
+    cramRef: "../06-foundry-agents.html"
+  }
+];
+
+// ========== QUIZ ENGINE ==========
+const state = {
+  questions: [...QUESTIONS],
+  answers: {},
+  checked: {},
+  score: 0,
+  total: 0,
+  timerSec: 1200,
+  timerRef: null,
+  finished: false
+};
+
+function init() {
+  renderQuestions();
+  startTimer();
+  updateProgress();
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function toggleShuffle() {
+  state.questions = shuffle(state.questions);
+  state.answers = {};
+  state.checked = {};
+  state.score = 0;
+  state.total = 0;
+  state.finished = false;
+  document.getElementById('summary').style.display = 'none';
+  document.getElementById('summary').innerHTML = '';
+  renderQuestions();
+  updateProgress();
+}
+
+function startTimer() {
+  const el = document.getElementById('timer');
+  state.timerRef = setInterval(() => {
+    if (state.timerSec <= 0) { clearInterval(state.timerRef); finishExam(); return; }
+    state.timerSec--;
+    const m = Math.floor(state.timerSec / 60);
+    const s = state.timerSec % 60;
+    el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    if (state.timerSec < 300) el.classList.add('warning');
+  }, 1000);
+}
+
+function renderQuestions() {
+  const container = document.getElementById('questions');
+  container.innerHTML = state.questions.map((q, i) => renderQuestion(q, i)).join('');
+}
+
+function renderQuestion(q, idx) {
+  let body = '';
+  if (q.type !== 'casestudy' && q.scenario) body += `<div class="scenario-box">${q.scenario}</div>`;
+  if (q.code) body += `<pre><code>${q.code}</code></pre>`;
+
+  let instruction = '';
+  if (q.type === 'multi') instruction = `<div class="q-instruction">Select ${q.selectCount || 2} answers</div>`;
+  if (q.type === 'order') instruction = `<div class="q-instruction">Select the correct order (1 = first)</div>`;
+  if (q.type === 'match') instruction = `<div class="q-instruction">Match each item on the left to its corresponding item on the right</div>`;
+  if (q.type === 'code-fill') instruction = `<div class="q-instruction">Select the correct value for each blank in the code</div>`;
+  if (q.type === 'hotarea') instruction = `<div class="q-instruction">Click the line(s) that contain errors</div>`;
+  if (q.type === 'casestudy') instruction = `<div class="q-instruction">Read the scenario and answer all parts below</div>`;
+
+  let optionsHtml = '';
+  if (q.type === 'order') {
+    optionsHtml = '<div class="order-items">' + q.options.map((o, oi) => {
+      const selOpts = `<option value="">-</option>` + q.options.map((_, si) => `<option value="${si+1}">${si+1}</option>`).join('');
+      return `<div class="order-item" id="order-${q.id}-${o.key}"><select class="order-select" onchange="handleOrder('${q.id}','${o.key}',this.value)">${selOpts}</select><span class="order-text"><strong>${o.key}.</strong> ${o.text}</span></div>`;
+    }).join('') + '</div>';
+  } else if (q.type === 'match') {
+    optionsHtml = renderMatch(q);
+  } else if (q.type === 'code-fill') {
+    optionsHtml = renderCodeFill(q);
+  } else if (q.type === 'hotarea') {
+    optionsHtml = renderHotarea(q);
+  } else if (q.type === 'casestudy') {
+    optionsHtml = renderCaseStudy(q);
+  } else {
+    optionsHtml = '<div class="options">' + q.options.map(o =>
+      `<div class="option-row" id="opt-${q.id}-${o.key}" tabindex="0" role="button" onclick="handleSelect('${q.id}','${o.key}','${q.type}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();handleSelect('${q.id}','${o.key}','${q.type}');}"><span class="option-key">${o.key}.</span><span class="option-text">${o.text}</span><span class="option-indicator" id="ind-${q.id}-${o.key}"></span></div>`
+    ).join('') + '</div>';
+  }
+
+  return `<div class="question-card" id="qcard-${q.id}">
+    <div class="q-header"><div class="q-meta"><span class="badge badge-purple">${q.topic}</span></div><span class="q-num">Q${idx+1} of ${state.questions.length}</span></div>
+    <div class="q-text">${q.question}</div>
+    ${body}${instruction}${optionsHtml}
+    <button class="btn btn-primary btn-sm" id="checkbtn-${q.id}" onclick="checkAnswer('${q.id}')">Check Answer</button>
+    <div class="feedback" id="fb-${q.id}"></div>
+  </div>`;
+}
+
+// ========== RENDER FUNCTIONS FOR NEW TYPES ==========
+
+function renderMatch(q) {
+  const shuffled = q.pairs.map((p, i) => ({...p, origIdx: i}));
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  if (!window._matchShuffles) window._matchShuffles = {};
+  window._matchShuffles[q.id] = shuffled;
+
+  const leftHtml = q.pairs.map((p, i) =>
+    `<div class="match-item" id="match-l-${q.id}-${i}"><span class="match-num">${i+1}.</span> ${p.left}</div>`
+  ).join('');
+
+  const selOpts = `<option value="">-</option>` + q.pairs.map((_, i) =>
+    `<option value="${i}">${i+1}</option>`
+  ).join('');
+
+  const rightHtml = shuffled.map((p, i) =>
+    `<div class="match-item" id="match-r-${q.id}-${i}"><select class="match-select" onchange="handleMatch('${q.id}',${i},this.value)">${selOpts}</select> ${p.right}</div>`
+  ).join('');
+
+  return `<div class="match-container"><div class="match-col"><div class="match-col-header">Term</div>${leftHtml}</div><div class="match-col"><div class="match-col-header">Definition</div>${rightHtml}</div></div>`;
+}
+
+function renderCodeFill(q) {
+  let html = q.codeTemplate;
+  q.blanks.forEach(b => {
+    const opts = `<option value="">---</option>` + b.options.map(o =>
+      `<option value="${o}">${o}</option>`
+    ).join('');
+    html = html.replace(`[${b.id}]`, `<select class="code-fill-select" id="cf-${q.id}-${b.id}" onchange="handleCodeFill('${q.id}','${b.id}',this.value)">${opts}</select>`);
+  });
+  return `<pre class="code-fill-pre"><code>${html}</code></pre>`;
+}
+
+function renderHotarea(q) {
+  const lines = q.codeLines.map(l =>
+    `<div class="hotarea-line" id="ha-${q.id}-${l.id}" tabindex="0" role="button" onclick="handleHotarea('${q.id}',${l.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();handleHotarea('${q.id}',${l.id});}"><span class="hotarea-linenum">${l.id}</span><span class="hotarea-code">${l.text}</span></div>`
+  ).join('');
+  return `<div class="hotarea-lines">${lines}</div>`;
+}
+
+function renderCaseStudy(q) {
+  let html = `<div class="casestudy-scenario">${q.scenario}</div>`;
+  q.subQuestions.forEach((sq, si) => {
+    const sqInstruction = sq.type === 'multi' ? `<div class="q-instruction">Select ${sq.selectCount || 2} answers</div>` : '';
+    const sqOptions = sq.options.map(o =>
+      `<div class="option-row" id="opt-${sq.id}-${o.key}" tabindex="0" role="button" onclick="handleSelect('${sq.id}','${o.key}','${sq.type}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();handleSelect('${sq.id}','${o.key}','${sq.type}');}"><span class="option-key">${o.key}.</span><span class="option-text">${o.text}</span><span class="option-indicator" id="ind-${sq.id}-${o.key}"></span></div>`
+    ).join('');
+    html += `<div class="casestudy-subq"><div class="casestudy-subq-label">Part ${String.fromCharCode(65+si)}</div><div class="q-text">${sq.question}</div>${sqInstruction}<div class="options">${sqOptions}</div><div class="feedback" id="fb-${sq.id}"></div></div>`;
+  });
+  return html;
+}
+
+// ========== HANDLER FUNCTIONS ==========
+
+function handleSelect(qId, key, type) {
+  if (state.checked[qId]) return;
+  if (type === 'multi') {
+    if (!state.answers[qId]) state.answers[qId] = [];
+    const idx = state.answers[qId].indexOf(key);
+    if (idx > -1) state.answers[qId].splice(idx, 1);
+    else state.answers[qId].push(key);
+  } else {
+    state.answers[qId] = key;
+  }
+  // Update UI
+  const q = state.questions.find(x => x.id === qId);
+  // For casestudy sub-questions, find the sub-question's options
+  let opts;
+  if (q && q.options) {
+    opts = q.options;
+  } else {
+    // Search sub-questions across all casestudy questions
+    for (const cq of state.questions) {
+      if (cq.type === 'casestudy' && cq.subQuestions) {
+        const sq = cq.subQuestions.find(s => s.id === qId);
+        if (sq) { opts = sq.options; break; }
+      }
+    }
+  }
+  if (opts) {
+    opts.forEach(o => {
+      const el = document.getElementById(`opt-${qId}-${o.key}`);
+      if (!el) return;
+      el.classList.remove('selected');
+      if (type === 'multi') {
+        if (state.answers[qId] && state.answers[qId].includes(o.key)) el.classList.add('selected');
+      } else {
+        if (state.answers[qId] === o.key) el.classList.add('selected');
+      }
+    });
+  }
+  // Mark card as answered
+  if (q) {
+    document.getElementById('qcard-' + qId).classList.add('has-answer');
+  } else {
+    // This is a casestudy sub-question; mark the parent card
+    for (const cq of state.questions) {
+      if (cq.type === 'casestudy' && cq.subQuestions) {
+        const sq = cq.subQuestions.find(s => s.id === qId);
+        if (sq) { document.getElementById('qcard-' + cq.id).classList.add('has-answer'); break; }
+      }
+    }
+  }
+  updateProgress();
+}
+
+function handleOrder(qId, key, val) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = {};
+  state.answers[qId][key] = parseInt(val);
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+function handleMatch(qId, rightIdx, leftIdx) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = {};
+  state.answers[qId][rightIdx] = leftIdx === '' ? null : parseInt(leftIdx);
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+function handleCodeFill(qId, blankId, value) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = {};
+  state.answers[qId][blankId] = value;
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+function handleHotarea(qId, lineId) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = [];
+  const idx = state.answers[qId].indexOf(lineId);
+  if (idx > -1) state.answers[qId].splice(idx, 1);
+  else state.answers[qId].push(lineId);
+  const el = document.getElementById(`ha-${qId}-${lineId}`);
+  el.classList.toggle('selected');
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+// ========== GRADING ==========
+
+function checkAnswer(qId) {
+  if (state.checked[qId]) return;
+  const q = state.questions.find(x => x.id === qId);
+
+  // Check if question has been answered
+  let hasAnswer;
+  if (q.type === 'casestudy') {
+    hasAnswer = q.subQuestions && q.subQuestions.some(sq => state.answers[sq.id] !== undefined);
+  } else if (q.type === 'match' || q.type === 'order' || q.type === 'code-fill') {
+    hasAnswer = state.answers[qId] && Object.keys(state.answers[qId]).length > 0;
+  } else if (q.type === 'multi') {
+    hasAnswer = state.answers[qId] && state.answers[qId].length > 0;
+  } else if (q.type === 'hotarea') {
+    hasAnswer = state.answers[qId] && state.answers[qId].length > 0;
+  } else {
+    hasAnswer = state.answers[qId] !== undefined;
+  }
+  if (!hasAnswer) {
+    const card = document.getElementById(`qcard-${qId}`);
+    card.style.borderColor = 'var(--amber)';
+    card.style.transition = 'border-color 0.3s';
+    setTimeout(() => { card.style.borderColor = ''; }, 1000);
+    return;
+  }
+
+  state.checked[qId] = true;
+  state.total++;
+
+  let correct = false;
+
+  if (q.type === 'order') {
+    const ans = state.answers[qId] || {};
+    correct = true;
+    q.options.forEach(o => {
+      const userPos = ans[o.key];
+      const correctPos = q.answer.indexOf(o.key) + 1;
+      const el = document.getElementById(`order-${qId}-${o.key}`);
+      if (userPos === correctPos) {
+        el.classList.add('correct-pos');
+      } else {
+        el.classList.add('wrong-pos');
+        correct = false;
+      }
+      el.querySelector('select').disabled = true;
+    });
+
+  } else if (q.type === 'match') {
+    const ans = state.answers[qId] || {};
+    const shuffled = window._matchShuffles[qId];
+    correct = true;
+    shuffled.forEach((p, ri) => {
+      const userLeft = ans[ri];
+      const correctLeft = p.origIdx;
+      const el = document.getElementById(`match-r-${qId}-${ri}`);
+      if (userLeft === correctLeft) {
+        el.classList.add('correct-match');
+      } else {
+        el.classList.add('wrong-match');
+        correct = false;
+      }
+      el.querySelector('select').disabled = true;
+    });
+    shuffled.forEach((p, ri) => {
+      const userLeft = ans[ri];
+      const correctLeft = p.origIdx;
+      if (userLeft === correctLeft) {
+        document.getElementById(`match-l-${qId}-${correctLeft}`).classList.add('correct-match');
+      }
+    });
+
+  } else if (q.type === 'code-fill') {
+    const ans = state.answers[qId] || {};
+    correct = true;
+    q.blanks.forEach(b => {
+      const sel = document.getElementById(`cf-${qId}-${b.id}`);
+      if (ans[b.id] === b.answer) {
+        sel.classList.add('correct-blank');
+      } else {
+        sel.classList.add('wrong-blank');
+        correct = false;
+      }
+      sel.disabled = true;
+    });
+
+  } else if (q.type === 'hotarea') {
+    const userLines = (state.answers[qId] || []).sort();
+    const correctLines = [...q.answer].sort();
+    correct = userLines.length === correctLines.length && userLines.every((v, i) => v === correctLines[i]);
+    q.codeLines.forEach(l => {
+      const el = document.getElementById(`ha-${qId}-${l.id}`);
+      el.style.cursor = 'default';
+      const isCorrect = q.answer.includes(l.id);
+      const isSelected = (state.answers[qId] || []).includes(l.id);
+      if (isCorrect && isSelected) el.classList.add('correct-line');
+      else if (isCorrect && !isSelected) el.classList.add('missed-line');
+      else if (!isCorrect && isSelected) el.classList.add('wrong-line');
+      el.classList.remove('selected');
+      el.onclick = null;
+    });
+
+  } else if (q.type === 'casestudy') {
+    correct = true;
+    q.subQuestions.forEach(sq => {
+      let sqCorrect = false;
+      if (sq.type === 'multi') {
+        const userAns = (state.answers[sq.id] || []).sort();
+        const correctAns = [...sq.answer].sort();
+        sqCorrect = userAns.length === correctAns.length && userAns.every((v, i) => v === correctAns[i]);
+      } else {
+        sqCorrect = state.answers[sq.id] === sq.answer;
+      }
+      if (!sqCorrect) correct = false;
+      // Highlight sub-question options
+      sq.options.forEach(o => {
+        const el = document.getElementById(`opt-${sq.id}-${o.key}`);
+        if (el) {
+          el.classList.add('disabled');
+          const isCorrectKey = Array.isArray(sq.answer) ? sq.answer.includes(o.key) : sq.answer === o.key;
+          const isSelected = Array.isArray(state.answers[sq.id]) ? (state.answers[sq.id] || []).includes(o.key) : state.answers[sq.id] === o.key;
+          if (isCorrectKey) { el.classList.add('correct-answer'); const ind = document.getElementById(`ind-${sq.id}-${o.key}`); if(ind) ind.textContent = '\u2713'; }
+          else if (isSelected) { el.classList.add('wrong-answer'); const ind = document.getElementById(`ind-${sq.id}-${o.key}`); if(ind) ind.textContent = '\u2717'; }
+        }
+      });
+      // Show sub-question feedback
+      const fb = document.getElementById(`fb-${sq.id}`);
+      if (fb) {
+        fb.className = `feedback show ${sqCorrect ? 'correct' : 'incorrect'}`;
+        fb.innerHTML = `<strong>${sqCorrect ? '\u2713 Correct' : '\u2717 Incorrect'}</strong>${sq.explanation}`;
+      }
+    });
+
+  } else {
+    // single, multi, scenario
+    if (q.type === 'multi') {
+      const userAns = (state.answers[qId] || []).sort();
+      const correctAns = [...q.answer].sort();
+      correct = userAns.length === correctAns.length && userAns.every((v, i) => v === correctAns[i]);
+    } else {
+      correct = state.answers[qId] === q.answer;
+    }
+    // Highlight options
+    q.options.forEach(o => {
+      const el = document.getElementById(`opt-${qId}-${o.key}`);
+      el.classList.add('disabled');
+      const isCorrectKey = Array.isArray(q.answer) ? q.answer.includes(o.key) : q.answer === o.key;
+      const isSelected = Array.isArray(state.answers[qId]) ? state.answers[qId].includes(o.key) : state.answers[qId] === o.key;
+      if (isCorrectKey) {
+        el.classList.add('correct-answer');
+        document.getElementById(`ind-${qId}-${o.key}`).textContent = '\u2713';
+      } else if (isSelected && !isCorrectKey) {
+        el.classList.add('wrong-answer');
+        document.getElementById(`ind-${qId}-${o.key}`).textContent = '\u2717';
+      }
+    });
+  }
+
+  if (correct) state.score++;
+  const card = document.getElementById(`qcard-${qId}`);
+  card.classList.add(correct ? 'correct' : 'incorrect');
+  document.getElementById(`checkbtn-${qId}`).disabled = true;
+
+  const fb = document.getElementById(`fb-${qId}`);
+  fb.className = `feedback show ${correct ? 'correct' : 'incorrect'}`;
+  fb.innerHTML = `<strong>${correct ? '\u2713 Correct!' : '\u2717 Incorrect'}</strong>${q.explanation}${q.cramRef ? `<div class="cram-link"><a href="${q.cramRef}" target="_blank">Study this topic \u2192</a></div>` : ''}`;
+
+  updateProgress();
+}
+
+function gradeAll() {
+  if (!confirm('Grade all unanswered questions? Unanswered questions will be marked incorrect.')) return;
+  // Force-grade unanswered by temporarily setting empty answers
+  state.questions.forEach(q => {
+    if (!state.checked[q.id]) {
+      // Ensure answer exists so checkAnswer doesn't bounce
+      if (state.answers[q.id] === undefined) {
+        if (q.type === 'multi' || q.type === 'hotarea') state.answers[q.id] = [];
+        else if (q.type === 'order' || q.type === 'match' || q.type === 'code-fill') state.answers[q.id] = {};
+        else if (q.type === 'casestudy') {
+          q.subQuestions.forEach(sq => { if (state.answers[sq.id] === undefined) state.answers[sq.id] = sq.type === 'multi' ? [] : ''; });
+        }
+        else state.answers[q.id] = '';
+      }
+      checkAnswer(q.id);
+    }
+  });
+}
+
+function finishExam() {
+  if (state.finished) return;
+  state.finished = true;
+  clearInterval(state.timerRef);
+  gradeAll();
+
+  const pct = state.questions.length > 0 ? Math.round((state.score / state.questions.length) * 100) : 0;
+  const pass = pct >= 70;
+
+  // Topic breakdown
+  const topics = {};
+  state.questions.forEach(q => {
+    if (!topics[q.topic]) topics[q.topic] = { correct: 0, total: 0 };
+    topics[q.topic].total++;
+    const isCorrect = state.checked[q.id] && document.getElementById(`qcard-${q.id}`).classList.contains('correct');
+    if (isCorrect) topics[q.topic].correct++;
+  });
+
+  let breakdownHtml = Object.entries(topics).map(([topic, data]) => {
+    const tPct = Math.round((data.correct / data.total) * 100);
+    const color = tPct >= 70 ? 'var(--green)' : 'var(--red)';
+    return `<div class="breakdown-row"><span>${topic}</span><div class="breakdown-bar"><div class="breakdown-bar-fill" style="width:${tPct}%;background:${color};"></div></div><span>${data.correct}/${data.total}</span></div>`;
+  }).join('');
+
+  // Review list
+  let reviewHtml = state.questions.map((q, i) => {
+    const card = document.getElementById(`qcard-${q.id}`);
+    const isCorrect = card.classList.contains('correct');
+    const isIncorrect = card.classList.contains('incorrect');
+    const dotClass = isCorrect ? 'correct' : (isIncorrect ? 'incorrect' : 'unanswered');
+    return `<div class="review-item" onclick="document.getElementById('qcard-${q.id}').scrollIntoView({behavior:'smooth'})"><div class="review-dot ${dotClass}"></div>Q${i+1}: ${q.topic}</div>`;
+  }).join('');
+
+  const summary = document.getElementById('summary');
+  summary.style.display = 'block';
+  summary.innerHTML = `<div class="summary-card">
+    <div class="score-big ${pass ? 'pass' : 'fail'}">${pct}%</div>
+    <div class="score-label">${state.score} of ${state.questions.length} correct</div>
+    <div class="pass-fail ${pass ? 'pass' : 'fail'}">${pass ? 'PASS' : 'NEEDS MORE STUDY'}</div>
+    <div class="breakdown"><h3>Topic Breakdown</h3>${breakdownHtml}</div>
+    <div class="review-list"><h3 style="color:var(--accent);font-size:0.95rem;margin:1rem 0 0.5rem;">Question Review</h3>${reviewHtml}</div>
+    <div class="btn-group" style="justify-content:center;margin-top:1.5rem;">
+      <button class="btn btn-primary" onclick="location.reload()">Retake Test</button>
+      <button class="btn btn-secondary" onclick="window.scrollTo({top:0,behavior:'smooth'})">Review Answers</button>
+      <a href="../index.html" class="btn btn-secondary" style="text-decoration:none;">Study Cram Sheets</a>
+    </div>
+  </div>`;
+  summary.scrollIntoView({ behavior: 'smooth' });
+}
+
+function updateProgress() {
+  // Count answered questions (for casestudy, count the parent question if any sub-question is answered)
+  let answered = 0;
+  state.questions.forEach(q => {
+    if (q.type === 'casestudy') {
+      const allAnswered = q.subQuestions && q.subQuestions.every(sq => state.answers[sq.id] !== undefined);
+      if (allAnswered) answered++;
+    } else if (state.answers[q.id] !== undefined) {
+      answered++;
+    }
+  });
+  const total = state.questions.length;
+  document.getElementById('progressFill').style.width = `${(answered/total)*100}%`;
+  document.getElementById('progressText').textContent = `${answered} of ${total} answered`;
+  document.getElementById('scoreDisplay').textContent = `Score: ${state.score}/${state.total}`;
+}
+
+init();
+</script>
+</body>
+</html>

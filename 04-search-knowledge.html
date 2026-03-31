@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure AI Search &amp; Knowledge Mining | AI-102 Cram Sheet</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #232733; --border: #2e3345;
+    --text: #e4e6ef; --text-dim: #8b8fa3;
+    --amber: #f5a623; --amber-dim: rgba(245,166,35,0.15);
+    --green: #34d399; --green-dim: rgba(52,211,153,0.15);
+    --blue: #60a5fa; --blue-dim: rgba(96,165,250,0.15);
+    --red: #f87171; --red-dim: rgba(248,113,113,0.15);
+    --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.15);
+    --cyan: #22d3ee; --cyan-dim: rgba(34,211,238,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--red); }
+  .header h1 { font-size: 2.2rem; color: var(--red); margin-bottom: 0.3rem; }
+  .header .subtitle { color: var(--text-dim); font-size: 1rem; }
+  .badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); }
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); }
+  .badge-red { background: var(--red-dim); color: var(--red); }
+  .badge-purple { background: var(--purple-dim); color: var(--purple); }
+  .badge-cyan { background: var(--cyan-dim); color: var(--cyan); }
+  .grid { display: grid; gap: 1.5rem; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+  .card:hover { border-color: var(--red); }
+  .card h2 { font-size: 1.1rem; margin-bottom: 1rem; }
+  .card h3 { font-size: 0.95rem; color: var(--red); margin: 1rem 0 0.5rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--red); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+  tr:hover td { background: var(--surface2); }
+  code { background: var(--surface2); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.8rem; color: var(--cyan); }
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.5; margin: 0.75rem 0; }
+  pre code { background: none; padding: 0; }
+  .key-fact { background: var(--surface2); border-left: 3px solid var(--red); padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0; font-size: 0.85rem; }
+  .key-fact strong { color: var(--red); }
+  .tip { background: var(--green-dim); border: 1px solid rgba(52,211,153,0.3); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; }
+  .tip strong { color: var(--green); }
+  .warning { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.3); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; }
+  .warning strong { color: var(--red); }
+  .nav-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .nav-links a { color: var(--blue); text-decoration: none; font-size: 0.8rem; padding: 0.3rem 0.8rem; border: 1px solid var(--blue); border-radius: 6px; }
+  .nav-links a:hover { background: var(--blue-dim); }
+  /* ── Code Language Tabs ── */
+  .code-tabs { margin: 0.75rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .code-tab-bar { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0; gap: 0; }
+  .code-tab { background: none; border: none; color: var(--text-dim); font-family: inherit; font-size: 0.75rem; font-weight: 600; padding: 0.5rem 1rem; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; text-transform: uppercase; letter-spacing: 0.04em; }
+  .code-tab:hover { color: var(--text); }
+  .code-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+  .code-panel { display: none; }
+  .code-panel.active { display: block; }
+  .code-tabs pre { margin: 0; border: none; border-radius: 0; }
+  .code-print-label { display: none; }
+  @media print { body { background: #fff; color: #000; } .card { border: 1px solid #ccc; break-inside: avoid; } th { color: #333; } .header h1 { color: #333; } .code-tab-bar { display: none; } .code-panel { display: block !important; } .code-print-label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #666; padding: 0.25rem 1rem 0; } .code-tabs { border: 1px solid #ccc; } }
+  @media (max-width: 480px) { .code-tab { padding: 0.4rem 0.6rem; font-size: 0.65rem; } }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- HEADER                                                        -->
+<!-- ============================================================ -->
+<div class="header">
+  <h1>Azure AI Search &amp; Knowledge Mining</h1>
+  <div class="subtitle">AI-102 Cram Sheet 04 &mdash; Domain 6: Implement Knowledge Mining &amp; Document Intelligence Solutions</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SERVICE TIERS                                                 -->
+<!-- ============================================================ -->
+<div class="card" style="margin-bottom: 1.5rem;">
+  <h2>Service Tiers <span class="badge badge-amber">Exam Favorite</span></h2>
+  <table>
+    <tr><th>Tier</th><th>Max Indexes</th><th>Storage / Partition</th><th>Partitions</th><th>Replicas</th></tr>
+    <tr><td><span class="badge badge-purple">Free</span></td><td>3</td><td>50 MB total</td><td>N/A</td><td>N/A</td></tr>
+    <tr><td><span class="badge badge-blue">Basic</span></td><td>15</td><td>15 GB</td><td>3</td><td>3</td></tr>
+    <tr><td><span class="badge badge-green">S1</span></td><td>50</td><td>160 GB</td><td>12</td><td>12</td></tr>
+    <tr><td><span class="badge badge-green">S2</span></td><td>200</td><td>512 GB</td><td>12</td><td>12</td></tr>
+    <tr><td><span class="badge badge-green">S3</span></td><td>200</td><td>1,024 GB</td><td>12</td><td>12</td></tr>
+    <tr><td><span class="badge badge-green">S3 HD</span></td><td>1000 / partition</td><td>1,024 GB</td><td>3</td><td>12</td></tr>
+    <tr><td><span class="badge badge-cyan">L1</span></td><td>10</td><td>2,048 GB</td><td>12</td><td>12</td></tr>
+    <tr><td><span class="badge badge-cyan">L2</span></td><td>10</td><td>4,096 GB</td><td>12</td><td>12</td></tr>
+  </table>
+  <div class="key-fact"><strong>SLA:</strong> 2+ replicas for read (query) availability SLA. 3+ replicas for read/write (query + indexing) availability SLA.</div>
+  <div class="key-fact"><strong>Limits:</strong> Max 1000 fields per index (Basic: 100). Max 30 skills per skillset. Max 1000 results per page (<code>$top</code>).</div>
+  <div class="tip"><strong>Exam Tip:</strong> S3 HD is for multi-tenancy (many small indexes). L-series is for storage-optimized workloads with fewer indexes but massive data.</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- INDEX SCHEMA + INDEXERS (2-col grid)                          -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-bottom: 1.5rem;">
+
+  <!-- INDEX SCHEMA -->
+  <div class="card">
+    <h2>Index Schema &mdash; Field Types</h2>
+    <table>
+      <tr><th>Type</th><th>Searchable</th><th>Filterable</th><th>Sortable</th><th>Facetable</th></tr>
+      <tr><td><code>Edm.String</code></td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td><code>Collection(Edm.String)</code></td><td>Yes</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+      <tr><td><code>Edm.Int32 / Int64 / Double</code></td><td>No</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td><code>Edm.Boolean</code></td><td>No</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td><code>Edm.DateTimeOffset</code></td><td>No</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td><code>Edm.GeographyPoint</code></td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+      <tr><td><code>Edm.ComplexType</code></td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td><code>Collection(Edm.Single)</code></td><td>Yes (vector)</td><td>No</td><td>No</td><td>No</td></tr>
+    </table>
+    <h3>Field Attributes</h3>
+    <p style="font-size:0.85rem;"><code>searchable</code> &middot; <code>filterable</code> &middot; <code>sortable</code> &middot; <code>facetable</code> &middot; <code>retrievable</code> &middot; <code>key</code></p>
+    <div class="warning"><strong>Key field must be <code>Edm.String</code>.</strong> Field definitions are LOCKED after creation &mdash; only <code>retrievable</code> can be changed. To change a field type, you must recreate the index.</div>
+  </div>
+
+  <!-- INDEXERS -->
+  <div class="card">
+    <h2>Indexers</h2>
+    <h3>Supported Data Sources</h3>
+    <table>
+      <tr><th>Data Source</th><th>Change Detection</th></tr>
+      <tr><td>Azure Blob Storage</td><td><code>LastModified</code> (automatic)</td></tr>
+      <tr><td>Azure SQL Database</td><td>High Water Mark <em>or</em> SQL Integrated</td></tr>
+      <tr><td>Cosmos DB (NoSQL)</td><td><code>_ts</code> timestamp</td></tr>
+      <tr><td>Azure Table Storage</td><td>High Water Mark</td></tr>
+      <tr><td>Data Lake Storage Gen2</td><td><code>LastModified</code></td></tr>
+      <tr><td>OneLake (Fabric)</td><td><code>LastModified</code></td></tr>
+    </table>
+    <h3>Scheduling &amp; Limits</h3>
+    <div class="key-fact"><strong>Min interval:</strong> 5 minutes. <strong>Max run:</strong> 2 hours (public endpoint) or 24 hours (private endpoint).</div>
+    <h3>Deletion Detection</h3>
+    <div class="key-fact"><strong>Native blob soft delete:</strong> Uses Azure Blob Storage's built-in soft delete. <strong>Custom soft-delete policy:</strong> A metadata field/value marks documents as deleted (e.g., <code>IsDeleted=true</code>).</div>
+    <div class="tip"><strong>Exam Tip:</strong> Indexers use <em>pull</em> model (scheduled crawl). For push, use the REST API or SDK directly.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SKILLSETS                                                      -->
+<!-- ============================================================ -->
+<div class="card" style="margin-bottom: 1.5rem;">
+  <h2>Skillsets &mdash; Built-in Cognitive Skills <span class="badge badge-red">Complete List</span></h2>
+  <div class="grid grid-3">
+    <div>
+      <h3>Billable (Cognitive Services Key)</h3>
+      <table>
+        <tr><th>Skill</th><th><code>@odata.type</code></th></tr>
+        <tr><td><span class="badge badge-purple">Vision</span> OCR</td><td><code>#Microsoft.Skills.Vision.OcrSkill</code></td></tr>
+        <tr><td><span class="badge badge-purple">Vision</span> Image Analysis</td><td><code>#Microsoft.Skills.Vision.ImageAnalysisSkill</code></td></tr>
+        <tr><td><span class="badge badge-blue">Language</span> Key Phrase Extraction</td><td><code>#Microsoft.Skills.Text.KeyPhraseExtractionSkill</code></td></tr>
+        <tr><td><span class="badge badge-blue">Language</span> Entity Recognition</td><td><code>#Microsoft.Skills.Text.V3.EntityRecognitionSkill</code></td></tr>
+        <tr><td><span class="badge badge-blue">Language</span> Entity Linking</td><td><code>#Microsoft.Skills.Text.V3.EntityLinkingSkill</code></td></tr>
+        <tr><td><span class="badge badge-blue">Language</span> Language Detection</td><td><code>#Microsoft.Skills.Text.LanguageDetectionSkill</code></td></tr>
+        <tr><td><span class="badge badge-blue">Language</span> Sentiment Analysis</td><td><code>#Microsoft.Skills.Text.V3.SentimentSkill</code></td></tr>
+        <tr><td><span class="badge badge-blue">Language</span> PII Detection</td><td><code>#Microsoft.Skills.Text.PIIDetectionSkill</code></td></tr>
+        <tr><td><span class="badge badge-blue">Language</span> Text Translation</td><td><code>#Microsoft.Skills.Text.TranslationSkill</code></td></tr>
+        <tr><td><span class="badge badge-blue">Language</span> Custom Entity Lookup</td><td><code>#Microsoft.Skills.Text.CustomEntityLookupSkill</code></td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Azure-Hosted Model Skills</h3>
+      <table>
+        <tr><th>Skill</th><th><code>@odata.type</code></th><th>Use Case</th></tr>
+        <tr><td>Azure OpenAI Embedding</td><td><code>#Microsoft.Skills.Text.AzureOpenAIEmbeddingSkill</code></td><td>Generate vectors for vector search</td></tr>
+        <tr><td>Azure Content Understanding</td><td><code>#Microsoft.Skills.Custom.ContentUnderstandingSkill</code></td><td>Multimodal content analysis &amp; semantic chunking</td></tr>
+        <tr><td>GenAI Prompt</td><td><code>#Microsoft.Skills.Text.GenAIPromptSkill</code></td><td>Extend pipeline with chat completion models (requires Azure OpenAI connection)</td></tr>
+      </table>
+      <h3>Custom Skills</h3>
+      <table>
+        <tr><th>Skill</th><th><code>@odata.type</code></th><th>Backend</th></tr>
+        <tr><td>Custom Web API</td><td><code>#Microsoft.Skills.Custom.WebApiSkill</code></td><td>Azure Functions / any REST endpoint</td></tr>
+        <tr><td>AML</td><td><code>#Microsoft.Skills.Custom.AmlSkill</code></td><td>Azure Machine Learning</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Utility Skills (Free)</h3>
+      <table>
+        <tr><th>Skill</th><th><code>@odata.type</code></th><th>Purpose</th></tr>
+        <tr><td>Text Merge</td><td><code>#Microsoft.Skills.Text.MergeSkill</code></td><td>Combine text from multiple fields</td></tr>
+        <tr><td>Text Split</td><td><code>#Microsoft.Skills.Text.SplitSkill</code></td><td>Break text into pages/sentences</td></tr>
+        <tr><td>Shaper</td><td><code>#Microsoft.Skills.Util.ShaperSkill</code></td><td>Create complex types for projections</td></tr>
+        <tr><td>Conditional</td><td><code>#Microsoft.Skills.Util.ConditionalSkill</code></td><td>If/else routing logic</td></tr>
+        <tr><td>Document Extraction</td><td><code>#Microsoft.Skills.Util.DocumentExtractionSkill</code></td><td>Extract content from embedded docs</td></tr>
+      </table>
+      <div class="key-fact"><strong>Free tier limit:</strong> 20 free skillset transactions per indexer per day. Attach a Cognitive Services key for unlimited.</div>
+      <div class="key-fact"><strong>Custom Web API contract:</strong> Must accept <code>{"values": [{"recordId": "...", "data": {...}}]}</code> and return same structure with <code>"data"</code> and optional <code>"errors"</code>/<code>"warnings"</code>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- KNOWLEDGE STORE + ENRICHMENT PIPELINE                         -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-bottom: 1.5rem;">
+
+  <!-- KNOWLEDGE STORE -->
+  <div class="card">
+    <h2>Knowledge Store <span class="badge badge-green">Projections</span></h2>
+    <table>
+      <tr><th>Projection Type</th><th>Destination</th><th>Format</th><th>Best For</th></tr>
+      <tr><td><strong>Table</strong></td><td>Azure Table Storage</td><td>Rows &amp; Columns</td><td>Power BI, analytics</td></tr>
+      <tr><td><strong>Object</strong></td><td>Azure Blob Storage</td><td>JSON blobs</td><td>Downstream apps, archives</td></tr>
+      <tr><td><strong>File</strong></td><td>Azure Blob Storage</td><td>Binary / images</td><td>Normalized images, OCR output</td></tr>
+    </table>
+    <h3>Key Properties</h3>
+    <p style="font-size:0.85rem;">
+      <code>generatedKeyName</code> &mdash; auto-generated unique key for each projection<br>
+      <code>referenceKeyName</code> &mdash; links related projections across tables<br>
+      <code>source</code> &mdash; enrichment tree node path (e.g., <code>/document/pages/*</code>)<br>
+      <code>storageContainer</code> &mdash; blob container (objects/files)<br>
+      <code>tableName</code> &mdash; table name (table projections)
+    </p>
+    <div class="tip"><strong>Exam Tip:</strong> Projections in the same <em>projection group</em> share a common key so they can be joined. Place related tables/objects in the same group.</div>
+  </div>
+
+  <!-- ENRICHMENT PIPELINE -->
+  <div class="card">
+    <h2>Enrichment Pipeline <span class="badge badge-amber">3-Stage Flow</span></h2>
+    <h3>1. Document Cracking</h3>
+    <p style="font-size:0.85rem;">Indexer opens files, extracts text content and <code>normalized_images</code> array. Supports PDF, Office docs, HTML, JSON, CSV, plain text, and images.</p>
+    <h3>2. Enrichment (Skillset)</h3>
+    <p style="font-size:0.85rem;">Skills execute against the <strong>enrichment tree</strong> &mdash; a hierarchical in-memory document. Each skill reads input nodes and writes output nodes. Skills chain via <code>/document/...</code> paths.</p>
+    <h3>3. Output Projection</h3>
+    <p style="font-size:0.85rem;">Results flow to two destinations:</p>
+    <ul style="font-size:0.85rem; padding-left:1.2rem;">
+      <li><strong>Search index</strong> &mdash; via <code>outputFieldMappings</code> (enriched fields) and <code>fieldMappings</code> (raw fields)</li>
+      <li><strong>Knowledge store</strong> &mdash; via projection definitions (tables, objects, files)</li>
+    </ul>
+    <div class="warning"><strong>Common Gotcha:</strong> <code>fieldMappings</code> map source &rarr; index BEFORE enrichment. <code>outputFieldMappings</code> map enrichment tree &rarr; index AFTER skillset runs. Don't confuse them!</div>
+    <div class="key-fact"><strong>Pipeline summary:</strong> Crack &rarr; Enrich &rarr; Project</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- QUERY SYNTAX                                                  -->
+<!-- ============================================================ -->
+<div class="card" style="margin-bottom: 1.5rem;">
+  <h2>Query Syntax <span class="badge badge-red">Heavily Tested</span></h2>
+  <div class="grid grid-2">
+    <div>
+      <h3>Simple Query (Default)</h3>
+      <table>
+        <tr><th>Operator</th><th>Meaning</th><th>Example</th></tr>
+        <tr><td><code>+</code></td><td>Must include</td><td><code>+memphis +311</code></td></tr>
+        <tr><td><code>-</code></td><td>Must exclude</td><td><code>memphis -nashville</code></td></tr>
+        <tr><td><code>""</code></td><td>Exact phrase</td><td><code>"pothole repair"</code></td></tr>
+        <tr><td><code>*</code></td><td>Suffix wildcard</td><td><code>mem*</code></td></tr>
+        <tr><td><code>()</code></td><td>Grouping</td><td><code>(pothole | sidewalk) repair</code></td></tr>
+      </table>
+      <h3>Full Lucene (queryType=full)</h3>
+      <table>
+        <tr><th>Operator</th><th>Syntax</th><th>Example</th></tr>
+        <tr><td>Fuzzy</td><td><code>term~N</code></td><td><code>memhpis~1</code> (edit distance)</td></tr>
+        <tr><td>Proximity</td><td><code>"t1 t2"~N</code></td><td><code>"pothole repair"~3</code></td></tr>
+        <tr><td>Boosting</td><td><code>term^N</code></td><td><code>urgent^4 pothole</code></td></tr>
+        <tr><td>Regex</td><td><code>/pattern/</code></td><td><code>/[0-9]{5}/</code></td></tr>
+        <tr><td>Field scoping</td><td><code>field:term</code></td><td><code>category:pothole</code></td></tr>
+        <tr><td>Wildcard</td><td><code>? *</code></td><td><code>p?thole</code>, <code>pot*</code></td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>OData Query Parameters</h3>
+      <table>
+        <tr><th>Parameter</th><th>Description</th><th>Notes</th></tr>
+        <tr><td><code>$search</code></td><td>Search text</td><td>Full-text against searchable fields</td></tr>
+        <tr><td><code>$filter</code></td><td>OData boolean expression</td><td>Uses filterable fields; exact match for strings</td></tr>
+        <tr><td><code>$select</code></td><td>Fields to return</td><td>Reduces payload size</td></tr>
+        <tr><td><code>$orderby</code></td><td>Sort expression</td><td>Max 32 clauses; fields must be sortable</td></tr>
+        <tr><td><code>$top</code></td><td>Results count</td><td>Default 50, max 1000</td></tr>
+        <tr><td><code>$skip</code></td><td>Offset for paging</td><td>Use with <code>$top</code> for pagination</td></tr>
+        <tr><td><code>$count</code></td><td>Total match count</td><td><code>true</code> or <code>false</code></td></tr>
+        <tr><td><code>searchMode</code></td><td>Match logic</td><td><code>any</code> (default) or <code>all</code></td></tr>
+        <tr><td><code>searchFields</code></td><td>Fields to search</td><td>Comma-separated list</td></tr>
+      </table>
+      <div class="key-fact"><strong>searchMode=any:</strong> At least one term matches (OR). <strong>searchMode=all:</strong> All terms must match (AND). This is a top exam question.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SEMANTIC SEARCH + VECTOR SEARCH                               -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-bottom: 1.5rem;">
+
+  <!-- SEMANTIC SEARCH -->
+  <div class="card">
+    <h2>Semantic Search <span class="badge badge-purple">Re-Ranking</span></h2>
+    <h3>Configuration Fields</h3>
+    <table>
+      <tr><th>Property</th><th>Purpose</th></tr>
+      <tr><td><code>titleField</code></td><td>Document title (single field)</td></tr>
+      <tr><td><code>contentFields</code></td><td>Main content (ordered by priority)</td></tr>
+      <tr><td><code>keywordFields</code></td><td>Keywords / tags</td></tr>
+    </table>
+    <h3>How It Works</h3>
+    <div class="key-fact"><strong>Re-ranks top 50 BM25 results</strong> using deep learning models from Bing. Does NOT replace keyword search &mdash; it enhances it.</div>
+    <p style="font-size:0.85rem; margin-top:0.5rem;">
+      <strong>Captions:</strong> Extractive with highlights (bolded key phrases)<br>
+      <strong>Answers:</strong> Extractive, max 10 per query<br>
+      <strong>Score:</strong> Returns <code>@search.rerankerScore</code> (0&ndash;4 scale)
+    </p>
+    <div class="tip"><strong>Exam Tip:</strong> Semantic search requires Standard tier or higher. It re-ranks, not re-retrieves &mdash; if a document isn't in the initial BM25 top 50, semantic won't find it.</div>
+  </div>
+
+  <!-- VECTOR SEARCH -->
+  <div class="card">
+    <h2>Vector Search <span class="badge badge-cyan">Similarity</span></h2>
+    <h3>Configuration</h3>
+    <table>
+      <tr><th>Setting</th><th>Details</th></tr>
+      <tr><td>Field type</td><td><code>Collection(Edm.Single)</code>, max 4096 dimensions</td></tr>
+      <tr><td>HNSW (default)</td><td>Approximate nearest neighbor, fast at scale</td></tr>
+      <tr><td>Exhaustive KNN</td><td>Exact brute-force, use for small datasets or recall testing</td></tr>
+    </table>
+    <h3>HNSW Parameters</h3>
+    <table>
+      <tr><th>Param</th><th>Range</th><th>Default</th><th>Purpose</th></tr>
+      <tr><td><code>m</code></td><td>4&ndash;10</td><td>4</td><td>Bi-directional links per node</td></tr>
+      <tr><td><code>efConstruction</code></td><td>100&ndash;1000</td><td>400</td><td>Candidates during index build</td></tr>
+      <tr><td><code>efSearch</code></td><td>100&ndash;1000</td><td>500</td><td>Candidates during query</td></tr>
+    </table>
+    <h3>Distance Metrics</h3>
+    <p style="font-size:0.85rem;">
+      <code>cosine</code> <span class="badge badge-green">Recommended for OpenAI</span> &middot;
+      <code>dotProduct</code> &middot;
+      <code>euclidean</code> &middot;
+      <code>hamming</code>
+    </p>
+    <div class="key-fact"><strong>Hybrid search:</strong> Keyword + vector run in parallel, results merged via <strong>Reciprocal Rank Fusion (RRF)</strong>. Can combine with semantic re-ranking for best quality.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- CODE SNIPPETS                                                 -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-bottom: 1.5rem;">
+
+  <!-- VECTOR INDEX CONFIG (language-neutral JSON — no tabs) -->
+  <div class="card">
+    <h2>Vector Search Index Configuration <span class="badge badge-cyan">JSON</span></h2>
+<pre><code>{
+  "name": "memphis-311-index",
+  "fields": [
+    { "name": "id", "type": "Edm.String", "key": true, "filterable": true },
+    { "name": "title", "type": "Edm.String", "searchable": true },
+    { "name": "content", "type": "Edm.String", "searchable": true },
+    { "name": "category", "type": "Edm.String", "filterable": true, "facetable": true },
+    {
+      "name": "contentVector",
+      "type": "Collection(Edm.Single)",
+      "searchable": true,
+      "dimensions": 1536,
+      "vectorSearchProfile": "my-vector-profile"
+    }
+  ],
+  "vectorSearch": {
+    "algorithms": [
+      {
+        "name": "my-hnsw",
+        "kind": "hnsw",
+        "hnswParameters": {
+          "m": 4,
+          "efConstruction": 400,
+          "efSearch": 500,
+          "metric": "cosine"
+        }
+      }
+    ],
+    "profiles": [
+      {
+        "name": "my-vector-profile",
+        "algorithmConfigurationName": "my-hnsw"
+      }
+    ]
+  },
+  "semantic": {
+    "configurations": [
+      {
+        "name": "my-semantic-config",
+        "prioritizedFields": {
+          "titleField": { "fieldName": "title" },
+          "contentFields": [
+            { "fieldName": "content" }
+          ],
+          "keywordsFields": [
+            { "fieldName": "category" }
+          ]
+        }
+      }
+    ]
+  }
+}</code></pre>
+  </div>
+
+  <!-- SEARCH CLIENT USAGE -->
+  <div class="card">
+    <h2>Search Client &mdash; Semantic Query <span class="badge badge-cyan">SDK</span></h2>
+<div class="code-tabs" data-languages="python,csharp,curl">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+    <button class="code-tab" data-lang="curl" role="tab">cURL</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+    <pre><code># pip install azure-search-documents
+from azure.core.credentials import AzureKeyCredential
+from azure.search.documents import SearchClient
+from azure.search.documents.models import (
+    VectorizedQuery, QueryType, QueryCaptionType, QueryAnswerType
+)
+
+client = SearchClient(
+    endpoint=f"https://{service_name}.search.windows.net",
+    index_name="memphis-311-index",
+    credential=AzureKeyCredential(api_key))
+
+# Hybrid + semantic search
+results = client.search(
+    search_text="pothole repair on Beale Street",
+    search_fields=["title", "content"],
+    select=["id", "title", "content", "category"],
+    filter="category eq 'infrastructure'",
+    top=10,
+    include_total_count=True,
+    query_type=QueryType.SEMANTIC,
+    semantic_configuration_name="my-semantic-config",
+    query_caption=QueryCaptionType.EXTRACTIVE,
+    query_answer=QueryAnswerType.EXTRACTIVE,
+    vector_queries=[
+        VectorizedQuery(
+            vector=embedding,  # 1536 floats from OpenAI
+            k_nearest_neighbors=50,
+            fields="contentVector"
+        )
+    ])
+
+print(f"Total: {results.get_count()}")
+for result in results:
+    print(f"{result['title']} (score: {result['@search.score']})")</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+    <pre><code>// dotnet add package Azure.Search.Documents
+using Azure;
+using Azure.Search.Documents;
+using Azure.Search.Documents.Models;
+
+var client = new SearchClient(
+    new Uri($"https://{serviceName}.search.windows.net"),
+    "memphis-311-index",
+    new AzureKeyCredential(apiKey));
+
+// Simple search with filter
+var options = new SearchOptions
+{
+    Filter = "category eq 'infrastructure'",
+    Size = 10,
+    IncludeTotalCount = true,
+    Select = { "id", "title", "content", "category" },
+    SearchFields = { "title", "content" },
+    QueryType = SearchQueryType.Semantic,
+    SemanticSearch = new SemanticSearchOptions
+    {
+        SemanticConfigurationName = "my-semantic-config",
+        QueryCaption = new QueryCaption(QueryCaptionType.Extractive),
+        QueryAnswer = new QueryAnswer(QueryAnswerType.Extractive)
+    }
+};
+
+SearchResults&lt;SearchDocument&gt; results =
+    client.Search&lt;SearchDocument&gt;("pothole repair on Beale Street", options);
+
+Console.WriteLine($"Total: {results.TotalCount}");
+foreach (SearchResult&lt;SearchDocument&gt; result in results.GetResults())
+{
+    Console.WriteLine($"{result.Document["title"]} (score: {result.Score})");
+}</code></pre>
+  </div>
+  <div class="code-panel" data-lang="curl" role="tabpanel"><span class="code-print-label" aria-hidden="true">cURL</span>
+    <pre><code>POST {endpoint}/indexes/memphis-311-index/docs/search?api-version=2024-07-01
+Content-Type: application/json
+api-key: {key}
+
+{
+  "search": "pothole repair on Beale Street",
+  "searchFields": "title,content",
+  "select": "id,title,content,category",
+  "filter": "category eq 'infrastructure'",
+  "top": 10,
+  "count": true,
+  "queryType": "semantic",
+  "semanticConfiguration": "my-semantic-config",
+  "captions": "extractive|highlight-true",
+  "answers": "extractive|count-3",
+  "vectorQueries": [
+    {
+      "kind": "vector",
+      "vector": [0.012, -0.045, 0.033, "...1536 floats"],
+      "fields": "contentVector",
+      "k": 50,
+      "exhaustive": false
+    }
+  ]
+}</code></pre>
+  </div>
+</div>
+    <div class="key-fact"><strong>Flow:</strong> Keyword BM25 + Vector ANN run in parallel &rarr; RRF merges results &rarr; Semantic re-ranks top 50 &rarr; captions/answers extracted.</div>
+    <div class="tip"><strong>Exam Tip:</strong> <code>vectorQueries[].k</code> controls how many vector neighbors to retrieve. <code>$top</code> controls final results returned. They are independent.</div>
+    <div class="warning"><strong>Remember:</strong> You must generate the embedding vector client-side (e.g., via Azure OpenAI Embeddings API) before sending the search request. The search service does NOT generate embeddings at query time unless you configure an integrated vectorizer.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- EXAM GOTCHAS                                                  -->
+<!-- ============================================================ -->
+<div class="card" style="margin-bottom: 1.5rem;">
+  <h2>Exam Gotchas &amp; Decision Guide <span class="badge badge-red">Must Know</span></h2>
+  <div class="grid grid-2">
+    <div>
+      <div class="key-fact"><strong>fieldMappings vs outputFieldMappings:</strong> <code>fieldMappings</code> run BEFORE enrichment (raw source &rarr; index). <code>outputFieldMappings</code> run AFTER enrichment (enrichment tree &rarr; index). This is the #1 skillset question.</div>
+      <div class="key-fact"><strong>queryType values:</strong> <code>simple</code> (default), <code>full</code> (Lucene), <code>semantic</code>. You can combine <code>semantic</code> with either simple or full.</div>
+      <div class="key-fact"><strong>Scoring profiles:</strong> Custom relevance boosting using functions (freshness, magnitude, distance, tag). Applied BEFORE semantic re-ranking.</div>
+      <div class="key-fact"><strong>$filter string comparison:</strong> Filters use exact match for <code>Edm.String</code> &mdash; no full-text analysis. Use <code>search.ismatch()</code> in a filter for analyzed text matching.</div>
+    </div>
+    <div>
+      <div class="key-fact"><strong>Indexer field mappings for Blob:</strong> <code>metadata_storage_path</code> (Base64-encoded URI) is commonly used as the document key. Use <code>base64Encode</code> mapping function.</div>
+      <div class="key-fact"><strong>Incremental enrichment:</strong> Enable caching by attaching a storage account to the skillset. Caches enrichment tree so unchanged documents skip re-processing.</div>
+      <div class="key-fact"><strong>Private endpoints:</strong> Use shared private link for indexer connections to data sources behind firewalls. Max indexer run time extends to 24 hours with private endpoints.</div>
+      <div class="key-fact"><strong>CORS:</strong> Must be configured on the search service to allow browser-based JavaScript queries. Set <code>allowedOrigins</code> in service configuration.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- NAVIGATION                                                    -->
+<!-- ============================================================ -->
+<div class="nav-links">
+  <a href="index.html">&larr; All Sheets</a>
+  <a href="00-exam-overview.html">00 Exam Overview</a>
+  <a href="01-azure-openai.html">01 Azure OpenAI</a>
+  <a href="02-computer-vision.html">02 Computer Vision</a>
+  <a href="03-nlp-speech.html">03 NLP &amp; Speech</a>
+  <a href="04-search-knowledge.html"><strong>04 AI Search</strong></a>
+  <a href="05-responsible-ai.html">05 Responsible AI</a>
+  <a href="06-foundry-agents.html">06 Foundry &amp; Agents</a>
+  <a href="07-sdk-reference.html">07 SDK Reference</a>
+  <a href="08-portal-workflows.html">08 Portal Workflows</a>
+</div>
+
+<script>
+(function() {
+  var KEY = 'cram-lang-pref';
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch(e) {}
+
+  function activate(lang) {
+    document.querySelectorAll('.code-tabs').forEach(function(c) {
+      var langs = c.getAttribute('data-languages').split(',');
+      var target = langs.indexOf(lang) !== -1 ? lang : langs[0];
+      c.querySelectorAll('.code-tab').forEach(function(t) {
+        t.classList.toggle('active', t.getAttribute('data-lang') === target);
+        t.setAttribute('aria-selected', t.getAttribute('data-lang') === target);
+      });
+      c.querySelectorAll('.code-panel').forEach(function(p) {
+        p.classList.toggle('active', p.getAttribute('data-lang') === target);
+      });
+    });
+    try { localStorage.setItem(KEY, lang); } catch(e) {}
+  }
+
+  document.querySelectorAll('.code-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() { activate(tab.getAttribute('data-lang')); });
+  });
+
+  if (saved) { activate(saved); }
+})();
+</script>
+
+</body>
+</html>

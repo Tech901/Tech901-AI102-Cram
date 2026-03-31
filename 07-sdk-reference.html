@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDK Quick Reference & Code Patterns | AI-102 Cram Sheet</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #232733; --border: #2e3345;
+    --text: #e4e6ef; --text-dim: #8b8fa3;
+    --amber: #f5a623; --amber-dim: rgba(245,166,35,0.15);
+    --green: #34d399; --green-dim: rgba(52,211,153,0.15);
+    --blue: #60a5fa; --blue-dim: rgba(96,165,250,0.15);
+    --red: #f87171; --red-dim: rgba(248,113,113,0.15);
+    --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.15);
+    --cyan: #22d3ee; --cyan-dim: rgba(34,211,238,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--blue); }
+  .header h1 { font-size: 2.2rem; color: var(--blue); margin-bottom: 0.3rem; }
+  .header .subtitle { color: var(--text-dim); font-size: 1rem; }
+  .grid { display: grid; gap: 1.5rem; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+  .card:hover { border-color: var(--blue); }
+  .card h2 { font-size: 1.1rem; margin-bottom: 1rem; }
+  .card h3 { font-size: 0.95rem; color: var(--blue); margin: 1rem 0 0.5rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--blue); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+  tr:hover td { background: var(--surface2); }
+  code { background: var(--surface2); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.8rem; color: var(--cyan); }
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.5; margin: 0.75rem 0; }
+  pre code { background: none; padding: 0; }
+  .key-fact { background: var(--surface2); border-left: 3px solid var(--blue); padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0; font-size: 0.85rem; }
+  .key-fact strong { color: var(--blue); }
+  .tip { background: var(--green-dim); border: 1px solid rgba(52,211,153,0.3); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; }
+  .tip strong { color: var(--green); }
+  .nav-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .nav-links a { color: var(--blue); text-decoration: none; font-size: 0.8rem; padding: 0.3rem 0.8rem; border: 1px solid var(--blue); border-radius: 6px; }
+  .nav-links a:hover { background: var(--blue-dim); }
+  /* ── Code Language Tabs ── */
+  .code-tabs { margin: 0.75rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .code-tab-bar { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0; gap: 0; }
+  .code-tab { background: none; border: none; color: var(--text-dim); font-family: inherit; font-size: 0.75rem; font-weight: 600; padding: 0.5rem 1rem; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; text-transform: uppercase; letter-spacing: 0.04em; }
+  .code-tab:hover { color: var(--text); }
+  .code-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+  .code-panel { display: none; }
+  .code-panel.active { display: block; }
+  .code-tabs pre { margin: 0; border: none; border-radius: 0; }
+  .code-print-label { display: none; }
+  @media print { body { background: #fff; color: #000; } .card { border: 1px solid #ccc; break-inside: avoid; } th { color: #333; } .header h1 { color: #333; } .code-tab-bar { display: none; } .code-panel { display: block !important; } .code-print-label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #666; padding: 0.25rem 1rem 0; } .code-tabs { border: 1px solid #ccc; } }
+  @media (max-width: 480px) { .code-tab { padding: 0.4rem 0.6rem; font-size: 0.65rem; } }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- HEADER                                                        -->
+<!-- ============================================================ -->
+<div class="header">
+  <h1>07 &mdash; SDK Quick Reference &amp; Code Patterns</h1>
+  <div class="subtitle">AI-102 Exam Cram &bull; Every Azure AI SDK package, auth pattern, endpoint URL, and working code snippet</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PACKAGE REFERENCE TABLE                                       -->
+<!-- ============================================================ -->
+<div class="card" style="margin-bottom:1.5rem;">
+  <h2>Package Reference Table</h2>
+<div class="code-tabs" data-languages="python,csharp">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+  <table>
+    <thead>
+      <tr><th>Service</th><th>Package (pip install)</th><th>Import</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Azure OpenAI</td><td><code>openai</code></td><td><code>from openai import AzureOpenAI</code></td></tr>
+      <tr><td>AI Vision</td><td><code>azure-ai-vision-imageanalysis</code></td><td><code>from azure.ai.vision.imageanalysis import ImageAnalysisClient</code></td></tr>
+      <tr><td>Custom Vision Training</td><td><code>azure-cognitiveservices-vision-customvision</code></td><td><code>from azure.cognitiveservices.vision.customvision.training import CustomVisionTrainingClient</code></td></tr>
+      <tr><td>Custom Vision Prediction</td><td><code>azure-cognitiveservices-vision-customvision</code></td><td><code>from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient</code></td></tr>
+      <tr><td>Text Analytics</td><td><code>azure-ai-textanalytics</code></td><td><code>from azure.ai.textanalytics import TextAnalyticsClient</code></td></tr>
+      <tr><td>Document Intelligence</td><td><code>azure-ai-formrecognizer</code></td><td><code>from azure.ai.formrecognizer import DocumentAnalysisClient</code></td></tr>
+      <tr><td>Speech</td><td><code>azure-cognitiveservices-speech</code></td><td><code>import azure.cognitiveservices.speech as speechsdk</code></td></tr>
+      <tr><td>AI Search</td><td><code>azure-search-documents</code></td><td><code>from azure.search.documents import SearchClient</code></td></tr>
+      <tr><td>Content Safety</td><td><code>azure-ai-contentsafety</code></td><td><code>from azure.ai.contentsafety import ContentSafetyClient</code></td></tr>
+      <tr><td>Translator</td><td><code>azure-ai-translation-text</code></td><td><code>from azure.ai.translation.text import TextTranslationClient</code></td></tr>
+      <tr><td>CLU</td><td><code>azure-ai-language-conversations</code></td><td><code>from azure.ai.language.conversations import ConversationAnalysisClient</code></td></tr>
+      <tr><td>QnA</td><td><code>azure-ai-language-questionanswering</code></td><td><code>from azure.ai.language.questionanswering import QuestionAnsweringClient</code></td></tr>
+      <tr><td>AI Projects (Foundry)</td><td><code>azure-ai-projects</code></td><td><code>from azure.ai.projects import AIProjectClient</code></td></tr>
+      <tr><td>Identity</td><td><code>azure-identity</code></td><td><code>from azure.identity import DefaultAzureCredential</code></td></tr>
+      <tr><td>Core</td><td><code>azure-core</code></td><td><code>from azure.core.credentials import AzureKeyCredential</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+  <table>
+    <thead>
+      <tr><th>Service</th><th>Package (dotnet add package)</th><th>Using</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Azure OpenAI</td><td><code>Azure.AI.OpenAI</code></td><td><code>using Azure.AI.OpenAI;</code></td></tr>
+      <tr><td>AI Vision</td><td><code>Azure.AI.Vision.ImageAnalysis</code></td><td><code>using Azure.AI.Vision.ImageAnalysis;</code></td></tr>
+      <tr><td>Text Analytics</td><td><code>Azure.AI.TextAnalytics</code></td><td><code>using Azure.AI.TextAnalytics;</code></td></tr>
+      <tr><td>Document Intelligence</td><td><code>Azure.AI.FormRecognizer</code></td><td><code>using Azure.AI.FormRecognizer.DocumentAnalysis;</code></td></tr>
+      <tr><td>Speech</td><td><code>Microsoft.CognitiveServices.Speech</code></td><td><code>using Microsoft.CognitiveServices.Speech;</code></td></tr>
+      <tr><td>AI Search</td><td><code>Azure.Search.Documents</code></td><td><code>using Azure.Search.Documents;</code></td></tr>
+      <tr><td>Content Safety</td><td><code>Azure.AI.ContentSafety</code></td><td><code>using Azure.AI.ContentSafety;</code></td></tr>
+      <tr><td>Translator</td><td><code>Azure.AI.Translation.Text</code></td><td><code>using Azure.AI.Translation.Text;</code></td></tr>
+      <tr><td>CLU</td><td><code>Azure.AI.Language.Conversations</code></td><td><code>using Azure.AI.Language.Conversations;</code></td></tr>
+      <tr><td>QnA</td><td><code>Azure.AI.Language.QuestionAnswering</code></td><td><code>using Azure.AI.Language.QuestionAnswering;</code></td></tr>
+      <tr><td>AI Projects (Foundry)</td><td><code>Azure.AI.Projects</code></td><td><code>using Azure.AI.Projects;</code></td></tr>
+      <tr><td>Identity</td><td><code>Azure.Identity</code></td><td><code>using Azure.Identity;</code></td></tr>
+      <tr><td>Core</td><td><code>Azure.Core</code></td><td><code>using Azure;</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+  <div class="tip"><strong>Exam Tip:</strong> The exam tests whether you know which package provides which client class. Memorize the mapping between service names and their package names &mdash; especially <code>FormRecognizer</code> (not "DocumentIntelligence") and <code>TextAnalytics</code> (not "Language").</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- AUTHENTICATION PATTERNS + ENDPOINT URLS                       -->
+<!-- ============================================================ -->
+<div class="grid grid-2">
+
+  <div class="card">
+    <h2>Authentication Patterns</h2>
+
+    <h3>1. API Key (AzureKeyCredential)</h3>
+<div class="code-tabs" data-languages="python,csharp">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>from azure.core.credentials import AzureKeyCredential
+
+credential = AzureKeyCredential("your-api-key")
+client = TextAnalyticsClient(
+    endpoint="https://myresource.cognitiveservices.azure.com/",
+    credential=credential
+)</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>using Azure;
+using Azure.AI.TextAnalytics;
+
+var credential = new AzureKeyCredential("your-api-key");
+var client = new TextAnalyticsClient(
+    new Uri("https://myresource.cognitiveservices.azure.com/"),
+    credential
+);</code></pre>
+  </div>
+</div>
+
+    <h3>2. Azure AD (DefaultAzureCredential)</h3>
+<div class="code-tabs" data-languages="python,csharp">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>from azure.identity import DefaultAzureCredential
+
+credential = DefaultAzureCredential()
+client = TextAnalyticsClient(
+    endpoint="https://myresource.cognitiveservices.azure.com/",
+    credential=credential
+)</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>using Azure.Identity;
+using Azure.AI.TextAnalytics;
+
+var credential = new DefaultAzureCredential();
+var client = new TextAnalyticsClient(
+    new Uri("https://myresource.cognitiveservices.azure.com/"),
+    credential
+);</code></pre>
+  </div>
+</div>
+
+    <h3>3. AzureOpenAI Client</h3>
+<div class="code-tabs" data-languages="python,csharp">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>from openai import AzureOpenAI
+
+client = AzureOpenAI(
+    api_key="your-api-key",
+    azure_endpoint="https://myresource.openai.azure.com/",
+    api_version="2024-10-21"
+)</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>using Azure;
+using Azure.AI.OpenAI;
+
+var client = new AzureOpenAIClient(
+    new Uri("https://myresource.openai.azure.com/"),
+    new AzureKeyCredential("your-api-key")
+);</code></pre>
+  </div>
+</div>
+
+    <h3>REST API Headers</h3>
+    <div class="key-fact"><strong>Most AI Services:</strong> <code>Ocp-Apim-Subscription-Key: &lt;key&gt;</code></div>
+    <div class="key-fact"><strong>Azure OpenAI:</strong> <code>api-key: &lt;key&gt;</code></div>
+    <div class="tip"><strong>Exam Tip:</strong> The header name difference is a common exam question. OpenAI uses <code>api-key</code>; all other Cognitive Services use <code>Ocp-Apim-Subscription-Key</code>.</div>
+  </div>
+
+  <div class="card">
+    <h2>Endpoint URL Patterns</h2>
+    <table>
+      <thead>
+        <tr><th>Service</th><th>URL Pattern</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Azure OpenAI</td><td><code>https://{resource}.openai.azure.com/</code></td></tr>
+        <tr><td>AI Vision</td><td><code>https://{resource}.cognitiveservices.azure.com/</code></td></tr>
+        <tr><td>Language (Text Analytics, CLU, QnA)</td><td><code>https://{resource}.cognitiveservices.azure.com/</code></td></tr>
+        <tr><td>Speech (STT)</td><td><code>wss://{region}.stt.speech.microsoft.com/</code></td></tr>
+        <tr><td>Translator</td><td><code>https://api.cognitive.microsofttranslator.com/</code></td></tr>
+        <tr><td>AI Search</td><td><code>https://{service}.search.windows.net/</code></td></tr>
+        <tr><td>Document Intelligence</td><td><code>https://{resource}.cognitiveservices.azure.com/</code></td></tr>
+        <tr><td>Content Safety</td><td><code>https://{resource}.cognitiveservices.azure.com/</code></td></tr>
+      </tbody>
+    </table>
+    <div class="key-fact"><strong>Pattern to remember:</strong> Most services use <code>.cognitiveservices.azure.com</code>. The exceptions are OpenAI (<code>.openai.azure.com</code>), Translator (global endpoint), AI Search (<code>.search.windows.net</code>), and Speech (region-based websocket).</div>
+    <div class="key-fact"><strong>Multi-service resource:</strong> A single Azure AI Services resource provides one <code>.cognitiveservices.azure.com</code> endpoint for Vision, Language, Speech, and Content Safety. One key works across all of them.</div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- CODE PATTERNS: OPENAI + TEXT ANALYTICS                        -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top:1.5rem;">
+
+  <div class="card">
+    <h2>Azure OpenAI &mdash; Chat Completion</h2>
+<div class="code-tabs" data-languages="python,csharp,curl">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+    <button class="code-tab" data-lang="curl" role="tab">cURL</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>from openai import AzureOpenAI
+
+client = AzureOpenAI(
+    azure_endpoint=endpoint,
+    api_key=key,
+    api_version="2024-10-21"
+)
+
+response = client.chat.completions.create(
+    model="gpt-4o",  # deployment name
+    messages=[
+        {"role": "system", "content": "You are helpful."},
+        {"role": "user", "content": "Hello"}
+    ],
+    temperature=0.7,
+    max_tokens=800
+)
+print(response.choices[0].message.content)</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>using Azure;
+using Azure.AI.OpenAI;
+using OpenAI.Chat;
+
+var azureClient = new AzureOpenAIClient(
+    new Uri(endpoint),
+    new AzureKeyCredential(key)
+);
+var chatClient = azureClient.GetChatClient("gpt-4o");
+
+ChatCompletion response = await chatClient
+    .CompleteChatAsync(
+        new ChatMessage[]
+        {
+            new SystemChatMessage("You are helpful."),
+            new UserChatMessage("Hello")
+        },
+        new ChatCompletionOptions
+        {
+            Temperature = 0.7f,
+            MaxOutputTokenCount = 800
+        }
+    );
+
+Console.WriteLine(response.Content[0].Text);</code></pre>
+  </div>
+  <div class="code-panel" data-lang="curl" role="tabpanel"><span class="code-print-label" aria-hidden="true">cURL</span>
+<pre><code>curl -X POST "{endpoint}/openai/deployments/gpt-4o/chat/completions?api-version=2024-10-21" \
+  -H "api-key: {key}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messages": [
+      {"role": "system", "content": "You are helpful."},
+      {"role": "user", "content": "Hello"}
+    ],
+    "temperature": 0.7,
+    "max_tokens": 800
+  }'</code></pre>
+  </div>
+</div>
+
+    <h3>Azure OpenAI &mdash; Embeddings</h3>
+<div class="code-tabs" data-languages="python,csharp,curl">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+    <button class="code-tab" data-lang="curl" role="tab">cURL</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>response = client.embeddings.create(
+    model="text-embedding-3-small",
+    input=["Hello world"]
+)
+vector = response.data[0].embedding  # list of floats</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>using OpenAI.Embeddings;
+
+var embeddingClient = azureClient
+    .GetEmbeddingClient("text-embedding-3-small");
+
+var result = await embeddingClient
+    .GenerateEmbeddingAsync("Hello world");
+ReadOnlyMemory&lt;float&gt; vector = result.Value.ToFloats();</code></pre>
+  </div>
+  <div class="code-panel" data-lang="curl" role="tabpanel"><span class="code-print-label" aria-hidden="true">cURL</span>
+<pre><code>curl -X POST "{endpoint}/openai/deployments/text-embedding-3-small/embeddings?api-version=2024-10-21" \
+  -H "api-key: {key}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "input": ["Hello world"]
+  }'</code></pre>
+  </div>
+</div>
+
+    <div class="key-fact"><strong>model parameter:</strong> In Azure OpenAI, <code>model</code> refers to the <em>deployment name</em>, not the model ID. You set the deployment name when deploying the model in Azure AI Foundry.</div>
+  </div>
+
+  <div class="card">
+    <h2>Text Analytics &mdash; Sentiment Analysis</h2>
+<div class="code-tabs" data-languages="python,csharp,curl">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+    <button class="code-tab" data-lang="curl" role="tab">cURL</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>from azure.ai.textanalytics import TextAnalyticsClient
+from azure.core.credentials import AzureKeyCredential
+
+client = TextAnalyticsClient(endpoint, AzureKeyCredential(key))
+
+result = client.analyze_sentiment(["I love this product!"])
+print(result[0].sentiment)           # positive
+print(result[0].confidence_scores)   # pos, neutral, neg</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>using Azure;
+using Azure.AI.TextAnalytics;
+
+var client = new TextAnalyticsClient(
+    new Uri(endpoint), new AzureKeyCredential(key));
+
+DocumentSentiment result = await client
+    .AnalyzeSentimentAsync("I love this product!");
+Console.WriteLine(result.Sentiment);          // Positive
+Console.WriteLine(result.ConfidenceScores);   // Pos, Neutral, Neg</code></pre>
+  </div>
+  <div class="code-panel" data-lang="curl" role="tabpanel"><span class="code-print-label" aria-hidden="true">cURL</span>
+<pre><code>curl -X POST "{endpoint}/text/analytics/v3.1/sentiment" \
+  -H "Ocp-Apim-Subscription-Key: {key}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "documents": [
+      {"id": "1", "language": "en", "text": "I love this product!"}
+    ]
+  }'</code></pre>
+  </div>
+</div>
+
+    <h3>Text Analytics &mdash; PII Detection</h3>
+<div class="code-tabs" data-languages="python,csharp,curl">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+    <button class="code-tab" data-lang="curl" role="tab">cURL</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>result = client.recognize_pii_entities(
+    ["My SSN is 123-45-6789"]
+)
+for entity in result[0].entities:
+    print(entity.text, entity.category,
+          entity.confidence_score)
+print(result[0].redacted_text)
+# "My SSN is ***********"</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>PiiEntityCollection result = await client
+    .RecognizePiiEntitiesAsync("My SSN is 123-45-6789");
+
+foreach (var entity in result)
+{
+    Console.WriteLine($"{entity.Text} {entity.Category} " +
+        $"{entity.ConfidenceScore}");
+}
+Console.WriteLine(result.RedactedText);
+// "My SSN is ***********"</code></pre>
+  </div>
+  <div class="code-panel" data-lang="curl" role="tabpanel"><span class="code-print-label" aria-hidden="true">cURL</span>
+<pre><code>curl -X POST "{endpoint}/text/analytics/v3.1/entities/recognition/pii" \
+  -H "Ocp-Apim-Subscription-Key: {key}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "documents": [
+      {"id": "1", "language": "en", "text": "My SSN is 123-45-6789"}
+    ]
+  }'</code></pre>
+  </div>
+</div>
+
+    <h3>Text Analytics &mdash; Entity Recognition</h3>
+<div class="code-tabs" data-languages="python,csharp,curl">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+    <button class="code-tab" data-lang="curl" role="tab">cURL</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>result = client.recognize_entities(
+    ["Microsoft was founded in Redmond"]
+)
+for entity in result[0].entities:
+    print(entity.text, entity.category,
+          entity.subcategory)</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>CategorizedEntityCollection result = await client
+    .RecognizeEntitiesAsync(
+        "Microsoft was founded in Redmond");
+
+foreach (var entity in result)
+{
+    Console.WriteLine($"{entity.Text} {entity.Category} " +
+        $"{entity.SubCategory}");
+}</code></pre>
+  </div>
+  <div class="code-panel" data-lang="curl" role="tabpanel"><span class="code-print-label" aria-hidden="true">cURL</span>
+<pre><code>curl -X POST "{endpoint}/text/analytics/v3.1/entities/recognition/general" \
+  -H "Ocp-Apim-Subscription-Key: {key}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "documents": [
+      {"id": "1", "language": "en", "text": "Microsoft was founded in Redmond"}
+    ]
+  }'</code></pre>
+  </div>
+</div>
+
+    <div class="key-fact"><strong>Batch operations:</strong> All Text Analytics methods accept a list of documents. Results return in the same order. Each document can be up to 5,120 characters; batch limit is 10 documents per call (25 for sentiment).</div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- CODE PATTERNS: CLU + QnA                                      -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top:1.5rem;">
+
+  <div class="card">
+    <h2>CLU &mdash; Analyze Conversation</h2>
+<div class="code-tabs" data-languages="python,csharp">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>from azure.ai.language.conversations import (
+    ConversationAnalysisClient
+)
+from azure.core.credentials import AzureKeyCredential
+
+client = ConversationAnalysisClient(
+    endpoint, AzureKeyCredential(key)
+)
+
+result = client.analyze_conversation(
+    task={
+        "kind": "Conversation",
+        "analysisInput": {
+            "conversationItem": {
+                "id": "1",
+                "participantId": "1",
+                "text": "Turn on the lights"
+            }
+        },
+        "parameters": {
+            "projectName": "myProject",
+            "deploymentName": "production"
+        }
+    }
+)
+
+prediction = result["result"]["prediction"]
+top_intent = prediction["topIntent"]
+confidence = prediction["intents"][0]["confidenceScore"]
+
+for entity in prediction["entities"]:
+    print(entity["category"], entity["text"])</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>using Azure;
+using Azure.AI.Language.Conversations;
+using System.Text.Json;
+
+var client = new ConversationAnalysisClient(
+    new Uri(endpoint), new AzureKeyCredential(key));
+
+var data = new
+{
+    kind = "Conversation",
+    analysisInput = new
+    {
+        conversationItem = new
+        {
+            id = "1",
+            participantId = "1",
+            text = "Turn on the lights"
+        }
+    },
+    parameters = new
+    {
+        projectName = "myProject",
+        deploymentName = "production"
+    }
+};
+
+Response&lt;BinaryData&gt; response = await client
+    .AnalyzeConversationAsync(
+        RequestContent.Create(BinaryData
+            .FromObjectAsJson(data)));
+
+using var doc = JsonDocument.Parse(
+    response.Value.ToMemory());
+var prediction = doc.RootElement
+    .GetProperty("result")
+    .GetProperty("prediction");
+string topIntent = prediction
+    .GetProperty("topIntent").GetString();
+
+foreach (var entity in prediction
+    .GetProperty("entities").EnumerateArray())
+{
+    Console.WriteLine(
+        $"{entity.GetProperty("category")} " +
+        $"{entity.GetProperty("text")}");
+}</code></pre>
+  </div>
+</div>
+
+    <div class="key-fact"><strong>CLU task structure:</strong> The request must include <code>kind</code>, <code>analysisInput.conversationItem</code> (with id, participantId, text), and <code>parameters</code> (projectName, deploymentName). This nested dict structure is exam-tested.</div>
+  </div>
+
+  <div class="card">
+    <h2>Question Answering</h2>
+<div class="code-tabs" data-languages="python,csharp">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>from azure.ai.language.questionanswering import (
+    QuestionAnsweringClient
+)
+from azure.core.credentials import AzureKeyCredential
+
+client = QuestionAnsweringClient(
+    endpoint, AzureKeyCredential(key)
+)
+
+output = client.get_answers(
+    question="What is Azure?",
+    project_name="myKB",
+    deployment_name="production"
+)
+
+for answer in output.answers:
+    print(answer.answer)
+    print(answer.confidence)
+    print(answer.source)        # source document</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>using Azure;
+using Azure.AI.Language.QuestionAnswering;
+
+var client = new QuestionAnsweringClient(
+    new Uri(endpoint), new AzureKeyCredential(key));
+
+QuestionAnsweringProject project =
+    new("myKB", "production");
+
+Response&lt;AnswersResult&gt; response = await client
+    .GetAnswersAsync("What is Azure?", project);
+
+foreach (var answer in response.Value.Answers)
+{
+    Console.WriteLine(answer.Answer);
+    Console.WriteLine(answer.Confidence);
+    Console.WriteLine(answer.Source);
+}</code></pre>
+  </div>
+</div>
+
+    <div class="key-fact"><strong>QnA vs. CLU:</strong> Question Answering returns <em>answers</em> from a knowledge base. CLU returns <em>intents</em> and <em>entities</em> from utterances. Both use the Language resource but different client classes.</div>
+
+    <h3>Image Analysis</h3>
+<div class="code-tabs" data-languages="python,csharp">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>from azure.ai.vision.imageanalysis import (
+    ImageAnalysisClient
+)
+from azure.ai.vision.imageanalysis.models import (
+    VisualFeatures
+)
+from azure.core.credentials import AzureKeyCredential
+
+client = ImageAnalysisClient(
+    endpoint, AzureKeyCredential(key)
+)
+
+result = client.analyze_from_url(
+    image_url,
+    visual_features=[
+        VisualFeatures.CAPTION,
+        VisualFeatures.TAGS,
+        VisualFeatures.READ
+    ]
+)
+
+print(result.caption.text, result.caption.confidence)
+for tag in result.tags.list:
+    print(tag.name, tag.confidence)
+for block in result.read.blocks:
+    for line in block.lines:
+        print(line.text)</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>using Azure;
+using Azure.AI.Vision.ImageAnalysis;
+
+var client = new ImageAnalysisClient(
+    new Uri(endpoint), new AzureKeyCredential(key));
+
+ImageAnalysisResult result = await client
+    .AnalyzeAsync(
+        new Uri(imageUrl),
+        VisualFeatures.Caption |
+        VisualFeatures.Tags |
+        VisualFeatures.Read);
+
+Console.WriteLine(
+    $"{result.Caption.Text} " +
+    $"{result.Caption.Confidence}");
+
+foreach (var tag in result.Tags.Values)
+    Console.WriteLine($"{tag.Name} {tag.Confidence}");
+
+foreach (var block in result.Read.Blocks)
+    foreach (var line in block.Lines)
+        Console.WriteLine(line.Text);</code></pre>
+  </div>
+</div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- CODE PATTERNS: DOC INTEL + SPEECH                             -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top:1.5rem;">
+
+  <div class="card">
+    <h2>Document Intelligence</h2>
+<div class="code-tabs" data-languages="python,csharp,curl">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+    <button class="code-tab" data-lang="curl" role="tab">cURL</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>from azure.ai.formrecognizer import (
+    DocumentAnalysisClient
+)
+from azure.core.credentials import AzureKeyCredential
+
+client = DocumentAnalysisClient(
+    endpoint, AzureKeyCredential(key)
+)
+
+poller = client.begin_analyze_document(
+    "prebuilt-invoice",
+    document=open("invoice.pdf", "rb")
+)
+result = poller.result()
+
+for doc in result.documents:
+    print(doc.doc_type)
+    for name, field in doc.fields.items():
+        print(name, field.value, field.confidence)</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>using Azure;
+using Azure.AI.FormRecognizer.DocumentAnalysis;
+
+var client = new DocumentAnalysisClient(
+    new Uri(endpoint), new AzureKeyCredential(key));
+
+using var stream = File.OpenRead("invoice.pdf");
+var operation = await client
+    .AnalyzeDocumentAsync(
+        WaitUntil.Completed,
+        "prebuilt-invoice",
+        stream);
+
+AnalyzeResult result = operation.Value;
+
+foreach (var doc in result.Documents)
+{
+    Console.WriteLine(doc.DocumentType);
+    foreach (var (name, field) in doc.Fields)
+    {
+        Console.WriteLine(
+            $"{name} {field.Content} " +
+            $"{field.Confidence}");
+    }
+}</code></pre>
+  </div>
+  <div class="code-panel" data-lang="curl" role="tabpanel"><span class="code-print-label" aria-hidden="true">cURL</span>
+<pre><code>curl -X POST "{endpoint}/formrecognizer/documentModels/prebuilt-invoice:analyze?api-version=2024-11-30" \
+  -H "Ocp-Apim-Subscription-Key: {key}" \
+  -H "Content-Type: application/pdf" \
+  --data-binary @invoice.pdf</code></pre>
+  </div>
+</div>
+
+    <div class="key-fact"><strong>Prebuilt models:</strong> <code>prebuilt-invoice</code>, <code>prebuilt-receipt</code>, <code>prebuilt-idDocument</code>, <code>prebuilt-businessCard</code>, <code>prebuilt-layout</code>, <code>prebuilt-read</code>. The model ID string is the first argument to <code>begin_analyze_document()</code>.</div>
+    <div class="key-fact"><strong>Long-running operation:</strong> <code>begin_analyze_document()</code> returns a poller. Call <code>poller.result()</code> to block until complete. Same pattern used for custom model training.</div>
+  </div>
+
+  <div class="card">
+    <h2>Speech-to-Text</h2>
+<div class="code-tabs" data-languages="python,csharp">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>import azure.cognitiveservices.speech as speechsdk
+
+config = speechsdk.SpeechConfig(
+    subscription=key, region=region
+)
+
+# Optional: set source language
+config.speech_recognition_language = "en-US"
+
+recognizer = speechsdk.SpeechRecognizer(
+    speech_config=config
+)
+result = recognizer.recognize_once()
+
+if result.reason == speechsdk.ResultReason.RecognizedSpeech:
+    print(result.text)
+elif result.reason == speechsdk.ResultReason.NoMatch:
+    print("No speech recognized")</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>using Microsoft.CognitiveServices.Speech;
+
+var config = SpeechConfig.FromSubscription(key, region);
+
+// Optional: set source language
+config.SpeechRecognitionLanguage = "en-US";
+
+using var recognizer = new SpeechRecognizer(config);
+var result = await recognizer.RecognizeOnceAsync();
+
+if (result.Reason == ResultReason.RecognizedSpeech)
+    Console.WriteLine(result.Text);
+else if (result.Reason == ResultReason.NoMatch)
+    Console.WriteLine("No speech recognized");</code></pre>
+  </div>
+</div>
+
+    <h3>Text-to-Speech</h3>
+<div class="code-tabs" data-languages="python,csharp">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>config = speechsdk.SpeechConfig(
+    subscription=key, region=region
+)
+config.speech_synthesis_voice_name = \
+    "en-US-JennyNeural"
+
+synthesizer = speechsdk.SpeechSynthesizer(
+    speech_config=config
+)
+result = synthesizer.speak_text("Hello world")
+
+if result.reason == \
+        speechsdk.ResultReason.SynthesizingAudioCompleted:
+    print("Speech synthesized successfully")</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>var config = SpeechConfig.FromSubscription(key, region);
+config.SpeechSynthesisVoiceName = "en-US-JennyNeural";
+
+using var synthesizer = new SpeechSynthesizer(config);
+var result = await synthesizer.SpeakTextAsync(
+    "Hello world");
+
+if (result.Reason ==
+    ResultReason.SynthesizingAudioCompleted)
+{
+    Console.WriteLine(
+        "Speech synthesized successfully");
+}</code></pre>
+  </div>
+</div>
+
+    <div class="key-fact"><strong>SpeechConfig auth:</strong> Uses <code>subscription</code> + <code>region</code> (not endpoint URL). This is different from all other Azure AI SDK clients which use endpoint + credential.</div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- CODE PATTERNS: SEARCH + CONTENT SAFETY                        -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top:1.5rem;">
+
+  <div class="card">
+    <h2>AI Search</h2>
+<div class="code-tabs" data-languages="python,csharp,curl">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+    <button class="code-tab" data-lang="curl" role="tab">cURL</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>from azure.search.documents import SearchClient
+from azure.core.credentials import AzureKeyCredential
+
+client = SearchClient(
+    endpoint,
+    "index-name",
+    AzureKeyCredential(key)
+)
+
+results = client.search(
+    search_text="luxury hotel",
+    filter="Rating gt 4",
+    select=["HotelName", "Rating"],
+    top=10,
+    order_by=["Rating desc"]
+)
+
+for r in results:
+    print(r["HotelName"], r["@search.score"])</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>using Azure;
+using Azure.Search.Documents;
+
+var client = new SearchClient(
+    new Uri(endpoint),
+    "index-name",
+    new AzureKeyCredential(key)
+);
+
+var options = new SearchOptions
+{
+    Filter = "Rating gt 4",
+    Select = { "HotelName", "Rating" },
+    Size = 10,
+    OrderBy = { "Rating desc" }
+};
+
+SearchResults&lt;SearchDocument&gt; results =
+    await client.SearchAsync&lt;SearchDocument&gt;(
+        "luxury hotel", options);
+
+await foreach (var r in results.GetResultsAsync())
+{
+    Console.WriteLine(
+        $"{r.Document["HotelName"]} " +
+        $"{r.Score}");
+}</code></pre>
+  </div>
+  <div class="code-panel" data-lang="curl" role="tabpanel"><span class="code-print-label" aria-hidden="true">cURL</span>
+<pre><code>curl -X POST "{endpoint}/indexes/index-name/docs/search?api-version=2024-07-01" \
+  -H "api-key: {key}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "search": "luxury hotel",
+    "filter": "Rating gt 4",
+    "select": "HotelName,Rating",
+    "top": 10,
+    "orderby": "Rating desc"
+  }'</code></pre>
+  </div>
+</div>
+
+    <div class="key-fact"><strong>SearchClient constructor:</strong> Takes 3 positional args: endpoint, index name, credential. The index name is the second arg &mdash; not a keyword on the search call.</div>
+    <div class="key-fact"><strong>OData filters:</strong> Use <code>filter=</code> for exact/range queries: <code>Rating gt 4</code>, <code>Location eq 'Memphis'</code>, <code>Tags/any(t: t eq 'wifi')</code>. Filterable fields must be marked <code>filterable</code> in the index schema.</div>
+  </div>
+
+  <div class="card">
+    <h2>Content Safety</h2>
+<div class="code-tabs" data-languages="python,csharp,curl">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+    <button class="code-tab" data-lang="curl" role="tab">cURL</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>from azure.ai.contentsafety import (
+    ContentSafetyClient
+)
+from azure.ai.contentsafety.models import (
+    AnalyzeTextOptions
+)
+from azure.core.credentials import AzureKeyCredential
+
+client = ContentSafetyClient(
+    endpoint, AzureKeyCredential(key)
+)
+
+response = client.analyze_text(
+    AnalyzeTextOptions(text="Content to check")
+)
+
+for category in response.categories_analysis:
+    print(category.category, category.severity)
+    # Categories: Hate, SelfHarm, Sexual, Violence
+    # Severity: 0 (safe) to 6 (severe)</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>using Azure;
+using Azure.AI.ContentSafety;
+
+var client = new ContentSafetyClient(
+    new Uri(endpoint), new AzureKeyCredential(key));
+
+var response = await client.AnalyzeTextAsync(
+    new AnalyzeTextOptions("Content to check"));
+
+foreach (var category in
+    response.Value.CategoriesAnalysis)
+{
+    Console.WriteLine(
+        $"{category.Category} {category.Severity}");
+    // Categories: Hate, SelfHarm, Sexual, Violence
+    // Severity: 0 (safe) to 6 (severe)
+}</code></pre>
+  </div>
+  <div class="code-panel" data-lang="curl" role="tabpanel"><span class="code-print-label" aria-hidden="true">cURL</span>
+<pre><code>curl -X POST "{endpoint}/contentsafety/text:analyze?api-version=2024-09-01" \
+  -H "Ocp-Apim-Subscription-Key: {key}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "Content to check"
+  }'</code></pre>
+  </div>
+</div>
+
+    <div class="key-fact"><strong>Four categories:</strong> Hate, SelfHarm, Sexual, Violence. Severity scale is 0, 2, 4, 6 (even numbers only). Set thresholds to block content above a severity level.</div>
+
+    <h3>Translator</h3>
+<div class="code-tabs" data-languages="python,csharp,curl">
+  <div class="code-tab-bar" role="tablist">
+    <button class="code-tab active" data-lang="python" role="tab">Python</button>
+    <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+    <button class="code-tab" data-lang="curl" role="tab">cURL</button>
+  </div>
+  <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+<pre><code>from azure.ai.translation.text import (
+    TextTranslationClient
+)
+from azure.core.credentials import AzureKeyCredential
+
+client = TextTranslationClient(
+    credential=AzureKeyCredential(key),
+    region=region
+)
+
+result = client.translate(
+    body=["Hello world"],
+    to_language=["fr", "es"]
+)
+
+for item in result:
+    for translation in item.translations:
+        print(translation.to, translation.text)
+        # fr: Bonjour le monde
+        # es: Hola mundo</code></pre>
+  </div>
+  <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+<pre><code>using Azure;
+using Azure.AI.Translation.Text;
+
+var client = new TextTranslationClient(
+    new AzureKeyCredential(key), region);
+
+Response&lt;IReadOnlyList&lt;TranslatedTextItem&gt;&gt; result =
+    await client.TranslateAsync(
+        targetLanguages: new[] { "fr", "es" },
+        content: new[] { "Hello world" });
+
+foreach (var item in result.Value)
+{
+    foreach (var translation in item.Translations)
+    {
+        Console.WriteLine(
+            $"{translation.TargetLanguage}: " +
+            $"{translation.Text}");
+        // fr: Bonjour le monde
+        // es: Hola mundo
+    }
+}</code></pre>
+  </div>
+  <div class="code-panel" data-lang="curl" role="tabpanel"><span class="code-print-label" aria-hidden="true">cURL</span>
+<pre><code>curl -X POST "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&amp;to=fr&amp;to=es" \
+  -H "Ocp-Apim-Subscription-Key: {key}" \
+  -H "Ocp-Apim-Subscription-Region: {region}" \
+  -H "Content-Type: application/json" \
+  -d '[
+    {"Text": "Hello world"}
+  ]'</code></pre>
+  </div>
+</div>
+
+    <div class="key-fact"><strong>Translator auth:</strong> Requires both <code>credential</code> and <code>region</code>. Uses the global endpoint by default. For VNET scenarios, use a regional endpoint instead.</div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- RBAC ROLES                                                    -->
+<!-- ============================================================ -->
+<div class="card" style="margin-top:1.5rem;">
+  <h2>Common RBAC Roles for Azure AI Services</h2>
+  <table>
+    <thead>
+      <tr><th>Role</th><th>Access Level</th><th>Exam Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Cognitive Services User</code></td><td>Call APIs (read)</td><td>Most common role for app service principals and developers</td></tr>
+      <tr><td><code>Cognitive Services Contributor</code></td><td>Create/manage resources (no key access)</td><td>Can manage but NOT call APIs &mdash; common exam trap</td></tr>
+      <tr><td><code>Cognitive Services OpenAI User</code></td><td>Call OpenAI APIs</td><td>Scoped to OpenAI only; use for least-privilege access</td></tr>
+      <tr><td><code>Cognitive Services OpenAI Contributor</code></td><td>Fine-tune + deploy models</td><td>Required for model deployment and fine-tuning operations</td></tr>
+      <tr><td><code>Search Index Data Reader</code></td><td>Query search indexes</td><td>Read-only access to index data; cannot modify index schema</td></tr>
+      <tr><td><code>Search Index Data Contributor</code></td><td>Manage index content</td><td>Upload, merge, delete documents; cannot create/delete indexes</td></tr>
+      <tr><td><code>Search Service Contributor</code></td><td>Manage search service</td><td>Full control over service config, indexes, indexers, skillsets</td></tr>
+    </tbody>
+  </table>
+  <div class="tip"><strong>Exam Tip:</strong> "Contributor" roles for Cognitive Services grant management-plane access (create resources, view keys) but do NOT grant data-plane access (calling APIs). To call APIs, you need the "User" role. This is the opposite of what most people expect.</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- NAVIGATION                                                    -->
+<!-- ============================================================ -->
+<div class="nav-links">
+  <a href="index.html">&larr; All Sheets</a>
+  <a href="00-exam-overview.html">00 Exam Overview</a>
+  <a href="01-azure-openai.html">01 Azure OpenAI</a>
+  <a href="02-computer-vision.html">02 Computer Vision</a>
+  <a href="03-nlp-speech.html">03 NLP &amp; Speech</a>
+  <a href="04-search-knowledge.html">04 AI Search</a>
+  <a href="05-responsible-ai.html">05 Responsible AI</a>
+  <a href="06-foundry-agents.html">06 Foundry &amp; Agents</a>
+  <a href="07-sdk-reference.html"><strong>07 SDK Reference</strong></a>
+  <a href="08-portal-workflows.html">08 Portal Workflows</a>
+</div>
+
+<script>
+(function() {
+  var KEY = 'cram-lang-pref';
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch(e) {}
+
+  function activate(lang) {
+    document.querySelectorAll('.code-tabs').forEach(function(c) {
+      var langs = c.getAttribute('data-languages').split(',');
+      var target = langs.indexOf(lang) !== -1 ? lang : langs[0];
+      c.querySelectorAll('.code-tab').forEach(function(t) {
+        t.classList.toggle('active', t.getAttribute('data-lang') === target);
+        t.setAttribute('aria-selected', t.getAttribute('data-lang') === target);
+      });
+      c.querySelectorAll('.code-panel').forEach(function(p) {
+        p.classList.toggle('active', p.getAttribute('data-lang') === target);
+      });
+    });
+    try { localStorage.setItem(KEY, lang); } catch(e) {}
+  }
+
+  document.querySelectorAll('.code-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() { activate(tab.getAttribute('data-lang')); });
+  });
+
+  if (saved) { activate(saved); }
+})();
+</script>
+
+</body>
+</html>

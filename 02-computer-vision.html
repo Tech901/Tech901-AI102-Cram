@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Vision, Document Intelligence & Custom Vision | AI-102 Cram Sheet</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #232733; --border: #2e3345;
+    --text: #e4e6ef; --text-dim: #8b8fa3;
+    --amber: #f5a623; --amber-dim: rgba(245,166,35,0.15);
+    --green: #34d399; --green-dim: rgba(52,211,153,0.15);
+    --blue: #60a5fa; --blue-dim: rgba(96,165,250,0.15);
+    --red: #f87171; --red-dim: rgba(248,113,113,0.15);
+    --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.15);
+    --cyan: #22d3ee; --cyan-dim: rgba(34,211,238,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--green); }
+  .header h1 { font-size: 2.2rem; color: var(--green); margin-bottom: 0.3rem; }
+  .header .subtitle { color: var(--text-dim); font-size: 1rem; }
+  .badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); }
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); }
+  .badge-red { background: var(--red-dim); color: var(--red); }
+  .badge-purple { background: var(--purple-dim); color: var(--purple); }
+  .badge-cyan { background: var(--cyan-dim); color: var(--cyan); }
+  .grid { display: grid; gap: 1.5rem; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+  .card:hover { border-color: var(--green); }
+  .card h2 { font-size: 1.1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+  .card h3 { font-size: 0.95rem; color: var(--green); margin: 1rem 0 0.5rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--green); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  tr:hover td { background: var(--surface2); }
+  code { background: var(--surface2); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.8rem; color: var(--cyan); }
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.5; margin: 0.75rem 0; }
+  pre code { background: none; padding: 0; }
+  .key-fact { background: var(--surface2); border-left: 3px solid var(--green); padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0; font-size: 0.85rem; }
+  .key-fact strong { color: var(--green); }
+  .tip { background: var(--green-dim); border: 1px solid rgba(52,211,153,0.3); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; }
+  .tip strong { color: var(--green); }
+  .warning { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.3); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; }
+  .warning strong { color: var(--red); }
+  .nav-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .nav-links a { color: var(--blue); text-decoration: none; font-size: 0.8rem; padding: 0.3rem 0.8rem; border: 1px solid var(--blue); border-radius: 6px; }
+  .nav-links a:hover { background: var(--blue-dim); }
+  /* ── Code Language Tabs ── */
+  .code-tabs { margin: 0.75rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .code-tab-bar { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0; gap: 0; }
+  .code-tab { background: none; border: none; color: var(--text-dim); font-family: inherit; font-size: 0.75rem; font-weight: 600; padding: 0.5rem 1rem; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; text-transform: uppercase; letter-spacing: 0.04em; }
+  .code-tab:hover { color: var(--text); }
+  .code-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+  .code-panel { display: none; }
+  .code-panel.active { display: block; }
+  .code-tabs pre { margin: 0; border: none; border-radius: 0; }
+  .code-print-label { display: none; }
+  @media print { body { background: #fff; color: #000; } .card { border: 1px solid #ccc; break-inside: avoid; } th { color: #333; } .header h1 { color: #333; } .code-tab-bar { display: none; } .code-panel { display: block !important; } .code-print-label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #666; padding: 0.25rem 1rem 0; } .code-tabs { border: 1px solid #ccc; } }
+  @media (max-width: 480px) { .code-tab { padding: 0.4rem 0.6rem; font-size: 0.65rem; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Computer Vision, Document Intelligence &amp; Custom Vision</h1>
+  <div class="subtitle">AI-102 Cram Sheet &mdash; Domain 4: Implement Computer Vision Solutions &bull; Domain 6.2: Document Intelligence</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- AZURE AI VISION (IMAGE ANALYSIS 4.0)                         -->
+<!-- ============================================================ -->
+<div class="grid grid-2">
+
+  <div class="card">
+    <h2><span class="badge badge-green">Core</span> Azure AI Vision &mdash; Visual Features</h2>
+    <table>
+      <tr><th>Feature</th><th>Parameter</th><th>Description</th></tr>
+      <tr><td style="color:var(--cyan);">Tags</td><td><code>tags</code></td><td>Words related to image content</td></tr>
+      <tr><td style="color:var(--cyan);">Caption</td><td><code>caption</code></td><td>Single sentence description</td></tr>
+      <tr><td style="color:var(--cyan);">Dense Captions</td><td><code>denseCaptions</code></td><td>Captions for up to 10 regions with bounding boxes</td></tr>
+      <tr><td style="color:var(--cyan);">Objects</td><td><code>objects</code></td><td>Object detection with bounding boxes (English only)</td></tr>
+      <tr><td style="color:var(--cyan);">Read (OCR)</td><td><code>read</code></td><td>Printed and handwritten text extraction</td></tr>
+      <tr><td style="color:var(--cyan);">Smart Crops</td><td><code>smartCrops</code></td><td>Crop coordinates preserving area of interest</td></tr>
+      <tr><td style="color:var(--cyan);">People</td><td><code>people</code></td><td>People detection with bounding boxes</td></tr>
+    </table>
+
+    <h3>API Endpoint</h3>
+    <div class="code-tabs" data-languages="python,csharp,curl">
+      <div class="code-tab-bar" role="tablist">
+        <button class="code-tab active" data-lang="python" role="tab">Python</button>
+        <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+        <button class="code-tab" data-lang="curl" role="tab">cURL</button>
+      </div>
+      <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+        <pre><code># pip install azure-ai-vision-imageanalysis
+from azure.ai.vision.imageanalysis import ImageAnalysisClient
+from azure.ai.vision.imageanalysis.models import VisualFeatures
+from azure.core.credentials import AzureKeyCredential
+
+client = ImageAnalysisClient(
+    endpoint=endpoint,
+    credential=AzureKeyCredential(key))
+
+result = client.analyze_from_url(
+    image_url=image_url,
+    visual_features=[VisualFeatures.CAPTION, VisualFeatures.TAGS, VisualFeatures.READ])
+
+print(f"Caption: {result.caption.text}")
+for tag in result.tags.values:
+    print(f"Tag: {tag.name} ({tag.confidence:.0%})")</code></pre>
+      </div>
+      <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+        <pre><code>// dotnet add package Azure.AI.Vision.ImageAnalysis
+using Azure;
+using Azure.AI.Vision.ImageAnalysis;
+
+var client = new ImageAnalysisClient(
+    new Uri(endpoint),
+    new AzureKeyCredential(key));
+
+ImageAnalysisResult result = client.Analyze(
+    new Uri(imageUrl),
+    VisualFeatures.Caption | VisualFeatures.Tags | VisualFeatures.Read);
+
+Console.WriteLine($"Caption: {result.Caption.Text}");
+foreach (var tag in result.Tags.Values)
+    Console.WriteLine($"Tag: {tag.Name} ({tag.Confidence:P})");</code></pre>
+      </div>
+      <div class="code-panel" data-lang="curl" role="tabpanel"><span class="code-print-label" aria-hidden="true">cURL</span>
+        <pre><code>curl -X POST "{endpoint}/computervision/imageanalysis:analyze?api-version=2024-02-01&amp;features=tags,caption,read" \
+  -H "Content-Type: application/json" \
+  -H "Ocp-Apim-Subscription-Key: {key}" \
+  -d '{"url": "https://example.com/image.jpg"}'</code></pre>
+      </div>
+    </div>
+
+    <div class="tip"><strong>Exam Tip:</strong> The <code>features</code> query parameter accepts a comma-separated list. You can request multiple features in a single call.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="badge badge-blue">Limits</span> AI Vision &mdash; Image Requirements &amp; OCR</h2>
+
+    <h3>Supported Formats</h3>
+    <div class="key-fact"><strong>Formats:</strong> JPEG, PNG, GIF, BMP, WEBP, ICO, TIFF, MPO</div>
+
+    <h3>Size Constraints</h3>
+    <table>
+      <tr><th>Constraint</th><th>Value</th></tr>
+      <tr><td>Max file size</td><td><strong>20 MB</strong></td></tr>
+      <tr><td>Min dimensions</td><td>50 &times; 50 px</td></tr>
+      <tr><td>Max dimensions</td><td>16,000 &times; 16,000 px</td></tr>
+    </table>
+
+    <h3>OCR Language Support</h3>
+    <table>
+      <tr><th>Type</th><th>Languages</th></tr>
+      <tr><td style="color:var(--green);">Printed text</td><td><strong>164</strong> languages</td></tr>
+      <tr><td style="color:var(--amber);">Handwritten text</td><td><strong>9</strong> languages: English, Chinese (Simplified), French, German, Italian, Japanese, Korean, Portuguese, Spanish</td></tr>
+    </table>
+
+    <div class="warning"><strong>Remember:</strong> Handwritten OCR supports only 9 languages. This is a common exam trap &mdash; don't confuse with printed text support (164 languages).</div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- CUSTOM VISION                                                 -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top:1.5rem;">
+
+  <div class="card">
+    <h2><span class="badge badge-amber">Build</span> Custom Vision &mdash; Training</h2>
+
+    <h3>Classification Types</h3>
+    <table>
+      <tr><th>Type</th><th>Behavior</th></tr>
+      <tr><td style="color:var(--green);">Multiclass</td><td>Exactly <strong>one tag</strong> per image</td></tr>
+      <tr><td style="color:var(--amber);">Multilabel</td><td><strong>Zero or more</strong> tags per image</td></tr>
+    </table>
+
+    <h3>Training Minimums</h3>
+    <table>
+      <tr><th>Task</th><th>Min Images per Tag</th></tr>
+      <tr><td>Classification</td><td><strong>5</strong> images/tag</td></tr>
+      <tr><td>Object Detection</td><td><strong>15</strong> images/tag</td></tr>
+    </table>
+
+    <h3>Domains</h3>
+    <table>
+      <tr><th>Domain</th><th>Use Case</th></tr>
+      <tr><td>General</td><td>Broad range of images</td></tr>
+      <tr><td>Food</td><td>Photos of dishes/ingredients</td></tr>
+      <tr><td>Landmarks</td><td>Recognizable natural and artificial landmarks</td></tr>
+      <tr><td>Retail</td><td>Product catalog images</td></tr>
+      <tr><td>General (compact)</td><td>Edge deployment &mdash; exportable</td></tr>
+    </table>
+
+    <h3>Evaluation Metrics</h3>
+    <div class="key-fact"><strong>Precision:</strong> Of items tagged X, how many were correct?</div>
+    <div class="key-fact"><strong>Recall:</strong> Of items that should be X, how many were found?</div>
+    <div class="key-fact"><strong>mAP (mean Average Precision):</strong> Overall object detection accuracy across IoU thresholds.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="badge badge-amber">Deploy</span> Custom Vision &mdash; Limits &amp; Export</h2>
+
+    <h3>Tier Limits</h3>
+    <table>
+      <tr><th>Limit</th><th>Free (F0)</th><th>Standard (S0)</th></tr>
+      <tr><td>Projects</td><td>2</td><td>100</td></tr>
+      <tr><td>Training images</td><td>5,000</td><td>100,000</td></tr>
+      <tr><td>Tags</td><td>50</td><td>500</td></tr>
+      <tr><td>Prediction TPS (stored)</td><td>2</td><td>10</td></tr>
+      <tr><td>Prediction TPS (no store)</td><td>2</td><td>20</td></tr>
+    </table>
+
+    <h3>Image Size Limits</h3>
+    <table>
+      <tr><th>Operation</th><th>Max Size</th></tr>
+      <tr><td>Training upload</td><td><strong>6 MB</strong></td></tr>
+      <tr><td>Prediction</td><td><strong>4 MB</strong></td></tr>
+    </table>
+
+    <h3>Export Formats (Compact Domains Only)</h3>
+    <table>
+      <tr><th>Format</th><th>Target Platform</th></tr>
+      <tr><td><code>TensorFlow</code></td><td>Android, Linux</td></tr>
+      <tr><td><code>TensorFlow.js</code></td><td>Browser / Node.js</td></tr>
+      <tr><td><code>CoreML</code></td><td>iOS / macOS</td></tr>
+      <tr><td><code>ONNX</code></td><td>Windows ML</td></tr>
+      <tr><td><code>Docker</code></td><td>Linux / Windows containers</td></tr>
+    </table>
+
+    <div class="warning"><strong>Key Rule:</strong> Only <strong>compact</strong> domains can be exported. Standard domains run only in the cloud.</div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- DOCUMENT INTELLIGENCE                                         -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top:1.5rem;">
+
+  <div class="card">
+    <h2><span class="badge badge-purple">Extract</span> Document Intelligence &mdash; Prebuilt Models</h2>
+
+    <table>
+      <tr><th>Model ID</th><th>Purpose</th></tr>
+      <tr><td><code>prebuilt-read</code></td><td>OCR only &mdash; printed and handwritten text</td></tr>
+      <tr><td><code>prebuilt-layout</code></td><td>Tables, structure, selection marks, figures</td></tr>
+      <tr><td><code>prebuilt-document</code></td><td>General key-value pair extraction</td></tr>
+      <tr><td><code>prebuilt-invoice</code></td><td>Invoices (line items, totals, vendor info)</td></tr>
+      <tr><td><code>prebuilt-receipt</code></td><td>Sales receipts</td></tr>
+      <tr><td><code>prebuilt-idDocument</code></td><td>ID cards, passports, driver's licenses</td></tr>
+      <tr><td><code>prebuilt-healthInsuranceCard.us</code></td><td>US health insurance cards</td></tr>
+      <tr><td><code>prebuilt-tax.us</code></td><td>US tax forms: W-2, 1040, 1098, 1099</td></tr>
+      <tr><td><code>prebuilt-businessCard</code></td><td>Business/contact cards</td></tr>
+    </table>
+
+    <h3>SDK Usage</h3>
+    <div class="code-tabs" data-languages="python,csharp,curl">
+      <div class="code-tab-bar" role="tablist">
+        <button class="code-tab active" data-lang="python" role="tab">Python</button>
+        <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+        <button class="code-tab" data-lang="curl" role="tab">cURL</button>
+      </div>
+      <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+        <pre><code># pip install azure-ai-formrecognizer
+from azure.ai.formrecognizer import DocumentAnalysisClient
+from azure.core.credentials import AzureKeyCredential
+
+client = DocumentAnalysisClient(
+    endpoint=endpoint,
+    credential=AzureKeyCredential(key))
+
+poller = client.begin_analyze_document_from_url(
+    "prebuilt-invoice", invoice_url)
+result = poller.result()
+
+for doc in result.documents:
+    total = doc.fields.get("InvoiceTotal")
+    if total:
+        print(f"Invoice Total: {total.content}")</code></pre>
+      </div>
+      <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+        <pre><code>// dotnet add package Azure.AI.FormRecognizer
+using Azure;
+using Azure.AI.FormRecognizer.DocumentAnalysis;
+
+var client = new DocumentAnalysisClient(
+    new Uri(endpoint),
+    new AzureKeyCredential(key));
+
+AnalyzeDocumentOperation operation = await client
+    .AnalyzeDocumentFromUriAsync(
+        WaitUntil.Completed,
+        "prebuilt-invoice",
+        new Uri(invoiceUrl));
+
+AnalyzeResult result = operation.Value;
+foreach (var document in result.Documents)
+{
+    if (document.Fields.TryGetValue("InvoiceTotal", out var totalField))
+        Console.WriteLine($"Invoice Total: {totalField.Content}");
+}</code></pre>
+      </div>
+      <div class="code-panel" data-lang="curl" role="tabpanel"><span class="code-print-label" aria-hidden="true">cURL</span>
+        <pre><code>curl -X POST "{endpoint}/formrecognizer/documentModels/prebuilt-invoice:analyze?api-version=2024-11-30" \
+  -H "Content-Type: application/json" \
+  -H "Ocp-Apim-Subscription-Key: {key}" \
+  -d '{"urlSource": "https://example.com/invoice.pdf"}'</code></pre>
+      </div>
+    </div>
+
+    <div class="tip"><strong>Exam Tip:</strong> <code>prebuilt-read</code> = OCR only. <code>prebuilt-layout</code> = OCR + tables/structure. <code>prebuilt-document</code> = OCR + key-value pairs. Know the difference.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="badge badge-purple">Custom</span> Document Intelligence &mdash; Custom &amp; Limits</h2>
+
+    <h3>Custom Model Types</h3>
+    <table>
+      <tr><th>Type</th><th>Layout</th><th>Max Doc Size</th></tr>
+      <tr><td style="color:var(--green);">Template</td><td>Fixed / structured layouts</td><td><strong>50 MB</strong></td></tr>
+      <tr><td style="color:var(--amber);">Neural</td><td>Variable / semi-structured layouts</td><td><strong>1 GB</strong></td></tr>
+    </table>
+
+    <h3>Composed Models</h3>
+    <div class="key-fact"><strong>Standard (S0):</strong> Up to <strong>500</strong> component models</div>
+    <div class="key-fact"><strong>Free (F0):</strong> Up to <strong>5</strong> component models</div>
+
+    <h3>Input Formats</h3>
+    <div class="key-fact"><strong>All models:</strong> PDF, JPEG, PNG, BMP, TIFF, HEIF</div>
+    <div class="key-fact"><strong>Read/Layout only:</strong> DOCX, XLSX, PPTX, HTML</div>
+
+    <h3>Tier Limits</h3>
+    <table>
+      <tr><th>Limit</th><th>Free (F0)</th><th>Standard (S0)</th></tr>
+      <tr><td>Max document size</td><td>4 MB</td><td>500 MB</td></tr>
+      <tr><td>Max pages per document</td><td>2</td><td>2,000</td></tr>
+    </table>
+
+    <h3>Image Dimensions</h3>
+    <div class="key-fact"><strong>Range:</strong> 50 &times; 50 px (min) to 10,000 &times; 10,000 px (max)</div>
+
+    <div class="warning"><strong>Composed models</strong> route documents to the best-matching component at inference time. They do NOT merge models &mdash; they act as a classifier over sub-models.</div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- VIDEO INDEXER & SPATIAL ANALYSIS                               -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top:1.5rem;">
+
+  <div class="card">
+    <h2><span class="badge badge-cyan">Video</span> Azure Video Indexer</h2>
+
+    <h3>Insights Extracted</h3>
+    <table>
+      <tr><th>Category</th><th>Details</th></tr>
+      <tr><td style="color:var(--cyan);">Faces</td><td>Face detection, identification, grouping</td></tr>
+      <tr><td style="color:var(--cyan);">OCR</td><td>Text extraction (up to <strong>50,000 words</strong>)</td></tr>
+      <tr><td style="color:var(--cyan);">Labels</td><td>Visual objects and action labels</td></tr>
+      <tr><td style="color:var(--cyan);">Speakers</td><td>Speaker diarization (up to <strong>16 speakers</strong>)</td></tr>
+      <tr><td style="color:var(--cyan);">Emotions</td><td>Joy, sadness, anger, fear</td></tr>
+      <tr><td style="color:var(--cyan);">Scene Segmentation</td><td>Visual scene boundaries</td></tr>
+      <tr><td style="color:var(--cyan);">Keywords</td><td>Key terms from transcript &amp; OCR</td></tr>
+      <tr><td style="color:var(--cyan);">Topics</td><td>Topic inference from content</td></tr>
+      <tr><td style="color:var(--cyan);">Audio Effects</td><td>Clapping, silence, crowd noise, etc.</td></tr>
+    </table>
+
+    <h3>File Limits</h3>
+    <table>
+      <tr><th>Method</th><th>Max Size</th></tr>
+      <tr><td>Device upload</td><td><strong>2 GB</strong></td></tr>
+      <tr><td>URL upload</td><td><strong>30 GB</strong></td></tr>
+      <tr><td>Duration</td><td><strong>6 hours</strong></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="badge badge-cyan">Edge</span> Spatial Analysis</h2>
+
+    <div class="key-fact"><strong>Deployment:</strong> Runs as a <strong>Docker container</strong> on edge devices with camera feeds.</div>
+
+    <h3>Operations</h3>
+    <table>
+      <tr><th>Operation</th><th>What It Does</th></tr>
+      <tr><td><code>personcount</code></td><td>Count people in a defined zone</td></tr>
+      <tr><td><code>personcrossingline</code></td><td>Detect when a person crosses a virtual line</td></tr>
+      <tr><td><code>personcrossingpolygon</code></td><td>Detect when a person enters/exits a polygon zone</td></tr>
+      <tr><td><code>persondistance</code></td><td>Measure distance between people (social distancing)</td></tr>
+    </table>
+
+    <div class="tip"><strong>Exam Tip:</strong> Spatial Analysis is a <strong>container-based</strong> solution for real-time video analytics at the edge. It does NOT run in the cloud &mdash; it runs on IoT Edge or Docker-capable hardware.</div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- DECISION TREE                                                 -->
+<!-- ============================================================ -->
+<div class="card" style="margin-top:1.5rem;">
+  <h2><span class="badge badge-red">Choose</span> Decision Tree &mdash; Which Service to Use?</h2>
+
+  <div class="grid grid-2">
+    <div>
+      <table>
+        <tr><th>Scenario</th><th>Service</th></tr>
+        <tr><td>Read text from <strong>images</strong></td><td><span class="badge badge-green">AI Vision OCR (Read)</span></td></tr>
+        <tr><td>Read text from <strong>documents / forms</strong></td><td><span class="badge badge-purple">Document Intelligence</span></td></tr>
+        <tr><td>Classify images into categories</td><td><span class="badge badge-amber">Custom Vision (Classification)</span></td></tr>
+        <tr><td>Find objects with bounding boxes in images</td><td><span class="badge badge-amber">Custom Vision (Detection)</span> or <span class="badge badge-green">AI Vision (objects)</span></td></tr>
+        <tr><td>Analyze video content (faces, topics, keywords)</td><td><span class="badge badge-cyan">Video Indexer</span></td></tr>
+        <tr><td>Count people in live video feed</td><td><span class="badge badge-cyan">Spatial Analysis</span></td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="key-fact"><strong>AI Vision OCR vs Document Intelligence:</strong> Use AI Vision Read for simple text-in-image extraction. Use Document Intelligence when you need structured data (tables, key-value pairs, specific document types like invoices).</div>
+      <div class="key-fact"><strong>Custom Vision vs AI Vision Objects:</strong> Use AI Vision <code>objects</code> for general object detection (no training). Use Custom Vision when you need to detect domain-specific objects with your own training data.</div>
+      <div class="key-fact"><strong>Video Indexer vs Spatial Analysis:</strong> Video Indexer analyzes recorded/uploaded video for insights. Spatial Analysis processes live camera feeds in real time on edge devices.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- NAVIGATION                                                    -->
+<!-- ============================================================ -->
+<div class="nav-links">
+  <a href="index.html">&larr; All Sheets</a>
+  <a href="00-exam-overview.html">00 Exam Overview</a>
+  <a href="01-azure-openai.html">01 Azure OpenAI</a>
+  <a href="02-computer-vision.html"><strong>02 Computer Vision</strong></a>
+  <a href="03-nlp-speech.html">03 NLP &amp; Speech</a>
+  <a href="04-search-knowledge.html">04 AI Search</a>
+  <a href="05-responsible-ai.html">05 Responsible AI</a>
+  <a href="06-foundry-agents.html">06 Foundry &amp; Agents</a>
+  <a href="07-sdk-reference.html">07 SDK Reference</a>
+  <a href="08-portal-workflows.html">08 Portal Workflows</a>
+</div>
+
+<script>
+(function() {
+  var KEY = 'cram-lang-pref';
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch(e) {}
+
+  function activate(lang) {
+    document.querySelectorAll('.code-tabs').forEach(function(c) {
+      var langs = c.getAttribute('data-languages').split(',');
+      var target = langs.indexOf(lang) !== -1 ? lang : langs[0];
+      c.querySelectorAll('.code-tab').forEach(function(t) {
+        t.classList.toggle('active', t.getAttribute('data-lang') === target);
+        t.setAttribute('aria-selected', t.getAttribute('data-lang') === target);
+      });
+      c.querySelectorAll('.code-panel').forEach(function(p) {
+        p.classList.toggle('active', p.getAttribute('data-lang') === target);
+      });
+    });
+    try { localStorage.setItem(KEY, lang); } catch(e) {}
+  }
+
+  document.querySelectorAll('.code-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() { activate(tab.getAttribute('data-lang')); });
+  });
+
+  if (saved) { activate(saved); }
+})();
+</script>
+</body>
+</html>

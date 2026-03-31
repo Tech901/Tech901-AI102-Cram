@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D6: Knowledge Mining | AI-102 Practice Test</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #232733; --border: #2e3345;
+    --text: #e4e6ef; --text-dim: #8b8fa3;
+    --amber: #f5a623; --amber-dim: rgba(245,166,35,0.25);
+    --green: #34d399; --green-dim: rgba(52,211,153,0.25);
+    --blue: #60a5fa; --blue-dim: rgba(96,165,250,0.25);
+    --red: #f87171; --red-dim: rgba(248,113,113,0.25);
+    --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.25);
+    --cyan: #22d3ee; --cyan-dim: rgba(34,211,238,0.25);
+    --accent: var(--red); --accent-dim: var(--red-dim);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 900px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--accent); }
+  .header h1 { font-size: 2rem; color: var(--accent); margin-bottom: 0.3rem; }
+  .header .subtitle { color: var(--text-dim); font-size: 0.95rem; }
+  .badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); }
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-red { background: var(--red-dim); color: var(--red); }
+  .badge-purple { background: var(--purple-dim); color: var(--purple); }
+  .badge-cyan { background: var(--cyan-dim); color: var(--cyan); }
+  code { background: var(--surface2); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.8rem; color: var(--cyan); }
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.5; margin: 0.75rem 0; }
+  pre code { background: none; padding: 0; }
+
+  /* Controls Bar */
+  .controls { position: sticky; top: 0; z-index: 100; background: rgba(26,29,39,0.95); border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .progress-wrap { flex: 1; min-width: 120px; }
+  .progress-bar { height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.3s; width: 0%; }
+  .progress-text { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+  .score-display { font-size: 0.9rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+  .timer { font-family: 'Consolas', 'Courier New', monospace; font-size: 1rem; color: var(--accent); white-space: nowrap; }
+  .timer.warning { color: var(--red); }
+
+  /* Buttons */
+  .btn { padding: 0.4rem 1rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.75rem; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .option-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .order-select:focus-visible, .match-select:focus-visible, .code-fill-select:focus-visible { outline: 2px solid var(--accent); }
+  .hotarea-line:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  /* Question Cards */
+  .question-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem; transition: border-color 0.2s; }
+  .question-card.has-answer { border-top: 2px solid var(--accent); }
+  .question-card.correct { border-left: 3px solid var(--green); }
+  .question-card.incorrect { border-left: 3px solid var(--red); }
+  .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+  .q-meta { display: flex; gap: 0.5rem; align-items: center; }
+  .q-num { font-size: 0.75rem; color: var(--text-dim); }
+  .q-text { font-size: 0.95rem; margin-bottom: 1rem; line-height: 1.6; }
+  .q-instruction { font-size: 0.8rem; color: var(--accent); margin-bottom: 0.75rem; font-style: italic; }
+
+  /* Scenario Box */
+  .scenario-box { background: var(--surface2); border-left: 3px solid var(--accent); padding: 1rem; margin-bottom: 1rem; border-radius: 0 8px 8px 0; font-size: 0.85rem; line-height: 1.6; }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem; }
+  .option-row { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer; transition: background 0.15s; border: 1px solid transparent; user-select: none; min-height: 40px; }
+  .option-row:hover { background: var(--surface2); }
+  .option-row.selected { background: var(--accent-dim); border-color: var(--accent); }
+  .option-row.correct-answer { background: var(--green-dim); border-color: var(--green); }
+  .option-row.wrong-answer { background: var(--red-dim); border-color: var(--red); }
+  .option-row.disabled { pointer-events: none; opacity: 0.8; }
+  .option-key { font-weight: 700; color: var(--accent); min-width: 20px; }
+  .option-text { font-size: 0.85rem; }
+  .option-indicator { margin-left: auto; font-size: 0.85rem; }
+
+  /* Order Items */
+  .order-items { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem; }
+  .order-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 1rem; background: var(--surface2); border-radius: 8px; border: 1px solid transparent; min-height: 40px; }
+  .order-item.correct-pos { border-color: var(--green); background: var(--green-dim); }
+  .order-item.wrong-pos { border-color: var(--red); background: var(--red-dim); }
+  .order-select { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 0.3rem 0.5rem; font-size: 0.8rem; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+  .order-text { font-size: 0.85rem; }
+
+  /* Match type */
+  .match-container { display: flex; gap: 1.5rem; margin-bottom: 0.75rem; }
+  .match-col { flex: 1; display: flex; flex-direction: column; gap: 0.4rem; }
+  .match-col-header { font-size: 0.75rem; color: var(--accent); text-transform: uppercase; font-weight: 600; margin-bottom: 0.25rem; }
+  .match-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; background: var(--surface2); border-radius: 8px; font-size: 0.85rem; border: 1px solid transparent; min-height: 40px; }
+  .match-item.correct-match { border-color: var(--green); background: var(--green-dim); }
+  .match-item.wrong-match { border-color: var(--red); background: var(--red-dim); }
+  .match-select { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 0.3rem 0.5rem; font-size: 0.8rem; min-width: 40px; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+  .match-num { font-weight: 700; color: var(--accent); min-width: 20px; }
+
+  /* Code-fill type */
+  .code-fill-pre { position: relative; overflow: visible; }
+  .code-fill-select { font-family: 'Consolas', 'Courier New', monospace; background: var(--surface); color: var(--cyan); border: 1px solid var(--accent); border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.8rem; z-index: 10; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+  .code-fill-select.correct-blank { border-color: var(--green); background: var(--green-dim); }
+  .code-fill-select.wrong-blank { border-color: var(--red); background: var(--red-dim); }
+
+  /* Hotarea type */
+  .hotarea-lines { font-family: 'Consolas', 'Courier New', monospace; font-size: 0.8rem; margin-bottom: 0.75rem; }
+  .hotarea-line { display: flex; align-items: center; gap: 0.75rem; padding: 0.4rem 0.75rem; cursor: pointer; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; user-select: none; min-height: 40px; }
+  .hotarea-line:hover { background: var(--surface2); }
+  .hotarea-line.selected { background: var(--accent-dim); border-color: var(--accent); }
+  .hotarea-line.correct-line { background: var(--green-dim); border-color: var(--green); }
+  .hotarea-line.wrong-line { background: var(--red-dim); border-color: var(--red); }
+  .hotarea-line.missed-line { border: 1px dashed var(--green); }
+  .hotarea-linenum { color: var(--text-dim); min-width: 24px; text-align: right; }
+  .hotarea-code { white-space: pre; }
+
+  /* Case study type */
+  .casestudy-scenario { background: var(--surface2); border-left: 3px solid var(--accent); padding: 1rem; margin-bottom: 1rem; border-radius: 0 8px 8px 0; font-size: 0.85rem; line-height: 1.6; max-height: 250px; overflow-y: auto; }
+  .casestudy-subq { padding: 0.75rem 0; border-top: 1px solid var(--border); }
+  .casestudy-subq:first-child { border-top: none; }
+  .casestudy-subq-label { font-size: 0.75rem; color: var(--accent); margin-bottom: 0.5rem; }
+
+  /* Feedback */
+  .feedback { border-radius: 8px; padding: 0.75rem 1rem; margin-top: 0.75rem; font-size: 0.85rem; display: none; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: var(--green-dim); border: 1px solid rgba(52,211,153,0.3); }
+  .feedback.incorrect { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.3); }
+  .feedback strong { display: block; margin-bottom: 0.3rem; }
+  .feedback .cram-link { margin-top: 0.5rem; }
+  .feedback .cram-link a { color: var(--blue); text-decoration: none; font-size: 0.8rem; }
+  .feedback .cram-link a:hover { text-decoration: underline; }
+
+  /* Summary */
+  #summary { display: none; }
+  .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; text-align: center; margin-bottom: 1.5rem; }
+  .score-big { font-size: 3.5rem; font-weight: 800; line-height: 1; }
+  .score-big.pass { color: var(--green); }
+  .score-big.fail { color: var(--red); }
+  .score-label { font-size: 1rem; color: var(--text-dim); margin-top: 0.25rem; }
+  .pass-fail { font-size: 1.2rem; font-weight: 700; margin-top: 0.5rem; }
+  .pass-fail.pass { color: var(--green); }
+  .pass-fail.fail { color: var(--red); }
+  .breakdown { text-align: left; margin-top: 1.5rem; }
+  .breakdown h3 { font-size: 0.95rem; color: var(--accent); margin-bottom: 0.75rem; }
+  .breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+  .breakdown-bar { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; margin: 0 1rem; }
+  .breakdown-bar-fill { height: 100%; border-radius: 3px; }
+  .review-list { text-align: left; margin-top: 1.5rem; }
+  .review-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0; font-size: 0.8rem; cursor: pointer; }
+  .review-item:hover { color: var(--accent); }
+  .review-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .review-dot.correct { background: var(--green); }
+  .review-dot.incorrect { background: var(--red); }
+  .review-dot.unanswered { background: var(--text-dim); }
+
+  /* Nav Links */
+  .nav-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .nav-links a { color: var(--blue); text-decoration: none; font-size: 0.8rem; padding: 0.3rem 0.8rem; border: 1px solid var(--blue); border-radius: 6px; }
+  .nav-links a:hover { background: var(--blue-dim); }
+
+  @media (max-width: 640px) {
+    body { padding: 1rem; }
+    .header h1 { font-size: 1.5rem; }
+    .controls { flex-direction: column; gap: 0.5rem; padding: 0.5rem 0.75rem; }
+    .match-container { flex-direction: column; gap: 0.75rem; }
+    .btn-group { width: 100%; justify-content: center; }
+    .q-text { font-size: 0.9rem; }
+    .option-row { padding: 0.75rem 1rem; }
+    .hotarea-line { padding: 0.6rem 0.75rem; }
+    .score-display, .timer { font-size: 0.8rem; }
+    pre { font-size: 0.7rem; }
+  }
+
+  @media print {
+    body { background: #fff; color: #000; padding: 1rem; }
+    .controls, .btn, .timer { display: none !important; }
+    .question-card { border: 1px solid #ccc; break-inside: avoid; }
+    .feedback { display: block !important; background: #f0f0f0; border: 1px solid #ccc; }
+    .option-row.correct-answer { border: 2px solid #000; }
+    .header h1 { color: #333; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Domain 6: Knowledge Mining &amp; Information Extraction</h1>
+  <div class="subtitle">25 Questions &bull; ~25 minutes &bull; <span class="badge badge-red">15-20% of Exam</span></div>
+</div>
+
+<div class="controls" id="controls">
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText" aria-live="polite">0 of 0 answered</div>
+  </div>
+  <div class="score-display" id="scoreDisplay" aria-live="polite">Score: 0/0</div>
+  <div class="timer" id="timer">30:00</div>
+  <div class="btn-group">
+    <button class="btn btn-secondary btn-sm" onclick="toggleShuffle()">Shuffle</button>
+    <button class="btn btn-secondary btn-sm" onclick="gradeAll()">Grade All</button>
+    <button class="btn btn-primary btn-sm" onclick="finishExam()">Finish Exam</button>
+  </div>
+</div>
+
+<div id="questions"></div>
+
+<div id="summary"></div>
+
+<div class="nav-links">
+  <a href="index.html">&larr; All Tests</a>
+  <a href="test-d1.html">D1</a>
+  <a href="test-d2.html">D2</a>
+  <a href="test-d3.html">D3</a>
+  <a href="test-d4.html">D4</a>
+  <a href="test-d5.html">D5</a>
+  <a href="test-d6.html">D6</a>
+  <a href="test-full.html">Full Exam</a>
+  <a href="../index.html">Cram Library</a>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    id: "d6-001",
+    type: "single",
+    domain: "D6",
+    topic: "Search Tiers",
+    question: "Memphis Public Library is deploying Azure AI Search for its document digitization project. The team needs an SLA guarantee for both query and indexing workloads. What is the minimum number of replicas required?",
+    options: [
+      { key: "A", text: "1 replica" },
+      { key: "B", text: "2 replicas" },
+      { key: "C", text: "3 replicas" },
+      { key: "D", text: "4 replicas" }
+    ],
+    answer: "C",
+    explanation: "Azure AI Search SLAs require <strong>2 replicas for query-only workloads</strong> and <strong>3 replicas for query and indexing workloads</strong>. The number of partitions is not an SLA consideration. Free tier services have no SLA. These requirements apply to all billable tiers (Basic, Standard, Storage Optimized).",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-002",
+    type: "single",
+    domain: "D6",
+    topic: "Index Schema",
+    question: "University of Memphis is building a research paper index. A field storing paper abstracts (type <code>Edm.String</code>) needs to be used in <code>$filter</code> queries for exact matching. What is the maximum field length for filterable string fields?",
+    options: [
+      { key: "A", text: "8 kilobytes" },
+      { key: "B", text: "16 kilobytes" },
+      { key: "C", text: "32 kilobytes" },
+      { key: "D", text: "No limit" }
+    ],
+    answer: "C",
+    explanation: "Fields of type <code>Edm.String</code> that are <strong>filterable, sortable, or facetable</strong> can be at most <strong>32 kilobytes</strong> in length. This is because values of such fields are treated as a single search term. If you need to store more text, explicitly set filterable, sortable, and facetable to <code>false</code>.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-003",
+    type: "single",
+    domain: "D6",
+    topic: "Query Syntax",
+    question: "Memphis Fire Department has an Azure AI Search index of incident reports. An analyst wants to find documents where the terms \"electrical\" and \"fire\" appear within 5 words of each other. Which query syntax should be used?",
+    options: [
+      { key: "A", text: "<code>\"electrical fire\"~5</code> with queryType=full" },
+      { key: "B", text: "<code>electrical NEAR fire</code> with queryType=simple" },
+      { key: "C", text: "<code>electrical AND fire</code> with queryType=full" },
+      { key: "D", text: "<code>electrical +fire</code> with queryType=simple" }
+    ],
+    answer: "A",
+    explanation: "Proximity search uses <strong>full Lucene syntax</strong> with the tilde (~) operator after a quoted phrase: <code>\"term1 term2\"~N</code> where N is the maximum word distance. <code>queryType</code> must be set to <code>full</code> to enable Lucene syntax. Simple syntax does not support proximity search, fuzzy search, or regular expressions.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-004",
+    type: "single",
+    domain: "D6",
+    topic: "Vector Search",
+    question: "Memphis Tourism Board is implementing vector search for visitor recommendations. If they use Azure OpenAI's text-embedding-ada-002 model, which similarity metric should be configured in the HNSW algorithm?",
+    options: [
+      { key: "A", text: "euclidean" },
+      { key: "B", text: "dotProduct" },
+      { key: "C", text: "cosine" },
+      { key: "D", text: "hamming" }
+    ],
+    answer: "C",
+    explanation: "<strong>Cosine</strong> is the similarity metric used by Azure OpenAI embedding models. Microsoft documentation explicitly states: \"If you're using Azure OpenAI, specify <code>cosine</code> in the vector configuration.\" <code>dotProduct</code> is identical to cosine for normalized vectors but slightly more performant. <code>hamming</code> is used for binary vectors.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-005",
+    type: "single",
+    domain: "D6",
+    topic: "Semantic Ranker",
+    question: "University of Memphis enables semantic ranking on their research paper search index. What is the maximum number of results from the initial result set that semantic ranker will rerank?",
+    options: [
+      { key: "A", text: "10" },
+      { key: "B", text: "25" },
+      { key: "C", text: "50" },
+      { key: "D", text: "100" }
+    ],
+    answer: "C",
+    explanation: "Semantic ranker reranks only the <strong>top 50 results</strong> from the initial result set (scored by BM25 or vector similarity). It applies an L2 ranking methodology that promotes the most semantically relevant results to the top. This limit helps maintain millisecond response times.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-006",
+    type: "single",
+    domain: "D6",
+    topic: "Document Intelligence",
+    question: "Memphis Light Gas & Water needs to extract data from utility bill forms that have a consistent visual layout. They have labeled 50 sample documents. Which Document Intelligence custom model type should they use?",
+    options: [
+      { key: "A", text: "Custom neural model" },
+      { key: "B", text: "Custom template model" },
+      { key: "C", text: "Custom composed model" },
+      { key: "D", text: "Prebuilt invoice model" }
+    ],
+    answer: "B",
+    explanation: "The <strong>custom template model</strong> (formerly custom form) is designed for documents with consistent visual templates and defined visual layouts. It extracts key-value pairs, selection marks, tables, signatures, and selected regions. Custom neural models are better for mixed-type or semi-structured documents. Since utility bills have a static layout, template is the best choice.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-007",
+    type: "multi",
+    domain: "D6",
+    topic: "Query Syntax",
+    question: "Which TWO features require setting <code>queryType</code> to <code>\"full\"</code> (full Lucene syntax) in Azure AI Search? (Select 2)",
+    selectCount: 2,
+    options: [
+      { key: "A", text: "Fuzzy search with the tilde operator (e.g., <code>memphiz~1</code>)" },
+      { key: "B", text: "Boolean operators (+, -, |)" },
+      { key: "C", text: "Proximity search (e.g., <code>\"fire department\"~5</code>)" },
+      { key: "D", text: "Prefix search with asterisk (e.g., <code>mem*</code>)" }
+    ],
+    answer: ["A", "C"],
+    explanation: "<strong>Fuzzy search</strong> (~) and <strong>proximity search</strong> (\"terms\"~N) both require full Lucene syntax (<code>queryType=full</code>). Simple syntax supports Boolean operators (+, -, |) and prefix search (*) natively. Full Lucene also adds: regular expressions, field-scoped queries (<code>field:term</code>), term boosting (^), and wildcard patterns.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-008",
+    type: "multi",
+    domain: "D6",
+    topic: "Skillsets",
+    question: "Which THREE of the following are built-in cognitive skills in Azure AI Search that make backend calls to Azure AI services? (Select 3)",
+    selectCount: 3,
+    options: [
+      { key: "A", text: "OCR (Optical Character Recognition)" },
+      { key: "B", text: "Text Split" },
+      { key: "C", text: "Entity Recognition" },
+      { key: "D", text: "Shaper" },
+      { key: "E", text: "Key Phrase Extraction" }
+    ],
+    answer: ["A", "C", "E"],
+    explanation: "Built-in skills that call Azure AI services (and are billable) include: <strong>OCR</strong>, <strong>Entity Recognition</strong>, <strong>Key Phrase Extraction</strong>, Sentiment, Language Detection, PII Detection, Image Analysis, Entity Linking, and Text Translation. <strong>Text Split</strong> and <strong>Shaper</strong> are utility skills that run within the search service without calling external services.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-009",
+    type: "multi",
+    domain: "D6",
+    topic: "Knowledge Store",
+    question: "Which THREE types of projections can be defined in an Azure AI Search knowledge store? (Select 3)",
+    selectCount: 3,
+    options: [
+      { key: "A", text: "Tables — stored in Azure Table Storage" },
+      { key: "B", text: "Objects — stored as JSON in Azure Blob Storage" },
+      { key: "C", text: "Files — stored as binary images in Azure Blob Storage" },
+      { key: "D", text: "Queues — stored as messages in Azure Queue Storage" },
+      { key: "E", text: "Databases — stored in Azure SQL Database" }
+    ],
+    answer: ["A", "B", "C"],
+    explanation: "A knowledge store supports three projection types: <strong>Tables</strong> (Azure Table Storage for tabular data/data frames), <strong>Objects</strong> (Azure Blob Storage for full JSON documents), and <strong>Files</strong> (Azure Blob Storage for normalized binary images). There is no Queue or SQL Database projection type. Object and file projections cannot share the same container.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-010",
+    type: "order",
+    domain: "D6",
+    topic: "Indexer Pipeline",
+    question: "Place the Azure AI Search enrichment pipeline steps in the correct execution order:",
+    options: [
+      { key: "A", text: "Document cracking — Extract text and images from source documents" },
+      { key: "B", text: "Field mappings — Map source fields to index fields" },
+      { key: "C", text: "Skillset execution — Apply AI enrichment skills (OCR, NER, etc.)" },
+      { key: "D", text: "Output field mappings — Map enriched fields to index fields" },
+      { key: "E", text: "Push to index — Write enriched documents to the search index" }
+    ],
+    answer: ["A", "B", "C", "D", "E"],
+    explanation: "The enrichment pipeline follows this order: <strong>1. Document cracking</strong> (extract content from sources) → <strong>2. Field mappings</strong> (map source to index fields) → <strong>3. Skillset execution</strong> (AI enrichment) → <strong>4. Output field mappings</strong> (route enriched values to index) → <strong>5. Push to index</strong>.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-011",
+    type: "order",
+    domain: "D6",
+    topic: "Semantic Ranker",
+    question: "Place the Azure AI Search query processing stages in the correct order when using semantic ranking with answers:",
+    options: [
+      { key: "A", text: "Initial retrieval — BM25 or vector similarity scoring of all matching documents" },
+      { key: "B", text: "Semantic reranking — L2 model promotes semantically relevant results from top 50" },
+      { key: "C", text: "Caption extraction — Identify key passages that summarize each result" },
+      { key: "D", text: "Answer extraction — Find verbatim text that directly answers the question" }
+    ],
+    answer: ["A", "B", "C", "D"],
+    explanation: "Semantic ranking processes results in stages: <strong>1. Initial retrieval</strong> (BM25/vector scoring) → <strong>2. Semantic reranking</strong> (top 50 reranked by language models) → <strong>3. Caption extraction</strong> (key passages with highlights) → <strong>4. Answer extraction</strong> (optional, when query looks like a question). Captions and answers are derived from fields in the semantic configuration.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-012",
+    type: "scenario",
+    domain: "D6",
+    topic: "Query Syntax",
+    scenario: "Memphis Public Library has a search index with fields: <code>title</code> (Edm.String, searchable), <code>author</code> (Edm.String, searchable, filterable), <code>genre</code> (Edm.String, filterable, facetable), <code>published_year</code> (Edm.Int32, filterable, sortable), and <code>rating</code> (Edm.Double, filterable, sortable). A patron wants to find mystery books published after 2020 with a rating of at least 4.0, sorted by rating descending.",
+    question: "Which query parameters should be used?",
+    options: [
+      { key: "A", text: "<code>$filter=genre eq 'Mystery' and published_year gt 2020 and rating ge 4.0&$orderby=rating desc</code>" },
+      { key: "B", text: "<code>search=Mystery&$filter=published_year gt 2020&$orderby=rating desc</code>" },
+      { key: "C", text: "<code>$filter=genre eq 'Mystery' AND published_year gt 2020 AND rating ge 4.0&$orderby=rating</code>" },
+      { key: "D", text: "<code>search=genre:Mystery published_year:>2020 rating:>=4.0&queryType=full</code>" }
+    ],
+    answer: "A",
+    explanation: "The correct approach uses <code>$filter</code> with OData syntax for exact matching on filterable fields. Key details: filterable string comparisons are <strong>exact matches only</strong> (no tokenization), so <code>genre eq 'Mystery'</code> is correct. <code>$orderby=rating desc</code> sorts descending. Option C uses <code>AND</code> (uppercase) — OData uses lowercase <code>and</code>/<code>or</code>/<code>not</code>.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-013",
+    type: "scenario",
+    domain: "D6",
+    topic: "Vector Search",
+    scenario: "University of Memphis is building a research paper search system using Azure AI Search with vector search. They use text-embedding-3-small (1,536 dimensions) for embeddings. During testing, vector search returns semantically relevant results but response times are too slow for their 500,000-document index.",
+    question: "Which TWO configuration changes would MOST effectively improve vector search performance?",
+    options: [
+      { key: "A", text: "Switch from HNSW to exhaustive KNN algorithm" },
+      { key: "B", text: "Enable scalar quantization to compress vectors to int8" },
+      { key: "C", text: "Increase the HNSW <code>efSearch</code> parameter from 500 to 1000" },
+      { key: "D", text: "Use truncated dimensions via Matryoshka Representation Learning" }
+    ],
+    answer: ["B", "D"],
+    explanation: "<strong>Scalar quantization</strong> compresses vectors from float32 to int8, dramatically reducing memory and improving query speed. <strong>Dimension truncation</strong> (MRL) reduces the vector size while preserving semantic quality, supported by text-embedding-3 models. Switching to exhaustive KNN would be <em>slower</em> (it scans all vectors). Increasing <code>efSearch</code> improves accuracy but <em>increases</em> latency.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-014",
+    type: "scenario",
+    domain: "D6",
+    topic: "Document Intelligence",
+    scenario: "Memphis Light Gas & Water receives utility applications in three different form layouts: residential applications, commercial applications, and industrial applications. Each layout has different fields. The company wants a single API endpoint that automatically routes incoming forms to the correct extraction model.",
+    question: "Which Document Intelligence architecture should be used?",
+    options: [
+      { key: "A", text: "Train a single custom neural model on all three form types" },
+      { key: "B", text: "Train three custom template models and combine them into a composed model" },
+      { key: "C", text: "Use the prebuilt general document model for all three types" },
+      { key: "D", text: "Train three custom template models and use a custom classifier to route documents" }
+    ],
+    answer: "D",
+    explanation: "The recommended architecture is to use a <strong>custom classifier</strong> to identify the document type first, then route to the appropriate <strong>custom template model</strong> for extraction. A composed model could also work (option B), but custom classifiers provide more control and can handle a wider variety of document types. Since these forms have \"defined visual templates,\" template models are ideal for extraction.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-015",
+    type: "match",
+    domain: "D6",
+    topic: "Index Schema",
+    question: "Match each Azure AI Search field attribute to its behavior:",
+    pairs: [
+      { left: "searchable", right: "Field undergoes lexical analysis and can be referenced in full-text search queries" },
+      { left: "filterable", right: "Field can be referenced in $filter queries with exact-match comparisons (no word-breaking)" },
+      { left: "facetable", right: "Field can return hit counts by category for navigation in search results" },
+      { left: "sortable", right: "Field can be used in $orderby expressions to control result ordering" }
+    ],
+    explanation: "Field attributes determine how a field can be used in queries: <strong>searchable</strong> enables full-text search with tokenization; <strong>filterable</strong> supports $filter with exact matching (strings are NOT tokenized); <strong>facetable</strong> enables category navigation; <strong>sortable</strong> enables $orderby. Only <code>Edm.String</code> fields can be searchable. <code>Collection(Edm.String)</code> fields cannot be sortable.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-016",
+    type: "match",
+    domain: "D6",
+    topic: "Knowledge Store",
+    question: "Match each knowledge store projection type to its Azure Storage destination and use case:",
+    pairs: [
+      { left: "Table projections", right: "Azure Table Storage — tabular data for analytics tools and data frames" },
+      { left: "Object projections", right: "Azure Blob Storage — full JSON representation of enriched documents" },
+      { left: "File projections", right: "Azure Blob Storage — normalized binary image files from documents" }
+    ],
+    explanation: "<strong>Table projections</strong> create rows and columns in Azure Table Storage, ideal for Power BI and data analytics. <strong>Object projections</strong> create JSON blobs, useful when you need the complete enrichment tree. <strong>File projections</strong> store extracted images as binary blobs. Within the same projection group, tables are automatically related. Object and file projections cannot share the same container.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-017",
+    type: "code-fill",
+    domain: "D6",
+    topic: "Query Syntax",
+    question: "Complete the Azure AI Search query to find Memphis Fire Department incident reports containing \"electrical\" near \"fire\" with fuzzy matching, boosting results with \"residential\":",
+    codeTemplate: "POST /indexes/incidents/docs/search?api-version=2025-09-01\n{\n  \"queryType\": \"[BLANK1]\",\n  \"search\": \"\\\"electrical fire\\\"~5 [BLANK2]\",\n  \"searchMode\": \"all\"\n}",
+    blanks: [
+      { id: "BLANK1", options: ["full", "simple", "semantic", "lucene"], answer: "full" },
+      { id: "BLANK2", options: ["residential^3", "residential~3", "+residential", "BOOST(residential,3)"], answer: "residential^3" }
+    ],
+    explanation: "Proximity search (<code>\"terms\"~N</code>) and term boosting (<code>term^N</code>) both require <strong>full Lucene syntax</strong> (<code>queryType: \"full\"</code>). The caret (^) operator boosts term importance — <code>residential^3</code> means documents containing \"residential\" are ranked 3x higher. The tilde (~) after a quoted phrase is proximity; after a single term it is fuzzy search.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-018",
+    type: "code-fill",
+    domain: "D6",
+    topic: "Vector Search",
+    question: "Complete the Azure AI Search index definition to add a vector search configuration using HNSW with cosine similarity:",
+    codeTemplate: "\"vectorSearch\": {\n  \"algorithms\": [\n    {\n      \"name\": \"my-hnsw\",\n      \"kind\": \"[BLANK1]\",\n      \"hnswParameters\": {\n        \"m\": 4,\n        \"efConstruction\": 400,\n        \"efSearch\": 500,\n        \"metric\": \"[BLANK2]\"\n      }\n    }\n  ],\n  \"profiles\": [\n    {\n      \"name\": \"my-vector-profile\",\n      \"algorithm\": \"my-hnsw\"\n    }\n  ]\n}",
+    blanks: [
+      { id: "BLANK1", options: ["hnsw", "exhaustiveKnn", "vectorSearch", "annSearch"], answer: "hnsw" },
+      { id: "BLANK2", options: ["cosine", "cosineSimilarity", "angular", "innerProduct"], answer: "cosine" }
+    ],
+    explanation: "Azure AI Search supports two vector search algorithms: <code>hnsw</code> (Hierarchical Navigable Small World) for approximate nearest neighbor and <code>exhaustiveKnn</code> for exact search. The <code>metric</code> values are: <code>cosine</code> (recommended for Azure OpenAI), <code>dotProduct</code>, <code>euclidean</code>, and <code>hamming</code> (binary vectors). HNSW parameters: <code>m</code> (bi-directional links, 4\u201310), <code>efConstruction</code> (100\u20131,000), <code>efSearch</code> (100\u20131,000).",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-019",
+    type: "hotarea",
+    domain: "D6",
+    topic: "Semantic Ranker",
+    question: "Select the line(s) that contain errors in this Azure AI Search semantic query request:",
+    codeLines: [
+      { id: 1, text: "POST /indexes/memphis-docs/docs/search?api-version=2025-09-01" },
+      { id: 2, text: "{" },
+      { id: 3, text: "  \"search\": \"what are the requirements for a building permit\"," },
+      { id: 4, text: "  \"queryType\": \"semantic\"," },
+      { id: 5, text: "  \"semanticConfiguration\": \"my-semantic-config\"," },
+      { id: 6, text: "  \"answers\": \"generative|count-3\"," },
+      { id: 7, text: "  \"captions\": \"extractive|highlight-true\"," },
+      { id: 8, text: "  \"select\": \"title,content,category\"," },
+      { id: 9, text: "  \"count\": true" },
+      { id: 10, text: "}" }
+    ],
+    answer: [6],
+    explanation: "Line 6 uses <code>\"generative|count-3\"</code> which is incorrect. Semantic answers only support <strong><code>\"extractive\"</code></strong> mode — not generative. The correct value would be <code>\"extractive|count-3\"</code>. Semantic answers are verbatim content extracted from the index, not AI-generated text. For generated answers, use a separate RAG pipeline with Azure OpenAI.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-020",
+    type: "casestudy",
+    domain: "D6",
+    topic: "Solution Architecture",
+    scenario: "<strong>Memphis Public Library Document Digitization</strong><br><br>The Memphis Public Library is digitizing its historical collection of 100,000 documents spanning city records, photographs, maps, and newspaper clippings. Requirements:<ul><li>Documents are stored as scanned PDFs and TIFF images in Azure Blob Storage</li><li>Text must be extracted from scanned images, including handwritten notes</li><li>Extracted text should be searchable with support for fuzzy matching (misspelled historical names)</li><li>Photographs should be captioned automatically and made searchable by visual content</li><li>Patrons need faceted navigation by document type, decade, and neighborhood</li><li>A knowledge store should persist enriched data for the analytics team to use in Power BI</li></ul>",
+    question: "Answer the following questions about the solution architecture.",
+    subQuestions: [
+      {
+        id: "d6-020a",
+        type: "single",
+        question: "Which combination of built-in skills should be included in the skillset to extract text from scanned images and identify mentioned locations?",
+        options: [
+          { key: "A", text: "OCR skill + Entity Recognition skill" },
+          { key: "B", text: "Image Analysis skill + Language Detection skill" },
+          { key: "C", text: "Document Extraction skill + Text Split skill" },
+          { key: "D", text: "OCR skill + Sentiment skill" }
+        ],
+        answer: "A",
+        explanation: "The <strong>OCR skill</strong> recognizes printed and handwritten text in images. The <strong>Entity Recognition skill</strong> extracts entities like locations, people, and organizations from the OCR output. Image Analysis describes visual content but doesn't extract text. Text Split breaks content into chunks but doesn't extract text from images."
+      },
+      {
+        id: "d6-020b",
+        type: "single",
+        question: "Which query approach supports fuzzy matching for misspelled historical names like \"Mempis\" matching \"Memphis\"?",
+        options: [
+          { key: "A", text: "<code>search=Mempis&queryType=simple</code>" },
+          { key: "B", text: "<code>search=Mempis~1&queryType=full</code>" },
+          { key: "C", text: "<code>$filter=search.ismatch('Mempis')&queryType=simple</code>" },
+          { key: "D", text: "<code>search=Mempis&queryType=semantic</code>" }
+        ],
+        answer: "B",
+        explanation: "<strong>Fuzzy search</strong> uses the tilde (~) operator with full Lucene syntax: <code>Mempis~1</code> finds terms within 1 edit distance. The number after ~ specifies the maximum edit distance (default is 2, range 0\u20132). Simple syntax does <strong>not</strong> support fuzzy search — if you need it, you must use <code>queryType=full</code>."
+      },
+      {
+        id: "d6-020c",
+        type: "single",
+        question: "For the knowledge store, which projection type should be used to enable the Power BI analytics team to create dashboards showing document counts by decade and neighborhood?",
+        options: [
+          { key: "A", text: "Object projections to Azure Blob Storage" },
+          { key: "B", text: "Table projections to Azure Table Storage" },
+          { key: "C", text: "File projections to Azure Blob Storage" },
+          { key: "D", text: "Object projections to Azure SQL Database" }
+        ],
+        answer: "B",
+        explanation: "<strong>Table projections</strong> in Azure Table Storage are specifically designed for tabular reporting structures and inputs to analytical tools like Power BI. They represent data as rows and columns, making them ideal for aggregation queries (counts by decade, neighborhood breakdowns). Object projections store full JSON documents, which are less suited for direct analytics. Knowledge stores do not support SQL Database projections."
+      }
+    ],
+    explanation: "This case study tests the ability to design a complete knowledge mining pipeline, including skillset composition for OCR and entity extraction, query syntax selection for fuzzy matching, and knowledge store projection types for analytics integration.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  // ── NEW: REST & PORTAL (5) ──────────────────────────────────
+  {
+    id: "d6-021",
+    type: "code-fill",
+    domain: "D6",
+    topic: "REST API: Search Query",
+    question: "Complete this curl command to search an Azure AI Search index using the REST API:",
+    codeTemplate: "curl -X POST \"https://mysearch.search.windows.net/indexes/memphis-docs/docs/[BLANK1]?api-version=2025-09-01\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"[BLANK2]: YOUR_ADMIN_KEY\" \\\n  -d '{\n    \"search\": \"building permit requirements\",\n    \"queryType\": \"semantic\",\n    \"semanticConfiguration\": \"my-config\",\n    \"top\": 5\n  }'",
+    blanks: [
+      {
+        id: "BLANK1",
+        options: ["search", "query", "find", "lookup"],
+        answer: "search"
+      },
+      {
+        id: "BLANK2",
+        options: ["api-key", "Ocp-Apim-Subscription-Key", "Authorization", "X-Search-Key"],
+        answer: "api-key"
+      }
+    ],
+    explanation: "Azure AI Search REST API uses <code>POST /indexes/{index}/docs/search</code> for queries. Authentication uses the <code>api-key</code> header (same header name as Azure OpenAI, different from other Azure AI Services which use <code>Ocp-Apim-Subscription-Key</code>). The request body contains the search text and query parameters like <code>queryType</code>, <code>filter</code>, and <code>select</code>.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-022",
+    type: "single",
+    domain: "D6",
+    topic: "REST API: Index Creation",
+    question: "Memphis Fire Department is creating a new Azure AI Search index via the REST API. Which HTTP method and URL path should they use?",
+    options: [
+      { key: "A", text: "<code>POST /indexes?api-version=2025-09-01</code> with the index schema in the request body" },
+      { key: "B", text: "<code>PUT /indexes/{index-name}?api-version=2025-09-01</code> with the index schema in the request body" },
+      { key: "C", text: "<code>POST /indexes/{index-name}/create?api-version=2025-09-01</code>" },
+      { key: "D", text: "<code>PATCH /indexes?api-version=2025-09-01</code> with the index name in the body" }
+    ],
+    answer: "A",
+    explanation: "Creating a new Azure AI Search index uses <code>POST /indexes</code> with the complete index definition (name, fields, suggesters, scoring profiles) in the request body. <code>PUT /indexes/{name}</code> is used to create <strong>or update</strong> an existing index. The POST method will fail if an index with the same name already exists, while PUT will update it. Both require an admin API key.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-023",
+    type: "single",
+    domain: "D6",
+    topic: "Portal: Search Scaling",
+    question: "Memphis Public Library's search service is experiencing slow query response times during peak hours. An administrator wants to add more replicas to improve query throughput. Where in the Azure portal should they configure this?",
+    options: [
+      { key: "A", text: "The search service's Scale page under the Settings section" },
+      { key: "B", text: "The search service's Overview page, clicking the 'Scale up' button" },
+      { key: "C", text: "The search service's Pricing tier page to select a higher SKU" },
+      { key: "D", text: "The subscription's Resource providers section to increase quota" }
+    ],
+    answer: "A",
+    explanation: "The <strong>Scale</strong> page under <strong>Settings</strong> in the Azure portal search service lets you adjust the number of <strong>replicas</strong> (for query throughput and high availability) and <strong>partitions</strong> (for storage and indexing throughput) using slider controls. Adding replicas distributes query load across more instances. Changing the pricing tier (SKU) would require creating a new service — you cannot change SKU in-place.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-024",
+    type: "order",
+    domain: "D6",
+    topic: "Portal: Indexer Pipeline Setup",
+    question: "Place the steps for setting up an Azure AI Search indexer with a skillset and knowledge store in the correct order:",
+    options: [
+      { key: "A", text: "Create a data source connection pointing to your Azure Blob Storage container" },
+      { key: "B", text: "Create a search index with fields for both source content and enriched output" },
+      { key: "C", text: "Create a skillset with AI skills (OCR, NER, etc.) and a knowledge store definition" },
+      { key: "D", text: "Create an indexer that references the data source, index, and skillset, with output field mappings" },
+      { key: "E", text: "Run the indexer and verify enriched documents appear in the index and knowledge store" }
+    ],
+    answer: ["A", "B", "C", "D", "E"],
+    explanation: "The enrichment pipeline setup order: (1) <strong>Data source</strong> — defines where documents come from, (2) <strong>Index</strong> — defines the target schema for enriched content, (3) <strong>Skillset</strong> — defines AI enrichment steps and knowledge store projections, (4) <strong>Indexer</strong> — connects everything with field mappings and output field mappings, (5) <strong>Run and verify</strong>. The indexer references all three resources, so they must exist first.",
+    cramRef: "../04-search-knowledge.html"
+  },
+  {
+    id: "d6-025",
+    type: "single",
+    domain: "D6",
+    topic: "Portal: Skillset Configuration",
+    question: "University of Memphis is using the Azure portal's Import data wizard to set up AI enrichment for their research paper index. At which step of the wizard do they configure the cognitive skills (OCR, entity recognition, key phrase extraction)?",
+    options: [
+      { key: "A", text: "Step 1: Connect to your data — under the 'AI enrichment' tab" },
+      { key: "B", text: "Step 2: Add cognitive skills (optional) — select skills and attach an AI Services resource" },
+      { key: "C", text: "Step 3: Customize target index — add skill output fields to the index schema" },
+      { key: "D", text: "Step 4: Create an indexer — configure the skillset in the indexer settings" }
+    ],
+    answer: "B",
+    explanation: "The Import data wizard has 4 steps: (1) Connect to your data (select data source), (2) <strong>Add cognitive skills</strong> (attach an Azure AI Services resource and select which skills to apply), (3) Customize target index (configure field attributes), (4) Create an indexer (set schedule and options). The cognitive skills step is where you enable OCR, entity extraction, language detection, and other enrichments.",
+    cramRef: "../04-search-knowledge.html"
+  }
+];
+
+// ========== QUIZ ENGINE ==========
+const state = {
+  questions: [...QUESTIONS],
+  answers: {},
+  checked: {},
+  score: 0,
+  total: 0,
+  timerSec: 1500,
+  timerRef: null,
+  finished: false
+};
+
+function init() {
+  renderQuestions();
+  startTimer();
+  updateProgress();
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function toggleShuffle() {
+  state.questions = shuffle(state.questions);
+  state.answers = {};
+  state.checked = {};
+  state.score = 0;
+  state.total = 0;
+  state.finished = false;
+  document.getElementById('summary').style.display = 'none';
+  document.getElementById('summary').innerHTML = '';
+  renderQuestions();
+  updateProgress();
+}
+
+function startTimer() {
+  const el = document.getElementById('timer');
+  state.timerRef = setInterval(() => {
+    if (state.timerSec <= 0) { clearInterval(state.timerRef); finishExam(); return; }
+    state.timerSec--;
+    const m = Math.floor(state.timerSec / 60);
+    const s = state.timerSec % 60;
+    el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    if (state.timerSec < 300) el.classList.add('warning');
+  }, 1000);
+}
+
+function renderQuestions() {
+  const container = document.getElementById('questions');
+  container.innerHTML = state.questions.map((q, i) => renderQuestion(q, i)).join('');
+}
+
+function renderQuestion(q, idx) {
+  let body = '';
+  if (q.type !== 'casestudy' && q.scenario) body += `<div class="scenario-box">${q.scenario}</div>`;
+  if (q.code) body += `<pre><code>${q.code}</code></pre>`;
+
+  let instruction = '';
+  if (q.type === 'multi') instruction = `<div class="q-instruction">Select ${q.selectCount || 2} answers</div>`;
+  if (q.type === 'order') instruction = `<div class="q-instruction">Select the correct order (1 = first)</div>`;
+  if (q.type === 'match') instruction = `<div class="q-instruction">Match each item on the left to its corresponding item on the right</div>`;
+  if (q.type === 'code-fill') instruction = `<div class="q-instruction">Select the correct value for each blank in the code</div>`;
+  if (q.type === 'hotarea') instruction = `<div class="q-instruction">Click the line(s) that contain errors</div>`;
+  if (q.type === 'casestudy') instruction = `<div class="q-instruction">Read the scenario and answer all parts below</div>`;
+
+  let optionsHtml = '';
+  if (q.type === 'order') {
+    optionsHtml = '<div class="order-items">' + q.options.map((o, oi) => {
+      const selOpts = `<option value="">-</option>` + q.options.map((_, si) => `<option value="${si+1}">${si+1}</option>`).join('');
+      return `<div class="order-item" id="order-${q.id}-${o.key}"><select class="order-select" onchange="handleOrder('${q.id}','${o.key}',this.value)">${selOpts}</select><span class="order-text"><strong>${o.key}.</strong> ${o.text}</span></div>`;
+    }).join('') + '</div>';
+  } else if (q.type === 'match') {
+    optionsHtml = renderMatch(q);
+  } else if (q.type === 'code-fill') {
+    optionsHtml = renderCodeFill(q);
+  } else if (q.type === 'hotarea') {
+    optionsHtml = renderHotarea(q);
+  } else if (q.type === 'casestudy') {
+    optionsHtml = renderCaseStudy(q);
+  } else {
+    optionsHtml = '<div class="options">' + q.options.map(o =>
+      `<div class="option-row" id="opt-${q.id}-${o.key}" tabindex="0" role="button" onclick="handleSelect('${q.id}','${o.key}','${q.type}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();handleSelect('${q.id}','${o.key}','${q.type}');}"><span class="option-key">${o.key}.</span><span class="option-text">${o.text}</span><span class="option-indicator" id="ind-${q.id}-${o.key}"></span></div>`
+    ).join('') + '</div>';
+  }
+
+  return `<div class="question-card" id="qcard-${q.id}">
+    <div class="q-header"><div class="q-meta"><span class="badge badge-red">${q.topic}</span></div><span class="q-num">Q${idx+1} of ${state.questions.length}</span></div>
+    <div class="q-text">${q.question}</div>
+    ${body}${instruction}${optionsHtml}
+    <button class="btn btn-primary btn-sm" id="checkbtn-${q.id}" onclick="checkAnswer('${q.id}')">Check Answer</button>
+    <div class="feedback" id="fb-${q.id}"></div>
+  </div>`;
+}
+
+// ========== RENDER FUNCTIONS FOR NEW TYPES ==========
+
+function renderMatch(q) {
+  const shuffled = q.pairs.map((p, i) => ({...p, origIdx: i}));
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  if (!window._matchShuffles) window._matchShuffles = {};
+  window._matchShuffles[q.id] = shuffled;
+
+  const leftHtml = q.pairs.map((p, i) =>
+    `<div class="match-item" id="match-l-${q.id}-${i}"><span class="match-num">${i+1}.</span> ${p.left}</div>`
+  ).join('');
+
+  const selOpts = `<option value="">-</option>` + q.pairs.map((_, i) =>
+    `<option value="${i}">${i+1}</option>`
+  ).join('');
+
+  const rightHtml = shuffled.map((p, i) =>
+    `<div class="match-item" id="match-r-${q.id}-${i}"><select class="match-select" onchange="handleMatch('${q.id}',${i},this.value)">${selOpts}</select> ${p.right}</div>`
+  ).join('');
+
+  return `<div class="match-container"><div class="match-col"><div class="match-col-header">Term</div>${leftHtml}</div><div class="match-col"><div class="match-col-header">Definition</div>${rightHtml}</div></div>`;
+}
+
+function renderCodeFill(q) {
+  let html = q.codeTemplate;
+  q.blanks.forEach(b => {
+    const opts = `<option value="">---</option>` + b.options.map(o =>
+      `<option value="${o}">${o}</option>`
+    ).join('');
+    html = html.replace(`[${b.id}]`, `<select class="code-fill-select" id="cf-${q.id}-${b.id}" onchange="handleCodeFill('${q.id}','${b.id}',this.value)">${opts}</select>`);
+  });
+  return `<pre class="code-fill-pre"><code>${html}</code></pre>`;
+}
+
+function renderHotarea(q) {
+  const lines = q.codeLines.map(l =>
+    `<div class="hotarea-line" id="ha-${q.id}-${l.id}" tabindex="0" role="button" onclick="handleHotarea('${q.id}',${l.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();handleHotarea('${q.id}',${l.id});}"><span class="hotarea-linenum">${l.id}</span><span class="hotarea-code">${l.text}</span></div>`
+  ).join('');
+  return `<div class="hotarea-lines">${lines}</div>`;
+}
+
+function renderCaseStudy(q) {
+  let html = `<div class="casestudy-scenario">${q.scenario}</div>`;
+  q.subQuestions.forEach((sq, si) => {
+    const sqInstruction = sq.type === 'multi' ? `<div class="q-instruction">Select ${sq.selectCount || 2} answers</div>` : '';
+    const sqOptions = sq.options.map(o =>
+      `<div class="option-row" id="opt-${sq.id}-${o.key}" tabindex="0" role="button" onclick="handleSelect('${sq.id}','${o.key}','${sq.type}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();handleSelect('${sq.id}','${o.key}','${sq.type}');}"><span class="option-key">${o.key}.</span><span class="option-text">${o.text}</span><span class="option-indicator" id="ind-${sq.id}-${o.key}"></span></div>`
+    ).join('');
+    html += `<div class="casestudy-subq"><div class="casestudy-subq-label">Part ${String.fromCharCode(65+si)}</div><div class="q-text">${sq.question}</div>${sqInstruction}<div class="options">${sqOptions}</div><div class="feedback" id="fb-${sq.id}"></div></div>`;
+  });
+  return html;
+}
+
+// ========== HANDLER FUNCTIONS ==========
+
+function handleSelect(qId, key, type) {
+  if (state.checked[qId]) return;
+  if (type === 'multi') {
+    if (!state.answers[qId]) state.answers[qId] = [];
+    const idx = state.answers[qId].indexOf(key);
+    if (idx > -1) state.answers[qId].splice(idx, 1);
+    else state.answers[qId].push(key);
+  } else {
+    state.answers[qId] = key;
+  }
+  // Update UI
+  const q = state.questions.find(x => x.id === qId);
+  // For casestudy sub-questions, find the sub-question's options
+  let opts;
+  if (q && q.options) {
+    opts = q.options;
+  } else {
+    // Search sub-questions across all casestudy questions
+    for (const cq of state.questions) {
+      if (cq.type === 'casestudy' && cq.subQuestions) {
+        const sq = cq.subQuestions.find(s => s.id === qId);
+        if (sq) { opts = sq.options; break; }
+      }
+    }
+  }
+  if (opts) {
+    opts.forEach(o => {
+      const el = document.getElementById(`opt-${qId}-${o.key}`);
+      if (!el) return;
+      el.classList.remove('selected');
+      if (type === 'multi') {
+        if (state.answers[qId] && state.answers[qId].includes(o.key)) el.classList.add('selected');
+      } else {
+        if (state.answers[qId] === o.key) el.classList.add('selected');
+      }
+    });
+  }
+  // Mark card as answered
+  if (q) {
+    document.getElementById('qcard-' + qId).classList.add('has-answer');
+  } else {
+    // This is a casestudy sub-question; mark the parent card
+    for (const cq of state.questions) {
+      if (cq.type === 'casestudy' && cq.subQuestions) {
+        const sq = cq.subQuestions.find(s => s.id === qId);
+        if (sq) { document.getElementById('qcard-' + cq.id).classList.add('has-answer'); break; }
+      }
+    }
+  }
+  updateProgress();
+}
+
+function handleOrder(qId, key, val) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = {};
+  state.answers[qId][key] = parseInt(val);
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+function handleMatch(qId, rightIdx, leftIdx) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = {};
+  state.answers[qId][rightIdx] = leftIdx === '' ? null : parseInt(leftIdx);
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+function handleCodeFill(qId, blankId, value) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = {};
+  state.answers[qId][blankId] = value;
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+function handleHotarea(qId, lineId) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = [];
+  const idx = state.answers[qId].indexOf(lineId);
+  if (idx > -1) state.answers[qId].splice(idx, 1);
+  else state.answers[qId].push(lineId);
+  const el = document.getElementById(`ha-${qId}-${lineId}`);
+  el.classList.toggle('selected');
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+// ========== GRADING ==========
+
+function checkAnswer(qId) {
+  if (state.checked[qId]) return;
+  const q = state.questions.find(x => x.id === qId);
+
+  // Check if question has been answered
+  let hasAnswer;
+  if (q.type === 'casestudy') {
+    hasAnswer = q.subQuestions && q.subQuestions.some(sq => state.answers[sq.id] !== undefined);
+  } else if (q.type === 'match' || q.type === 'order' || q.type === 'code-fill') {
+    hasAnswer = state.answers[qId] && Object.keys(state.answers[qId]).length > 0;
+  } else if (q.type === 'multi') {
+    hasAnswer = state.answers[qId] && state.answers[qId].length > 0;
+  } else if (q.type === 'hotarea') {
+    hasAnswer = state.answers[qId] && state.answers[qId].length > 0;
+  } else {
+    hasAnswer = state.answers[qId] !== undefined;
+  }
+  if (!hasAnswer) {
+    const card = document.getElementById(`qcard-${qId}`);
+    card.style.borderColor = 'var(--amber)';
+    card.style.transition = 'border-color 0.3s';
+    setTimeout(() => { card.style.borderColor = ''; }, 1000);
+    return;
+  }
+
+  state.checked[qId] = true;
+  state.total++;
+
+  let correct = false;
+
+  if (q.type === 'order') {
+    const ans = state.answers[qId] || {};
+    correct = true;
+    q.options.forEach(o => {
+      const userPos = ans[o.key];
+      const correctPos = q.answer.indexOf(o.key) + 1;
+      const el = document.getElementById(`order-${qId}-${o.key}`);
+      if (userPos === correctPos) {
+        el.classList.add('correct-pos');
+      } else {
+        el.classList.add('wrong-pos');
+        correct = false;
+      }
+      el.querySelector('select').disabled = true;
+    });
+
+  } else if (q.type === 'match') {
+    const ans = state.answers[qId] || {};
+    const shuffled = window._matchShuffles[qId];
+    correct = true;
+    shuffled.forEach((p, ri) => {
+      const userLeft = ans[ri];
+      const correctLeft = p.origIdx;
+      const el = document.getElementById(`match-r-${qId}-${ri}`);
+      if (userLeft === correctLeft) {
+        el.classList.add('correct-match');
+      } else {
+        el.classList.add('wrong-match');
+        correct = false;
+      }
+      el.querySelector('select').disabled = true;
+    });
+    shuffled.forEach((p, ri) => {
+      const userLeft = ans[ri];
+      const correctLeft = p.origIdx;
+      if (userLeft === correctLeft) {
+        document.getElementById(`match-l-${qId}-${correctLeft}`).classList.add('correct-match');
+      }
+    });
+
+  } else if (q.type === 'code-fill') {
+    const ans = state.answers[qId] || {};
+    correct = true;
+    q.blanks.forEach(b => {
+      const sel = document.getElementById(`cf-${qId}-${b.id}`);
+      if (ans[b.id] === b.answer) {
+        sel.classList.add('correct-blank');
+      } else {
+        sel.classList.add('wrong-blank');
+        correct = false;
+      }
+      sel.disabled = true;
+    });
+
+  } else if (q.type === 'hotarea') {
+    const userLines = (state.answers[qId] || []).sort();
+    const correctLines = [...q.answer].sort();
+    correct = userLines.length === correctLines.length && userLines.every((v, i) => v === correctLines[i]);
+    q.codeLines.forEach(l => {
+      const el = document.getElementById(`ha-${qId}-${l.id}`);
+      el.style.cursor = 'default';
+      const isCorrect = q.answer.includes(l.id);
+      const isSelected = (state.answers[qId] || []).includes(l.id);
+      if (isCorrect && isSelected) el.classList.add('correct-line');
+      else if (isCorrect && !isSelected) el.classList.add('missed-line');
+      else if (!isCorrect && isSelected) el.classList.add('wrong-line');
+      el.classList.remove('selected');
+      el.onclick = null;
+    });
+
+  } else if (q.type === 'casestudy') {
+    correct = true;
+    q.subQuestions.forEach(sq => {
+      let sqCorrect = false;
+      if (sq.type === 'multi') {
+        const userAns = (state.answers[sq.id] || []).sort();
+        const correctAns = [...sq.answer].sort();
+        sqCorrect = userAns.length === correctAns.length && userAns.every((v, i) => v === correctAns[i]);
+      } else {
+        sqCorrect = state.answers[sq.id] === sq.answer;
+      }
+      if (!sqCorrect) correct = false;
+      // Highlight sub-question options
+      sq.options.forEach(o => {
+        const el = document.getElementById(`opt-${sq.id}-${o.key}`);
+        if (el) {
+          el.classList.add('disabled');
+          const isCorrectKey = Array.isArray(sq.answer) ? sq.answer.includes(o.key) : sq.answer === o.key;
+          const isSelected = Array.isArray(state.answers[sq.id]) ? (state.answers[sq.id] || []).includes(o.key) : state.answers[sq.id] === o.key;
+          if (isCorrectKey) { el.classList.add('correct-answer'); const ind = document.getElementById(`ind-${sq.id}-${o.key}`); if(ind) ind.textContent = '\u2713'; }
+          else if (isSelected) { el.classList.add('wrong-answer'); const ind = document.getElementById(`ind-${sq.id}-${o.key}`); if(ind) ind.textContent = '\u2717'; }
+        }
+      });
+      // Show sub-question feedback
+      const fb = document.getElementById(`fb-${sq.id}`);
+      if (fb) {
+        fb.className = `feedback show ${sqCorrect ? 'correct' : 'incorrect'}`;
+        fb.innerHTML = `<strong>${sqCorrect ? '\u2713 Correct' : '\u2717 Incorrect'}</strong>${sq.explanation}`;
+      }
+    });
+
+  } else {
+    // single, multi, scenario
+    if (q.type === 'multi') {
+      const userAns = (state.answers[qId] || []).sort();
+      const correctAns = [...q.answer].sort();
+      correct = userAns.length === correctAns.length && userAns.every((v, i) => v === correctAns[i]);
+    } else {
+      correct = state.answers[qId] === q.answer;
+    }
+    // Highlight options
+    q.options.forEach(o => {
+      const el = document.getElementById(`opt-${qId}-${o.key}`);
+      el.classList.add('disabled');
+      const isCorrectKey = Array.isArray(q.answer) ? q.answer.includes(o.key) : q.answer === o.key;
+      const isSelected = Array.isArray(state.answers[qId]) ? state.answers[qId].includes(o.key) : state.answers[qId] === o.key;
+      if (isCorrectKey) {
+        el.classList.add('correct-answer');
+        document.getElementById(`ind-${qId}-${o.key}`).textContent = '\u2713';
+      } else if (isSelected && !isCorrectKey) {
+        el.classList.add('wrong-answer');
+        document.getElementById(`ind-${qId}-${o.key}`).textContent = '\u2717';
+      }
+    });
+  }
+
+  if (correct) state.score++;
+  const card = document.getElementById(`qcard-${qId}`);
+  card.classList.add(correct ? 'correct' : 'incorrect');
+  document.getElementById(`checkbtn-${qId}`).disabled = true;
+
+  const fb = document.getElementById(`fb-${qId}`);
+  fb.className = `feedback show ${correct ? 'correct' : 'incorrect'}`;
+  fb.innerHTML = `<strong>${correct ? '\u2713 Correct!' : '\u2717 Incorrect'}</strong>${q.explanation}${q.cramRef ? `<div class="cram-link"><a href="${q.cramRef}" target="_blank">Study this topic \u2192</a></div>` : ''}`;
+
+  updateProgress();
+}
+
+function gradeAll() {
+  if (!confirm('Grade all unanswered questions? Unanswered questions will be marked incorrect.')) return;
+  // Force-grade unanswered by temporarily setting empty answers
+  state.questions.forEach(q => {
+    if (!state.checked[q.id]) {
+      // Ensure answer exists so checkAnswer doesn't bounce
+      if (state.answers[q.id] === undefined) {
+        if (q.type === 'multi' || q.type === 'hotarea') state.answers[q.id] = [];
+        else if (q.type === 'order' || q.type === 'match' || q.type === 'code-fill') state.answers[q.id] = {};
+        else if (q.type === 'casestudy') {
+          q.subQuestions.forEach(sq => { if (state.answers[sq.id] === undefined) state.answers[sq.id] = sq.type === 'multi' ? [] : ''; });
+        }
+        else state.answers[q.id] = '';
+      }
+      checkAnswer(q.id);
+    }
+  });
+}
+
+function finishExam() {
+  if (state.finished) return;
+  state.finished = true;
+  clearInterval(state.timerRef);
+  gradeAll();
+
+  const pct = state.questions.length > 0 ? Math.round((state.score / state.questions.length) * 100) : 0;
+  const pass = pct >= 70;
+
+  // Topic breakdown
+  const topics = {};
+  state.questions.forEach(q => {
+    if (!topics[q.topic]) topics[q.topic] = { correct: 0, total: 0 };
+    topics[q.topic].total++;
+    const isCorrect = state.checked[q.id] && document.getElementById(`qcard-${q.id}`).classList.contains('correct');
+    if (isCorrect) topics[q.topic].correct++;
+  });
+
+  let breakdownHtml = Object.entries(topics).map(([topic, data]) => {
+    const tPct = Math.round((data.correct / data.total) * 100);
+    const color = tPct >= 70 ? 'var(--green)' : 'var(--red)';
+    return `<div class="breakdown-row"><span>${topic}</span><div class="breakdown-bar"><div class="breakdown-bar-fill" style="width:${tPct}%;background:${color};"></div></div><span>${data.correct}/${data.total}</span></div>`;
+  }).join('');
+
+  // Review list
+  let reviewHtml = state.questions.map((q, i) => {
+    const card = document.getElementById(`qcard-${q.id}`);
+    const isCorrect = card.classList.contains('correct');
+    const isIncorrect = card.classList.contains('incorrect');
+    const dotClass = isCorrect ? 'correct' : (isIncorrect ? 'incorrect' : 'unanswered');
+    return `<div class="review-item" onclick="document.getElementById('qcard-${q.id}').scrollIntoView({behavior:'smooth'})"><div class="review-dot ${dotClass}"></div>Q${i+1}: ${q.topic}</div>`;
+  }).join('');
+
+  const summary = document.getElementById('summary');
+  summary.style.display = 'block';
+  summary.innerHTML = `<div class="summary-card">
+    <div class="score-big ${pass ? 'pass' : 'fail'}">${pct}%</div>
+    <div class="score-label">${state.score} of ${state.questions.length} correct</div>
+    <div class="pass-fail ${pass ? 'pass' : 'fail'}">${pass ? 'PASS' : 'NEEDS MORE STUDY'}</div>
+    <div class="breakdown"><h3>Topic Breakdown</h3>${breakdownHtml}</div>
+    <div class="review-list"><h3 style="color:var(--accent);font-size:0.95rem;margin:1rem 0 0.5rem;">Question Review</h3>${reviewHtml}</div>
+    <div class="btn-group" style="justify-content:center;margin-top:1.5rem;">
+      <button class="btn btn-primary" onclick="location.reload()">Retake Test</button>
+      <button class="btn btn-secondary" onclick="window.scrollTo({top:0,behavior:'smooth'})">Review Answers</button>
+      <a href="../index.html" class="btn btn-secondary" style="text-decoration:none;">Study Cram Sheets</a>
+    </div>
+  </div>`;
+  summary.scrollIntoView({ behavior: 'smooth' });
+}
+
+function updateProgress() {
+  // Count answered questions (for casestudy, count the parent question if any sub-question is answered)
+  let answered = 0;
+  state.questions.forEach(q => {
+    if (q.type === 'casestudy') {
+      const allAnswered = q.subQuestions && q.subQuestions.every(sq => state.answers[sq.id] !== undefined);
+      if (allAnswered) answered++;
+    } else if (state.answers[q.id] !== undefined) {
+      answered++;
+    }
+  });
+  const total = state.questions.length;
+  document.getElementById('progressFill').style.width = `${(answered/total)*100}%`;
+  document.getElementById('progressText').textContent = `${answered} of ${total} answered`;
+  document.getElementById('scoreDisplay').textContent = `Score: ${state.score}/${state.total}`;
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glossary | AI-102 Cram Sheet</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #232733; --border: #2e3345;
+    --text: #e4e6ef; --text-dim: #8b8fa3;
+    --amber: #f5a623; --amber-dim: rgba(245,166,35,0.15);
+    --green: #34d399; --green-dim: rgba(52,211,153,0.15);
+    --blue: #60a5fa; --blue-dim: rgba(96,165,250,0.15);
+    --red: #f87171; --red-dim: rgba(248,113,113,0.15);
+    --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.15);
+    --cyan: #22d3ee; --cyan-dim: rgba(34,211,238,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--amber); }
+  .header h1 { font-size: 2.2rem; color: var(--amber); margin-bottom: 0.3rem; }
+  .header .subtitle { color: var(--text-dim); font-size: 1rem; }
+  .badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); }
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); }
+  .badge-red { background: var(--red-dim); color: var(--red); }
+  .badge-purple { background: var(--purple-dim); color: var(--purple); }
+  .badge-cyan { background: var(--cyan-dim); color: var(--cyan); }
+  .grid { display: grid; gap: 1.5rem; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+  .card:hover { border-color: var(--amber); }
+  .card h2 { font-size: 1.1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+  .card h3 { font-size: 0.95rem; color: var(--amber); margin: 1rem 0 0.5rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--amber); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  tr:hover td { background: var(--surface2); }
+  code { background: var(--surface2); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.8rem; color: var(--cyan); }
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.5; margin: 0.75rem 0; }
+  pre code { background: none; padding: 0; }
+  .key-fact { background: var(--surface2); border-left: 3px solid var(--amber); padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0; font-size: 0.85rem; }
+  .key-fact strong { color: var(--amber); }
+  .tip { background: var(--green-dim); border: 1px solid rgba(52,211,153,0.3); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; }
+  .tip strong { color: var(--green); }
+  .warning { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.3); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; }
+  .warning strong { color: var(--red); }
+  .nav-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .nav-links a { color: var(--blue); text-decoration: none; font-size: 0.8rem; padding: 0.3rem 0.8rem; border: 1px solid var(--blue); border-radius: 6px; }
+  .nav-links a:hover { background: var(--blue-dim); }
+  @media print { body { background: #fff; color: #000; } .card { border: 1px solid #ccc; break-inside: avoid; } th { color: #333; } .header h1 { color: #333; } }
+
+  /* Glossary-specific styles */
+  .search-bar { position: sticky; top: 0; z-index: 100; background: var(--bg); padding: 1rem 0 0.75rem; margin-bottom: 1rem; }
+  .search-bar input { width: 100%; padding: 0.75rem 1rem; font-size: 1rem; background: var(--surface); color: var(--text); border: 2px solid var(--border); border-radius: 8px; outline: none; font-family: inherit; }
+  .search-bar input:focus { border-color: var(--amber); }
+  .search-bar input::placeholder { color: var(--text-dim); }
+  .jump-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+  .jump-links a { color: var(--amber); text-decoration: none; font-size: 0.8rem; padding: 0.3rem 0.8rem; border: 1px solid var(--amber); border-radius: 6px; transition: background 0.2s; }
+  .jump-links a:hover { background: var(--amber-dim); }
+  .dl-row { display: flex; gap: 1rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+  .dl-row:last-child { border-bottom: none; }
+  .dl-term { flex: 0 0 200px; font-weight: 700; color: var(--amber); }
+  .dl-def { flex: 1; }
+  .card-blue { border-left: 4px solid var(--blue); }
+  .card-purple { border-left: 4px solid var(--purple); }
+  .card-cyan { border-left: 4px solid var(--cyan); }
+  .card-red { border-left: 4px solid var(--red); }
+  .card-amber { border-left: 4px solid var(--amber); }
+  .card-green { border-left: 4px solid var(--green); }
+  .match-count { color: var(--text-dim); font-size: 0.85rem; text-align: right; margin-bottom: 0.75rem; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>09 &mdash; Comprehensive Glossary</h1>
+  <div class="subtitle">AI-102 Cram Sheet &bull; Services, Acronyms, API Parameters, Limits, Safety, RBAC &amp; Exam Traps</div>
+</div>
+
+<!-- ───────────────── SEARCH BAR ───────────────── -->
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Search terms, definitions, acronyms..." autofocus>
+</div>
+<div class="match-count" id="matchCount"></div>
+
+<!-- ───────────────── JUMP LINKS ───────────────── -->
+<div class="jump-links" id="jumpLinks">
+  <a href="#services">Azure Services</a>
+  <a href="#acronyms">Acronyms</a>
+  <a href="#api-params">API Parameters</a>
+  <a href="#limits">Key Limits</a>
+  <a href="#content-safety">Content Safety</a>
+  <a href="#rbac">RBAC Roles</a>
+  <a href="#exam-traps">Exam Traps</a>
+</div>
+
+<!-- ───────────────── SECTION 1: AZURE SERVICES ───────────────── -->
+<div class="card card-blue" id="services">
+  <h2><span class="badge badge-blue">Services</span> Azure Services</h2>
+  <div class="glossary-list">
+    <div class="dl-row"><div class="dl-term">Azure OpenAI</div><div class="dl-def">GPT models, DALL-E, embeddings, Whisper. Package: <code>openai</code></div></div>
+    <div class="dl-row"><div class="dl-term">Azure AI Vision</div><div class="dl-def">Image analysis, OCR, object/people detection. Package: <code>azure-ai-vision-imageanalysis</code></div></div>
+    <div class="dl-row"><div class="dl-term">Custom Vision</div><div class="dl-def">Train custom image classification &amp; object detection models. Portal: customvision.ai</div></div>
+    <div class="dl-row"><div class="dl-term">Azure AI Language</div><div class="dl-def">Text analytics, CLU, QnA, sentiment, PII, entity recognition. Package: <code>azure-ai-textanalytics</code></div></div>
+    <div class="dl-row"><div class="dl-term">Azure AI Speech</div><div class="dl-def">STT, TTS, translation, SSML, custom speech. Package: <code>azure-cognitiveservices-speech</code></div></div>
+    <div class="dl-row"><div class="dl-term">Azure Translator</div><div class="dl-def">Text &amp; document translation, transliteration, custom models. Package: <code>azure-ai-translation-text</code></div></div>
+    <div class="dl-row"><div class="dl-term">Azure AI Search</div><div class="dl-def">Full-text, vector, semantic search with skillsets &amp; knowledge store. Package: <code>azure-search-documents</code></div></div>
+    <div class="dl-row"><div class="dl-term">Document Intelligence</div><div class="dl-def">Extract structured data from forms/documents. Package: <code>azure-ai-formrecognizer</code></div></div>
+    <div class="dl-row"><div class="dl-term">Content Safety</div><div class="dl-def">Detect harmful content (hate/sexual/violence/self-harm). Package: <code>azure-ai-contentsafety</code></div></div>
+    <div class="dl-row"><div class="dl-term">Video Indexer</div><div class="dl-def">Extract insights from video (faces, OCR, labels, speakers, emotions). REST API only.</div></div>
+    <div class="dl-row"><div class="dl-term">Spatial Analysis</div><div class="dl-def">Real-time video analytics in Docker container (personcount, personcrossingline)</div></div>
+    <div class="dl-row"><div class="dl-term">AI Foundry</div><div class="dl-def">Hub/project model management portal. Formerly Azure AI Studio. Package: <code>azure-ai-projects</code></div></div>
+    <div class="dl-row"><div class="dl-term">Agent Service</div><div class="dl-def">Build AI agents with tools (code interpreter, file search, functions)</div></div>
+    <div class="dl-row"><div class="dl-term">Multi-service Resource</div><div class="dl-def">Single endpoint/key for Vision, Language, Speech, Content Safety. Type: CognitiveServices</div></div>
+    <div class="dl-row"><div class="dl-term">Key Vault</div><div class="dl-def">Secure credential/secret storage</div></div>
+    <div class="dl-row"><div class="dl-term">Application Insights</div><div class="dl-def">Monitoring, tracing, diagnostics for AI resources</div></div>
+  </div>
+</div>
+
+<!-- ───────────────── SECTION 2: ACRONYMS ───────────────── -->
+<div class="card card-purple" id="acronyms" style="margin-top:1.5rem;">
+  <h2><span class="badge badge-purple">Reference</span> Acronyms</h2>
+  <table>
+    <thead>
+      <tr><th>Acronym</th><th>Full Name</th><th>Context</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>CLU</strong></td><td>Conversational Language Understanding</td><td>Intent + entity recognition from text</td></tr>
+      <tr><td><strong>QnA</strong></td><td>Question Answering</td><td>FAQ/knowledge base bot service</td></tr>
+      <tr><td><strong>NER</strong></td><td>Named Entity Recognition</td><td>Identify Person, Location, Organization, etc.</td></tr>
+      <tr><td><strong>PII</strong></td><td>Personally Identifiable Information</td><td>SSN, email, phone, address detection</td></tr>
+      <tr><td><strong>RAG</strong></td><td>Retrieval-Augmented Generation</td><td>Ground LLM responses in retrieved documents</td></tr>
+      <tr><td><strong>RRF</strong></td><td>Reciprocal Rank Fusion</td><td>Merge keyword + vector search results</td></tr>
+      <tr><td><strong>HNSW</strong></td><td>Hierarchical Navigable Small World</td><td>Approximate nearest neighbor vector algorithm</td></tr>
+      <tr><td><strong>BM25</strong></td><td>Best Matching 25</td><td>Default keyword search ranking algorithm</td></tr>
+      <tr><td><strong>SSML</strong></td><td>Speech Synthesis Markup Language</td><td>XML for controlling TTS voice output</td></tr>
+      <tr><td><strong>STT</strong></td><td>Speech-to-Text</td><td>Audio transcription</td></tr>
+      <tr><td><strong>TTS</strong></td><td>Text-to-Speech</td><td>Audio synthesis from text</td></tr>
+      <tr><td><strong>OCR</strong></td><td>Optical Character Recognition</td><td>Extract text from images</td></tr>
+      <tr><td><strong>LLM</strong></td><td>Large Language Model</td><td>GPT-4o, GPT-3.5, etc.</td></tr>
+      <tr><td><strong>GPT</strong></td><td>Generative Pre-Trained Transformer</td><td>OpenAI model architecture</td></tr>
+      <tr><td><strong>ONNX</strong></td><td>Open Neural Network Exchange</td><td>Model export format (Custom Vision)</td></tr>
+      <tr><td><strong>PTU</strong></td><td>Provisioned Throughput Units</td><td>Reserved capacity for Azure OpenAI</td></tr>
+      <tr><td><strong>TPM</strong></td><td>Tokens Per Minute</td><td>Rate limit measurement</td></tr>
+      <tr><td><strong>RPM</strong></td><td>Requests Per Minute</td><td>Rate limit measurement</td></tr>
+      <tr><td><strong>RBAC</strong></td><td>Role-Based Access Control</td><td>Azure permission system</td></tr>
+      <tr><td><strong>SLA</strong></td><td>Service Level Agreement</td><td>Uptime guarantee (requires 2+ replicas for search)</td></tr>
+      <tr><td><strong>BLEU</strong></td><td>Bilingual Evaluation Understudy</td><td>Translation quality metric (40-60 = good)</td></tr>
+      <tr><td><strong>ROUGE</strong></td><td>Recall-Oriented Understudy for Gisting Evaluation</td><td>Summarization quality metric</td></tr>
+      <tr><td><strong>METEOR</strong></td><td>Metric for Evaluation of Translation with Explicit ORdering</td><td>Translation metric</td></tr>
+      <tr><td><strong>mAP</strong></td><td>Mean Average Precision</td><td>Object detection accuracy metric</td></tr>
+      <tr><td><strong>DAG</strong></td><td>Directed Acyclic Graph</td><td>Prompt flow architecture</td></tr>
+      <tr><td><strong>XPIA</strong></td><td>Cross-domain Prompt Injection Attack</td><td>Indirect attack via third-party content</td></tr>
+      <tr><td><strong>MCP</strong></td><td>Model Context Protocol</td><td>Agent tool integration standard</td></tr>
+      <tr><td><strong>NIST</strong></td><td>National Institute of Standards and Technology</td><td>AI governance framework reference</td></tr>
+      <tr><td><strong>RAI</strong></td><td>Responsible AI</td><td>Microsoft's 6 principles framework</td></tr>
+      <tr><td><strong>EDM</strong></td><td>Entity Data Model</td><td>AI Search field type system (Edm.String, etc.)</td></tr>
+      <tr><td><strong>OData</strong></td><td>Open Data Protocol</td><td>AI Search query filter syntax</td></tr>
+      <tr><td><strong>PHI</strong></td><td>Protected Health Information</td><td>HIPAA-regulated medical data</td></tr>
+      <tr><td><strong>JSONL</strong></td><td>JSON Lines</td><td>Fine-tuning training data format (one JSON per line)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ───────────────── SECTION 3: API PARAMETERS ───────────────── -->
+<div class="card card-cyan" id="api-params" style="margin-top:1.5rem;">
+  <h2><span class="badge badge-cyan">API</span> API Parameters</h2>
+
+  <h3>Chat Completions</h3>
+  <table>
+    <thead>
+      <tr><th>Parameter</th><th>Type</th><th>Range</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>temperature</code></td><td>float</td><td>0&ndash;2</td><td>Randomness. 0=deterministic, 2=very creative. Default: 1</td></tr>
+      <tr><td><code>top_p</code></td><td>float</td><td>0&ndash;1</td><td>Nucleus sampling. Change ONE of temp OR top_p, not both. Default: 1</td></tr>
+      <tr><td><code>max_tokens</code></td><td>int</td><td>1&ndash;model_max</td><td>Maximum completion tokens</td></tr>
+      <tr><td><code>frequency_penalty</code></td><td>float</td><td>-2 to 2</td><td>Penalize tokens by repetition count. Default: 0</td></tr>
+      <tr><td><code>presence_penalty</code></td><td>float</td><td>-2 to 2</td><td>Flat penalty if token appeared at all. Default: 0</td></tr>
+      <tr><td><code>stop</code></td><td>string/array</td><td>up to 4</td><td>Sequences that halt generation</td></tr>
+      <tr><td><code>n</code></td><td>int</td><td>1+</td><td>Number of completions. Default: 1</td></tr>
+      <tr><td><code>stream</code></td><td>bool</td><td>&mdash;</td><td>Enable SSE streaming. Default: false</td></tr>
+      <tr><td><code>seed</code></td><td>int</td><td>&mdash;</td><td>Best-effort deterministic output</td></tr>
+      <tr><td><code>response_format</code></td><td>object</td><td>&mdash;</td><td>text, json_object, or json_schema</td></tr>
+      <tr><td><code>tools</code></td><td>array</td><td>max 128</td><td>Function calling definitions</td></tr>
+      <tr><td><code>tool_choice</code></td><td>string/obj</td><td>&mdash;</td><td>auto, required, none, or specific function</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Message Roles</h3>
+  <table>
+    <thead>
+      <tr><th>Role</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>system</code></td><td>Initial instructions, persona, constraints (first message)</td></tr>
+      <tr><td><code>developer</code></td><td>Same as system but for o-series reasoning models</td></tr>
+      <tr><td><code>user</code></td><td>User input (text or multimodal array)</td></tr>
+      <tr><td><code>assistant</code></td><td>Model responses or few-shot examples</td></tr>
+      <tr><td><code>tool</code></td><td>Function/tool call results (includes tool_call_id)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>finish_reason Values</h3>
+  <table>
+    <thead>
+      <tr><th>Value</th><th>Meaning</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>stop</code></td><td>Normal completion or hit stop sequence</td></tr>
+      <tr><td><code>length</code></td><td>Hit max_tokens limit</td></tr>
+      <tr><td><code>content_filter</code></td><td>Content was blocked by safety filter</td></tr>
+      <tr><td><code>tool_calls</code></td><td>Model wants to invoke a tool/function</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Search Query Parameters</h3>
+  <table>
+    <thead>
+      <tr><th>Parameter</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>$search</code></td><td>Full-text search query</td></tr>
+      <tr><td><code>$filter</code></td><td>OData boolean filter (uses filterable fields)</td></tr>
+      <tr><td><code>$select</code></td><td>Fields to return (comma-separated)</td></tr>
+      <tr><td><code>$orderby</code></td><td>Sort fields (max 32 clauses, must be sortable)</td></tr>
+      <tr><td><code>$top</code></td><td>Results to return (default 50, max 1,000)</td></tr>
+      <tr><td><code>$skip</code></td><td>Offset for paging</td></tr>
+      <tr><td><code>$count</code></td><td>Include total match count (true/false)</td></tr>
+      <tr><td><code>searchMode</code></td><td>any (match ANY term, default) or all (match ALL)</td></tr>
+      <tr><td><code>queryType</code></td><td>simple (default), full (Lucene), semantic</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ───────────────── SECTION 4: KEY LIMITS ───────────────── -->
+<div class="card card-red" id="limits" style="margin-top:1.5rem;">
+  <h2><span class="badge badge-red">Limits</span> Key Limits Quick Reference</h2>
+  <table>
+    <thead>
+      <tr><th>Service / Feature</th><th>Limit</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Azure OpenAI resources per region</td><td>Max</td><td>30</td></tr>
+      <tr><td>Deployments per resource</td><td>Max</td><td>32</td></tr>
+      <tr><td>Messages per request</td><td>Max</td><td>2,048</td></tr>
+      <tr><td>Tools/functions per request</td><td>Max</td><td>128</td></tr>
+      <tr><td>Embeddings inputs per request</td><td>Max</td><td>2,048</td></tr>
+      <tr><td>Images per multimodal request</td><td>Max</td><td>50</td></tr>
+      <tr><td>GPT-4o context window</td><td>Tokens</td><td>128,000</td></tr>
+      <tr><td>GPT-3.5-Turbo context window</td><td>Tokens</td><td>16,385</td></tr>
+      <tr><td>DALL-E 3 images per request</td><td>Max</td><td>1</td></tr>
+      <tr><td>DALL-E 3 prompt length</td><td>Max</td><td>4,000 chars</td></tr>
+      <tr><td>Fine-tuning file size</td><td>Max</td><td>512 MB</td></tr>
+      <tr><td>Fine-tuning min examples</td><td>Min</td><td>10</td></tr>
+      <tr><td>Text Analytics chars/doc (sync)</td><td>Max</td><td>5,120</td></tr>
+      <tr><td>CLU utterances/project</td><td>Max</td><td>50,000</td></tr>
+      <tr><td>CLU intents/project</td><td>Max</td><td>500</td></tr>
+      <tr><td>CLU entities/project</td><td>Max</td><td>350</td></tr>
+      <tr><td>QnA answer length</td><td>Max</td><td>25,000 chars</td></tr>
+      <tr><td>Speech TTS synthesis</td><td>Max</td><td>10 minutes</td></tr>
+      <tr><td>SSML break duration</td><td>Max</td><td>20,000 ms</td></tr>
+      <tr><td>Translator chars/request</td><td>Max</td><td>50,000</td></tr>
+      <tr><td>Custom Translator parallel sentences</td><td>Min</td><td>10,000</td></tr>
+      <tr><td>AI Vision image file size</td><td>Max</td><td>20 MB</td></tr>
+      <tr><td>AI Vision image dimensions</td><td>Range</td><td>50x50 to 16,000x16,000</td></tr>
+      <tr><td>OCR printed languages</td><td>Count</td><td>164</td></tr>
+      <tr><td>OCR handwritten languages</td><td>Count</td><td>9</td></tr>
+      <tr><td>Custom Vision classification min images/tag</td><td>Min</td><td>5</td></tr>
+      <tr><td>Custom Vision detection min images/tag</td><td>Min</td><td>15</td></tr>
+      <tr><td>Doc Intelligence file size (S0)</td><td>Max</td><td>500 MB</td></tr>
+      <tr><td>Doc Intelligence pages (S0)</td><td>Max</td><td>2,000</td></tr>
+      <tr><td>Composed models (S0)</td><td>Max</td><td>500</td></tr>
+      <tr><td>Content Safety text</td><td>Max</td><td>10,000 chars</td></tr>
+      <tr><td>Content Safety image</td><td>Max</td><td>4 MB</td></tr>
+      <tr><td>Blocklist terms</td><td>Max</td><td>10,000</td></tr>
+      <tr><td>AI Search indexes (Free)</td><td>Max</td><td>3</td></tr>
+      <tr><td>AI Search indexes (S1)</td><td>Max</td><td>50</td></tr>
+      <tr><td>AI Search fields/index</td><td>Max</td><td>1,000</td></tr>
+      <tr><td>AI Search skills/skillset</td><td>Max</td><td>30</td></tr>
+      <tr><td>AI Search results/page</td><td>Max</td><td>1,000</td></tr>
+      <tr><td>Vector dimensions</td><td>Max</td><td>4,096</td></tr>
+      <tr><td>Agent code interpreter timeout</td><td>Active</td><td>1 hour</td></tr>
+      <tr><td>Agent file search file size</td><td>Max</td><td>512 MB</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ───────────────── SECTION 5: CONTENT SAFETY ───────────────── -->
+<div class="card card-amber" id="content-safety" style="margin-top:1.5rem;">
+  <h2><span class="badge badge-amber">Safety</span> Content Safety Reference</h2>
+
+  <h3>Harm Categories</h3>
+  <div class="dl-row"><div class="dl-term">Categories</div><div class="dl-def">Hate, Sexual, Violence, Self-Harm (multi-labeled)</div></div>
+
+  <h3>Severity Levels</h3>
+  <table>
+    <thead>
+      <tr><th>Level</th><th>Value</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Safe</td><td>0</td><td>No harmful content detected</td></tr>
+      <tr><td>Low</td><td>2</td><td>Mild content</td></tr>
+      <tr><td>Medium</td><td>4</td><td>Moderate content</td></tr>
+      <tr><td>High</td><td>6</td><td>Severe content</td></tr>
+    </tbody>
+  </table>
+  <div class="key-fact"><strong>Even numbers only:</strong> Severity levels are 0, 2, 4, 6 &mdash; NOT 0-3 or 1-4</div>
+
+  <h3>Filter Behavior</h3>
+  <div class="dl-row"><div class="dl-term">Default filter</div><div class="dl-def">Medium (blocks Medium + High)</div></div>
+  <div class="dl-row"><div class="dl-term">Prompt blocked</div><div class="dl-def">HTTP 400</div></div>
+  <div class="dl-row"><div class="dl-term">Completion blocked</div><div class="dl-def">HTTP 200, finish_reason: <code>content_filter</code></div></div>
+
+  <h3>RAI Principles</h3>
+  <div class="key-fact"><strong>F-R-P-I-T-A:</strong> Fairness, Reliability &amp; Safety, Privacy &amp; Security, Inclusiveness, Transparency, Accountability</div>
+</div>
+
+<!-- ───────────────── SECTION 6: RBAC ROLES ───────────────── -->
+<div class="card card-green" id="rbac" style="margin-top:1.5rem;">
+  <h2><span class="badge badge-green">Security</span> RBAC Roles</h2>
+  <table>
+    <thead>
+      <tr><th>Role</th><th>Permission</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Cognitive Services User</strong></td><td>Call APIs (data plane read)</td></tr>
+      <tr><td><strong>Cognitive Services Contributor</strong></td><td>Manage resources, NOT call APIs</td></tr>
+      <tr><td><strong>Cognitive Services OpenAI User</strong></td><td>Call OpenAI endpoints only</td></tr>
+      <tr><td><strong>Cognitive Services OpenAI Contributor</strong></td><td>Fine-tune + deploy OpenAI models</td></tr>
+      <tr><td><strong>Search Index Data Reader</strong></td><td>Query search indexes</td></tr>
+      <tr><td><strong>Search Index Data Contributor</strong></td><td>Upload/merge/delete search documents</td></tr>
+      <tr><td><strong>Search Service Contributor</strong></td><td>Full control over search service</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ───────────────── SECTION 7: EXAM TRAPS ───────────────── -->
+<div class="card card-red" id="exam-traps" style="margin-top:1.5rem;">
+  <h2><span class="badge badge-red">Traps</span> Exam Traps &amp; Distinctions</h2>
+  <div class="key-fact"><strong>temperature vs top_p:</strong> Change ONE, not both</div>
+  <div class="key-fact"><strong>frequency_penalty vs presence_penalty:</strong> frequency scales by repetition count; presence is a flat penalty if token appeared at all</div>
+  <div class="key-fact"><strong>Content filter responses:</strong> Prompt blocked &rarr; 400, Completion blocked &rarr; 200 with <code>content_filter</code></div>
+  <div class="key-fact"><strong>Severity levels:</strong> 0, 2, 4, 6 (even numbers only, NOT 0-3 or 1-4)</div>
+  <div class="key-fact"><strong>fieldMappings vs outputFieldMappings:</strong> fieldMappings = BEFORE enrichment, outputFieldMappings = AFTER enrichment</div>
+  <div class="key-fact"><strong>API key headers:</strong> <code>api-key</code> for OpenAI, <code>Ocp-Apim-Subscription-Key</code> for all others</div>
+  <div class="key-fact"><strong>Contributor vs User:</strong> Contributor = manage resources (NOT call APIs), User = call APIs (NOT manage)</div>
+  <div class="key-fact"><strong>S3 HD vs L-series:</strong> S3 HD = multi-tenancy (many indexes), L-series = storage-optimized (few indexes, huge data)</div>
+  <div class="key-fact"><strong>Semantic search:</strong> Re-ranks top 50 BM25 results only</div>
+  <div class="key-fact"><strong>Custom Vision export:</strong> Only compact domains can be exported (TensorFlow, CoreML, ONNX, Docker)</div>
+  <div class="key-fact"><strong>Query type default:</strong> Simple query is default, not full Lucene</div>
+  <div class="key-fact"><strong>searchMode default:</strong> "any" (OR), not "all" (AND)</div>
+  <div class="key-fact"><strong>DALL-E 3:</strong> n=1 only, URL expires in 60 minutes</div>
+  <div class="key-fact"><strong>Custom Translator:</strong> Needs 10,000 parallel sentences minimum</div>
+  <div class="key-fact"><strong>CLU tiers:</strong> Standard = English-only, Advanced = multilingual (neural)</div>
+  <div class="key-fact"><strong>QnA chit-chat:</strong> 5 personalities &mdash; Professional, Friendly, Witty, Caring, Enthusiastic</div>
+  <div class="key-fact"><strong>SSML break durations:</strong> "strong" = 1000ms, "x-strong" = 1250ms</div>
+  <div class="key-fact"><strong>Speaker Verification vs Identification:</strong> Verification = 1:1, Identification = 1:N (up to 50 candidates)</div>
+</div>
+
+<!-- ───────────────── NAVIGATION ───────────────── -->
+<div class="nav-links">
+  <a href="index.html">&larr; All Sheets</a>
+  <a href="00-exam-overview.html">Exam Overview</a>
+  <a href="01-azure-openai.html">Azure OpenAI</a>
+  <a href="02-computer-vision.html">Computer Vision</a>
+  <a href="03-nlp-speech.html">NLP &amp; Speech</a>
+  <a href="04-search-knowledge.html">AI Search</a>
+  <a href="05-responsible-ai.html">Responsible AI</a>
+  <a href="06-foundry-agents.html">Foundry &amp; Agents</a>
+  <a href="07-sdk-reference.html">SDK Reference</a>
+  <a href="08-portal-workflows.html">Portal Workflows</a>
+  <a href="tests/index.html">Practice Tests</a>
+</div>
+
+<script>
+(function() {
+  const input = document.getElementById('searchInput');
+  const countDisplay = document.getElementById('matchCount');
+
+  // Collect all filterable rows: .dl-row elements and tbody tr elements
+  const dlRows = document.querySelectorAll('.dl-row');
+  const tableRows = document.querySelectorAll('.card tbody tr');
+  const keyFacts = document.querySelectorAll('.key-fact');
+  const cards = document.querySelectorAll('.card');
+
+  function filterAll() {
+    const query = input.value.toLowerCase().trim();
+    let visible = 0;
+    let total = 0;
+
+    // Filter definition-list rows
+    dlRows.forEach(function(row) {
+      total++;
+      const text = row.textContent.toLowerCase();
+      if (!query || text.indexOf(query) !== -1) {
+        row.style.display = '';
+        visible++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    // Filter table rows
+    tableRows.forEach(function(row) {
+      total++;
+      const text = row.textContent.toLowerCase();
+      if (!query || text.indexOf(query) !== -1) {
+        row.style.display = '';
+        visible++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    // Filter key-fact boxes
+    keyFacts.forEach(function(fact) {
+      total++;
+      const text = fact.textContent.toLowerCase();
+      if (!query || text.indexOf(query) !== -1) {
+        fact.style.display = '';
+        visible++;
+      } else {
+        fact.style.display = 'none';
+      }
+    });
+
+    // Show/hide entire cards if all their content is hidden
+    cards.forEach(function(card) {
+      const visibleDl = card.querySelectorAll('.dl-row:not([style*="display: none"])');
+      const visibleTr = card.querySelectorAll('tbody tr:not([style*="display: none"])');
+      const visibleFacts = card.querySelectorAll('.key-fact:not([style*="display: none"])');
+      if (!query || visibleDl.length > 0 || visibleTr.length > 0 || visibleFacts.length > 0) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    // Update count display
+    if (query) {
+      countDisplay.textContent = visible + ' of ' + total + ' items match';
+    } else {
+      countDisplay.textContent = '';
+    }
+  }
+
+  input.addEventListener('input', filterAll);
+})();
+</script>
+
+</body>
+</html>

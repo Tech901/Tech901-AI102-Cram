@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D5: NLP &amp; Speech | AI-102 Practice Test</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #232733; --border: #2e3345;
+    --text: #e4e6ef; --text-dim: #8b8fa3;
+    --amber: #f5a623; --amber-dim: rgba(245,166,35,0.25);
+    --green: #34d399; --green-dim: rgba(52,211,153,0.25);
+    --blue: #60a5fa; --blue-dim: rgba(96,165,250,0.25);
+    --red: #f87171; --red-dim: rgba(248,113,113,0.25);
+    --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.25);
+    --cyan: #22d3ee; --cyan-dim: rgba(34,211,238,0.25);
+    --accent: var(--cyan); --accent-dim: var(--cyan-dim);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 900px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--accent); }
+  .header h1 { font-size: 2rem; color: var(--accent); margin-bottom: 0.3rem; }
+  .header .subtitle { color: var(--text-dim); font-size: 0.95rem; }
+  .badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); }
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-red { background: var(--red-dim); color: var(--red); }
+  .badge-purple { background: var(--purple-dim); color: var(--purple); }
+  .badge-cyan { background: var(--cyan-dim); color: var(--cyan); }
+  code { background: var(--surface2); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.8rem; color: var(--cyan); }
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.5; margin: 0.75rem 0; }
+  pre code { background: none; padding: 0; }
+
+  /* Controls Bar */
+  .controls { position: sticky; top: 0; z-index: 100; background: rgba(26,29,39,0.95); border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .progress-wrap { flex: 1; min-width: 120px; }
+  .progress-bar { height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.3s; width: 0%; }
+  .progress-text { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+  .score-display { font-size: 0.9rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+  .timer { font-family: 'Consolas', 'Courier New', monospace; font-size: 1rem; color: var(--accent); white-space: nowrap; }
+  .timer.warning { color: var(--red); }
+
+  /* Buttons */
+  .btn { padding: 0.4rem 1rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.75rem; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .option-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .order-select:focus-visible, .match-select:focus-visible, .code-fill-select:focus-visible { outline: 2px solid var(--accent); }
+  .hotarea-line:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  /* Question Cards */
+  .question-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem; transition: border-color 0.2s; }
+  .question-card.has-answer { border-top: 2px solid var(--accent); }
+  .question-card.correct { border-left: 3px solid var(--green); }
+  .question-card.incorrect { border-left: 3px solid var(--red); }
+  .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+  .q-meta { display: flex; gap: 0.5rem; align-items: center; }
+  .q-num { font-size: 0.75rem; color: var(--text-dim); }
+  .q-text { font-size: 0.95rem; margin-bottom: 1rem; line-height: 1.6; }
+  .q-instruction { font-size: 0.8rem; color: var(--accent); margin-bottom: 0.75rem; font-style: italic; }
+
+  /* Scenario Box */
+  .scenario-box { background: var(--surface2); border-left: 3px solid var(--accent); padding: 1rem; margin-bottom: 1rem; border-radius: 0 8px 8px 0; font-size: 0.85rem; line-height: 1.6; }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem; }
+  .option-row { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer; transition: background 0.15s; border: 1px solid transparent; user-select: none; min-height: 40px; }
+  .option-row:hover { background: var(--surface2); }
+  .option-row.selected { background: var(--accent-dim); border-color: var(--accent); }
+  .option-row.correct-answer { background: var(--green-dim); border-color: var(--green); }
+  .option-row.wrong-answer { background: var(--red-dim); border-color: var(--red); }
+  .option-row.disabled { pointer-events: none; opacity: 0.8; }
+  .option-key { font-weight: 700; color: var(--accent); min-width: 20px; }
+  .option-text { font-size: 0.85rem; }
+  .option-indicator { margin-left: auto; font-size: 0.85rem; }
+
+  /* Order Items */
+  .order-items { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem; }
+  .order-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 1rem; background: var(--surface2); border-radius: 8px; border: 1px solid transparent; min-height: 40px; }
+  .order-item.correct-pos { border-color: var(--green); background: var(--green-dim); }
+  .order-item.wrong-pos { border-color: var(--red); background: var(--red-dim); }
+  .order-select { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 0.3rem 0.5rem; font-size: 0.8rem; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+  .order-text { font-size: 0.85rem; }
+
+  /* Match type */
+  .match-container { display: flex; gap: 1.5rem; margin-bottom: 0.75rem; }
+  .match-col { flex: 1; display: flex; flex-direction: column; gap: 0.4rem; }
+  .match-col-header { font-size: 0.75rem; color: var(--accent); text-transform: uppercase; font-weight: 600; margin-bottom: 0.25rem; }
+  .match-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; background: var(--surface2); border-radius: 8px; font-size: 0.85rem; border: 1px solid transparent; min-height: 40px; }
+  .match-item.correct-match { border-color: var(--green); background: var(--green-dim); }
+  .match-item.wrong-match { border-color: var(--red); background: var(--red-dim); }
+  .match-select { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 0.3rem 0.5rem; font-size: 0.8rem; min-width: 40px; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+  .match-num { font-weight: 700; color: var(--accent); min-width: 20px; }
+
+  /* Code-fill type */
+  .code-fill-pre { position: relative; overflow: visible; }
+  .code-fill-select { font-family: 'Consolas', 'Courier New', monospace; background: var(--surface); color: var(--cyan); border: 1px solid var(--accent); border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.8rem; z-index: 10; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+  .code-fill-select.correct-blank { border-color: var(--green); background: var(--green-dim); }
+  .code-fill-select.wrong-blank { border-color: var(--red); background: var(--red-dim); }
+
+  /* Hotarea type */
+  .hotarea-lines { font-family: 'Consolas', 'Courier New', monospace; font-size: 0.8rem; margin-bottom: 0.75rem; }
+  .hotarea-line { display: flex; align-items: center; gap: 0.75rem; padding: 0.4rem 0.75rem; cursor: pointer; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; user-select: none; min-height: 40px; }
+  .hotarea-line:hover { background: var(--surface2); }
+  .hotarea-line.selected { background: var(--accent-dim); border-color: var(--accent); }
+  .hotarea-line.correct-line { background: var(--green-dim); border-color: var(--green); }
+  .hotarea-line.wrong-line { background: var(--red-dim); border-color: var(--red); }
+  .hotarea-line.missed-line { border: 1px dashed var(--green); }
+  .hotarea-linenum { color: var(--text-dim); min-width: 24px; text-align: right; }
+  .hotarea-code { white-space: pre; }
+
+  /* Case study type */
+  .casestudy-scenario { background: var(--surface2); border-left: 3px solid var(--accent); padding: 1rem; margin-bottom: 1rem; border-radius: 0 8px 8px 0; font-size: 0.85rem; line-height: 1.6; max-height: 250px; overflow-y: auto; }
+  .casestudy-subq { padding: 0.75rem 0; border-top: 1px solid var(--border); }
+  .casestudy-subq:first-child { border-top: none; }
+  .casestudy-subq-label { font-size: 0.75rem; color: var(--accent); margin-bottom: 0.5rem; }
+
+  /* Feedback */
+  .feedback { border-radius: 8px; padding: 0.75rem 1rem; margin-top: 0.75rem; font-size: 0.85rem; display: none; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: var(--green-dim); border: 1px solid rgba(52,211,153,0.3); }
+  .feedback.incorrect { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.3); }
+  .feedback strong { display: block; margin-bottom: 0.3rem; }
+  .feedback .cram-link { margin-top: 0.5rem; }
+  .feedback .cram-link a { color: var(--blue); text-decoration: none; font-size: 0.8rem; }
+  .feedback .cram-link a:hover { text-decoration: underline; }
+
+  /* Summary */
+  #summary { display: none; }
+  .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; text-align: center; margin-bottom: 1.5rem; }
+  .score-big { font-size: 3.5rem; font-weight: 800; line-height: 1; }
+  .score-big.pass { color: var(--green); }
+  .score-big.fail { color: var(--red); }
+  .score-label { font-size: 1rem; color: var(--text-dim); margin-top: 0.25rem; }
+  .pass-fail { font-size: 1.2rem; font-weight: 700; margin-top: 0.5rem; }
+  .pass-fail.pass { color: var(--green); }
+  .pass-fail.fail { color: var(--red); }
+  .breakdown { text-align: left; margin-top: 1.5rem; }
+  .breakdown h3 { font-size: 0.95rem; color: var(--accent); margin-bottom: 0.75rem; }
+  .breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+  .breakdown-bar { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; margin: 0 1rem; }
+  .breakdown-bar-fill { height: 100%; border-radius: 3px; }
+  .review-list { text-align: left; margin-top: 1.5rem; }
+  .review-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0; font-size: 0.8rem; cursor: pointer; }
+  .review-item:hover { color: var(--accent); }
+  .review-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .review-dot.correct { background: var(--green); }
+  .review-dot.incorrect { background: var(--red); }
+  .review-dot.unanswered { background: var(--text-dim); }
+
+  /* Nav Links */
+  .nav-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .nav-links a { color: var(--blue); text-decoration: none; font-size: 0.8rem; padding: 0.3rem 0.8rem; border: 1px solid var(--blue); border-radius: 6px; }
+  .nav-links a:hover { background: var(--blue-dim); }
+
+  @media (max-width: 640px) {
+    body { padding: 1rem; }
+    .header h1 { font-size: 1.5rem; }
+    .controls { flex-direction: column; gap: 0.5rem; padding: 0.5rem 0.75rem; }
+    .match-container { flex-direction: column; gap: 0.75rem; }
+    .btn-group { width: 100%; justify-content: center; }
+    .q-text { font-size: 0.9rem; }
+    .option-row { padding: 0.75rem 1rem; }
+    .hotarea-line { padding: 0.6rem 0.75rem; }
+    .score-display, .timer { font-size: 0.8rem; }
+    pre { font-size: 0.7rem; }
+  }
+
+  @media print {
+    body { background: #fff; color: #000; padding: 1rem; }
+    .controls, .btn, .timer { display: none !important; }
+    .question-card { border: 1px solid #ccc; break-inside: avoid; }
+    .feedback { display: block !important; background: #f0f0f0; border: 1px solid #ccc; }
+    .option-row.correct-answer { border: 2px solid #000; }
+    .header h1 { color: #333; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Domain 5: Implement Natural Language Processing Solutions</h1>
+  <div class="subtitle">25 Questions &bull; ~25 minutes &bull; <span class="badge badge-cyan">15-20% of Exam</span></div>
+</div>
+
+<div class="controls" id="controls">
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText" aria-live="polite">0 of 0 answered</div>
+  </div>
+  <div class="score-display" id="scoreDisplay" aria-live="polite">Score: 0/0</div>
+  <div class="timer" id="timer">30:00</div>
+  <div class="btn-group">
+    <button class="btn btn-secondary btn-sm" onclick="toggleShuffle()">Shuffle</button>
+    <button class="btn btn-secondary btn-sm" onclick="gradeAll()">Grade All</button>
+    <button class="btn btn-primary btn-sm" onclick="finishExam()">Finish Exam</button>
+  </div>
+</div>
+
+<div id="questions"></div>
+
+<div id="summary"></div>
+
+<div class="nav-links">
+  <a href="index.html">&larr; All Tests</a>
+  <a href="test-d1.html">D1</a>
+  <a href="test-d2.html">D2</a>
+  <a href="test-d3.html">D3</a>
+  <a href="test-d4.html">D4</a>
+  <a href="test-d5.html">D5</a>
+  <a href="test-d6.html">D6</a>
+  <a href="test-full.html">Full Exam</a>
+  <a href="../index.html">Cram Library</a>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    id: "d5-001",
+    type: "single",
+    domain: "D5",
+    topic: "Text Analytics",
+    question: "Shelby County Schools is building a multilingual parent communication system. When sending documents to the Azure AI Language Sentiment Analysis API, what is the maximum number of documents that can be included in a single synchronous request?",
+    options: [
+      { key: "A", text: "5" },
+      { key: "B", text: "10" },
+      { key: "C", text: "25" },
+      { key: "D", text: "50" }
+    ],
+    answer: "B",
+    explanation: "The Sentiment Analysis and Opinion Mining APIs accept a maximum of <strong>10 documents per synchronous request</strong>. Named Entity Recognition and PII Detection allow only 5 documents per request, while Language Detection supports up to 1,000. For asynchronous requests, the limit is 25 documents.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-002",
+    type: "single",
+    domain: "D5",
+    topic: "PII Detection",
+    question: "Memphis Fire Department is processing incident reports that contain personal information. When using the PII Detection API, how are detected entities handled in the <code>redactedText</code> property of the response?",
+    options: [
+      { key: "A", text: "They are removed entirely, leaving no placeholder" },
+      { key: "B", text: "They are replaced with asterisks (*)" },
+      { key: "C", text: "They are replaced with the entity category name in brackets" },
+      { key: "D", text: "They are replaced with a hash of the original value" }
+    ],
+    answer: "B",
+    explanation: "The PII Detection API replaces detected entities with <strong>asterisks</strong> in the <code>redactedText</code> property. You can also configure alternative redaction policies such as <code>CharacterMask</code> with a custom redaction character, or use <code>EntityMask</code> to replace with category labels.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-003",
+    type: "single",
+    domain: "D5",
+    topic: "CLU",
+    question: "Memphis Light Gas & Water is building a CLU model for its customer call center. What is the maximum number of intents that can be defined in a single CLU project?",
+    options: [
+      { key: "A", text: "100" },
+      { key: "B", text: "250" },
+      { key: "C", text: "500" },
+      { key: "D", text: "1,000" }
+    ],
+    answer: "C",
+    explanation: "CLU supports a maximum of <strong>500 intents per project</strong>. Other key limits include: 50,000 utterances per project, 350 entities per project, 500 characters per utterance (authoring), 10 trained models, and 10 deployments per project.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-004",
+    type: "single",
+    domain: "D5",
+    topic: "SSML",
+    question: "Memphis Tourism Board wants a text-to-speech system that reads phone numbers digit-by-digit for their visitor hotline. Which SSML element and attribute should be used to pronounce \"901\" as individual digits?",
+    options: [
+      { key: "A", text: "<code>&lt;say-as interpret-as=\"digits\"&gt;901&lt;/say-as&gt;</code>" },
+      { key: "B", text: "<code>&lt;say-as interpret-as=\"characters\"&gt;901&lt;/say-as&gt;</code>" },
+      { key: "C", text: "<code>&lt;say-as interpret-as=\"number\"&gt;901&lt;/say-as&gt;</code>" },
+      { key: "D", text: "<code>&lt;phoneme&gt;901&lt;/phoneme&gt;</code>" }
+    ],
+    answer: "B",
+    explanation: "The <code>&lt;say-as&gt;</code> element with <code>interpret-as=\"characters\"</code> pronounces each character individually (\"nine-oh-one\"). <code>number</code> would pronounce it as \"nine hundred and one\" — a cardinal number, not individual digits. <code>digits</code> is not a standard interpret-as value. The <code>&lt;phoneme&gt;</code> element is for specifying phonetic pronunciation, not interpretation mode.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-005",
+    type: "single",
+    domain: "D5",
+    topic: "Translator",
+    question: "Memphis Public Library needs to detect the language of patron submissions. When using the Azure Translator Detect method, which statement about character counting is correct?",
+    options: [
+      { key: "A", text: "Detect calls are always counted toward the character consumption quota" },
+      { key: "B", text: "Detect calls are never counted toward the character consumption quota" },
+      { key: "C", text: "Detect calls are not counted, but must be proportionate to other counted methods" },
+      { key: "D", text: "Detect calls are counted only on the S1 tier and above" }
+    ],
+    answer: "C",
+    explanation: "Calls to the <strong>Detect</strong> and <strong>BreakSentence</strong> methods are not counted toward character consumption. However, Microsoft expects these calls to be reasonably proportionate to other counted functions. If Detect or BreakSentence calls exceed the count of other methods by 100x, Microsoft reserves the right to restrict usage.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-006",
+    type: "single",
+    domain: "D5",
+    topic: "Speech Services",
+    question: "Stax Museum of American Soul Music needs to transcribe a large archive of recorded interviews. Which audio format is recommended for the best transcription quality with Azure Batch Transcription?",
+    options: [
+      { key: "A", text: "MP3 (compressed lossy)" },
+      { key: "B", text: "OGG/OPUS (compressed lossy)" },
+      { key: "C", text: "WAV with PCM encoding (lossless)" },
+      { key: "D", text: "WMA (Windows Media Audio)" }
+    ],
+    answer: "C",
+    explanation: "While Batch Transcription supports many formats (WAV, MP3, OPUS/OGG, FLAC, WMA, AAC, AMR, WebM, SPEEX), Microsoft recommends using <strong>lossless formats such as WAV (PCM encoding) and FLAC</strong> to ensure the best transcription quality.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-007",
+    type: "multi",
+    domain: "D5",
+    topic: "CLU",
+    question: "University of Memphis is training a CLU model. Which TWO statements about CLU training modes are correct? (Select 2)",
+    selectCount: 2,
+    options: [
+      { key: "A", text: "Standard training can only train projects in English" },
+      { key: "B", text: "Standard training uses neural transformer models" },
+      { key: "C", text: "Advanced training supports multilingual projects" },
+      { key: "D", text: "Advanced training is always free regardless of pricing tier" }
+    ],
+    answer: ["A", "C"],
+    explanation: "<strong>Standard training</strong> is faster but English-only and included in the pricing tier. <strong>Advanced training</strong> uses fine-tuned neural network transformer models, supports multilingual projects, and may incur additional charges. Standard does NOT use neural models; Advanced does.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-008",
+    type: "multi",
+    domain: "D5",
+    topic: "SSML",
+    question: "Which THREE of the following are valid attributes of the SSML <code>&lt;prosody&gt;</code> element? (Select 3)",
+    selectCount: 3,
+    options: [
+      { key: "A", text: "rate" },
+      { key: "B", text: "style" },
+      { key: "C", text: "pitch" },
+      { key: "D", text: "volume" },
+      { key: "E", text: "emphasis" }
+    ],
+    answer: ["A", "C", "D"],
+    explanation: "The <code>&lt;prosody&gt;</code> element supports five attributes: <code>pitch</code>, <code>contour</code>, <code>range</code>, <code>rate</code>, and <code>volume</code>. <code>style</code> is an attribute of <code>&lt;mstts:express-as&gt;</code>, and <code>emphasis</code> is a separate element (<code>&lt;emphasis level=\"...\"&gt;</code>), not a prosody attribute.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-009",
+    type: "multi",
+    domain: "D5",
+    topic: "Question Answering",
+    question: "Memphis 311 is deploying a custom question answering project. Which THREE of the following are valid knowledge base source types? (Select 3)",
+    selectCount: 3,
+    options: [
+      { key: "A", text: "FAQ URL pages" },
+      { key: "B", text: "PDF files (up to 25 MB)" },
+      { key: "C", text: "Azure SQL Database tables" },
+      { key: "D", text: "TSV files (up to 10 MB)" },
+      { key: "E", text: "Azure Cosmos DB collections" }
+    ],
+    answer: ["A", "B", "D"],
+    explanation: "Custom question answering supports several source types including <strong>URLs</strong> (FAQ pages), <strong>PDF</strong> (up to 25 MB), <strong>DOCX</strong> (up to 10 MB), <strong>TSV</strong> (up to 10 MB), <strong>TXT</strong> (up to 10 MB), and <strong>XLSX</strong> (up to 3 MB). It does not directly ingest from Azure SQL Database or Cosmos DB.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-010",
+    type: "order",
+    domain: "D5",
+    topic: "Speech Services",
+    question: "Place the Azure Speech-to-Text options in order from lowest latency to highest latency for processing audio:",
+    options: [
+      { key: "A", text: "Real-time transcription — streaming results via Speech SDK" },
+      { key: "B", text: "Fast transcription API — synchronous output for audio files under 2 hours" },
+      { key: "C", text: "Batch transcription — asynchronous processing for large audio volumes" }
+    ],
+    answer: ["A", "B", "C"],
+    explanation: "<strong>Real-time transcription</strong> provides the lowest latency with streaming interim results. <strong>Fast transcription API</strong> is synchronous but processes complete files (under 2 hours / 300 MB). <strong>Batch transcription</strong> is asynchronous for large volumes of pre-recorded audio, with results available later.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-011",
+    type: "order",
+    domain: "D5",
+    topic: "Translator",
+    question: "A Memphis city department is translating documents. Place the Translator character limits per hour in order from lowest to highest tier:",
+    options: [
+      { key: "A", text: "F0 tier — 2 million characters per hour" },
+      { key: "B", text: "S1 tier — 40 million characters per hour" },
+      { key: "C", text: "S3/C3 tier — 120 million characters per hour" },
+      { key: "D", text: "S4/C4 tier — 200 million characters per hour" }
+    ],
+    answer: ["A", "B", "C", "D"],
+    explanation: "Azure Translator hourly character limits increase with tier: <strong>F0: 2M</strong>, <strong>S1: 40M</strong>, <strong>S2/C2: 40M</strong>, <strong>S3/C3: 120M</strong>, <strong>S4/C4: 200M</strong>. The hourly quota should be consumed evenly throughout the hour.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-012",
+    type: "scenario",
+    domain: "D5",
+    topic: "CLU",
+    scenario: "Memphis Light Gas & Water is building a voice IVR system. The CLU model has been trained with 200 utterances across 10 intents. During testing, two intents — \"report_outage\" and \"check_outage_status\" — frequently get confused, with very close confidence scores. The development team needs to improve accuracy.",
+    question: "What is the MOST effective approach to resolve the intent confusion?",
+    options: [
+      { key: "A", text: "Increase the confidence score threshold to reject ambiguous predictions" },
+      { key: "B", text: "Add more diverse example utterances to both intents with varied terminology and contextual differences" },
+      { key: "C", text: "Merge the two intents into a single intent and use entity extraction to differentiate" },
+      { key: "D", text: "Switch from Standard to Advanced training mode" }
+    ],
+    answer: "B",
+    explanation: "When multiple intents have close prediction scores, the best practice is to <strong>add more diverse example utterances</strong> with varied terminology for each intent. Microsoft documentation recommends providing multiple variations of an utterance with the same meaning and ensuring utterances use different contextual differences. Simply raising thresholds doesn't fix the underlying confusion.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-013",
+    type: "scenario",
+    domain: "D5",
+    topic: "SSML",
+    scenario: "Shelby County Schools wants their accessibility reading tool to read dates in a specific format. For example, \"03/15/2026\" should be read as \"March fifteenth, twenty twenty-six\" rather than \"three slash fifteen slash twenty twenty-six.\"",
+    question: "Which SSML markup correctly handles this requirement?",
+    options: [
+      { key: "A", text: "<code>&lt;say-as interpret-as=\"date\" format=\"mdy\"&gt;03/15/2026&lt;/say-as&gt;</code>" },
+      { key: "B", text: "<code>&lt;say-as interpret-as=\"number\"&gt;03/15/2026&lt;/say-as&gt;</code>" },
+      { key: "C", text: "<code>&lt;prosody interpret-as=\"date\"&gt;03/15/2026&lt;/prosody&gt;</code>" },
+      { key: "D", text: "<code>&lt;sub alias=\"March 15, 2026\"&gt;03/15/2026&lt;/sub&gt;</code>" }
+    ],
+    answer: "A",
+    explanation: "The <code>&lt;say-as&gt;</code> element with <code>interpret-as=\"date\"</code> and <code>format=\"mdy\"</code> tells the TTS engine to interpret the text as a date in month/day/year format. The <code>format</code> attribute uses letters: <code>d</code> (day), <code>m</code> (month), <code>y</code> (year). While <code>&lt;sub&gt;</code> would also work, <code>&lt;say-as&gt;</code> is the semantic approach.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-014",
+    type: "scenario",
+    domain: "D5",
+    topic: "PII Detection",
+    scenario: "Memphis Fire Department processes incident reports that contain personal information about victims and witnesses. The department needs to redact SSNs and driver's license numbers but must keep names visible for follow-up investigations. The system should also not redact the term \"firefighter\" even though it could be detected as a person reference.",
+    question: "Which TWO PII Detection API features should be configured to meet these requirements?",
+    options: [
+      { key: "A", text: "Set the <code>piiCategories</code> parameter to specify only USSocialSecurityNumber and USDriversLicense categories" },
+      { key: "B", text: "Use the <code>domain=phi</code> parameter to limit detection to health information only" },
+      { key: "C", text: "Configure <code>valueExclusionPolicy</code> to exclude the term \"firefighter\" from detection" },
+      { key: "D", text: "Use the <code>stringIndexType</code> parameter to mask only specific character positions" }
+    ],
+    answer: ["A", "C"],
+    explanation: "The <code>piiCategories</code> parameter lets you specify <strong>exactly which entity categories</strong> to detect and redact — only the categories you list will be processed. The <code>valueExclusionPolicy</code> allows you to <strong>exclude specific terms</strong> from detection even if they match a PII category. <code>domain=phi</code> limits to health information only, which is not the goal here.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-015",
+    type: "match",
+    domain: "D5",
+    topic: "SSML",
+    question: "Match each SSML break strength value to its approximate duration:",
+    pairs: [
+      { left: "x-weak", right: "250 ms" },
+      { left: "weak", right: "500 ms" },
+      { left: "strong", right: "1,000 ms" },
+      { left: "x-strong", right: "1,250 ms" }
+    ],
+    explanation: "SSML break strength values and their durations: <code>x-weak</code> = 250ms, <code>weak</code> = 500ms, <code>medium</code> (default) = 750ms, <code>strong</code> = 1,000ms, <code>x-strong</code> = 1,250ms. If the <code>time</code> attribute is set (e.g., <code>time=\"2s\"</code>), the <code>strength</code> attribute is ignored. Maximum pause is 20,000ms.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-016",
+    type: "match",
+    domain: "D5",
+    topic: "Text Analytics",
+    question: "Match each Azure AI Language API limit to its correct value:",
+    pairs: [
+      { left: "Sentiment Analysis — max docs per request", right: "10" },
+      { left: "Named Entity Recognition — max docs per request", right: "5" },
+      { left: "Language Detection — max docs per request", right: "1,000" },
+      { left: "Document Summarization — max docs per request", right: "25" }
+    ],
+    explanation: "Azure AI Language APIs have different per-request document limits: <strong>Language Detection: 1,000</strong>, <strong>Sentiment/Opinion Mining: 10</strong>, <strong>Key Phrase Extraction: 10</strong>, <strong>NER: 5</strong>, <strong>PII: 5</strong>, <strong>Entity Linking: 5</strong>, <strong>Document Summarization: 25</strong>, and <strong>Text Analytics for Health: 25</strong>. Async requests support up to 25 documents.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-017",
+    type: "code-fill",
+    domain: "D5",
+    topic: "CLU",
+    question: "Complete the Python code to send a CLU prediction request for Memphis 311 intent classification:",
+    codeTemplate: "from azure.ai.language.conversations import [BLANK1]\nfrom azure.core.credentials import AzureKeyCredential\n\nclient = [BLANK1](endpoint, AzureKeyCredential(key))\nresult = client.[BLANK2](\n    task={\n        \"kind\": \"Conversation\",\n        \"analysisInput\": {\n            \"conversationItem\": {\n                \"text\": \"I need to report a pothole on Beale Street\",\n                \"id\": \"1\",\n                \"participantId\": \"user1\"\n            }\n        },\n        \"parameters\": {\n            \"projectName\": \"Memphis311-CLU\",\n            \"deploymentName\": \"production\"\n        }\n    }\n)",
+    blanks: [
+      { id: "BLANK1", options: ["ConversationAnalysisClient", "LanguageClient", "CLUClient", "ConversationsClient"], answer: "ConversationAnalysisClient" },
+      { id: "BLANK2", options: ["analyze_conversation", "predict_intent", "classify_text", "get_prediction"], answer: "analyze_conversation" }
+    ],
+    explanation: "The CLU SDK uses <code>ConversationAnalysisClient</code> from <code>azure.ai.language.conversations</code>. The prediction method is <code>analyze_conversation()</code>. The task must include <code>kind: \"Conversation\"</code>, the <code>conversationItem</code> with text/id/participantId, and <code>parameters</code> with projectName and deploymentName.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-018",
+    type: "code-fill",
+    domain: "D5",
+    topic: "SSML",
+    question: "Complete the SSML to create a Memphis 311 greeting with a slow speaking rate and a 1-second pause before the menu options:",
+    codeTemplate: "&lt;speak version=\"1.0\" xmlns=\"http://www.w3.org/2001/10/synthesis\"\n       xmlns:mstts=\"https://www.w3.org/2001/mstts\"\n       xml:lang=\"en-US\"&gt;\n  &lt;voice name=\"en-US-JennyNeural\"&gt;\n    &lt;prosody rate=\"[BLANK1]\"&gt;\n      Welcome to Memphis 311.\n    &lt;/prosody&gt;\n    &lt;break [BLANK2]=\"1000ms\" /&gt;\n    For water services, press 1.\n  &lt;/voice&gt;\n&lt;/speak&gt;",
+    blanks: [
+      { id: "BLANK1", options: ["slow", "-20%", "0.8", "reduced"], answer: "slow" },
+      { id: "BLANK2", options: ["time", "strength", "duration", "delay"], answer: "time" }
+    ],
+    explanation: "The <code>&lt;prosody rate&gt;</code> attribute accepts keywords (<code>x-slow</code>, <code>slow</code>, <code>medium</code>, <code>fast</code>, <code>x-fast</code>) or percentage values. The <code>&lt;break&gt;</code> element uses the <code>time</code> attribute for absolute duration (e.g., <code>1000ms</code> or <code>1s</code>). When <code>time</code> is set, the <code>strength</code> attribute is ignored.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-019",
+    type: "hotarea",
+    domain: "D5",
+    topic: "Translator",
+    question: "Select the line(s) that contain errors in this Azure Translator API request body:",
+    codeLines: [
+      { id: 1, text: "POST /translate?api-version=3.0&to=es&to=fr HTTP/1.1" },
+      { id: 2, text: "Host: api.cognitive.microsofttranslator.com" },
+      { id: 3, text: "Ocp-Apim-Subscription-Key: <your-key>" },
+      { id: 4, text: "Content-Type: application/json" },
+      { id: 5, text: "" },
+      { id: 6, text: "[" },
+      { id: 7, text: "  {\"text\": \"Hello, welcome to Memphis.\"}" },
+      { id: 8, text: "  {\"text\": \"Please visit Beale Street.\"}" },
+      { id: 9, text: "]" }
+    ],
+    answer: [8],
+    explanation: "Line 8 is missing a <strong>comma after the preceding JSON object</strong> on line 7. The request body is a JSON array, and each element must be separated by a comma. The correct format is: <code>{\"text\": \"Hello...\"}<strong>,</strong></code> on line 7 (or a comma before line 8). The URL with multiple <code>&to=</code> parameters is valid for specifying multiple target languages.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-020",
+    type: "casestudy",
+    domain: "D5",
+    topic: "Solution Architecture",
+    scenario: "<strong>Stax Museum Audio Archive Digitization</strong><br><br>The Stax Museum of American Soul Music has a collection of 5,000 recorded interviews with artists and musicians spanning 1960\u20132020. The museum wants to:<ul><li>Transcribe all recordings (average 45 minutes each, WAV format) into searchable text</li><li>Detect and tag key phrases and named entities (artist names, album titles, locations) in each transcript</li><li>Support search queries in both English and Spanish for international visitors</li><li>Provide an interactive kiosk where visitors can ask natural-language questions about artists</li><li>The kiosk should read answers aloud in a warm, expressive voice</li></ul>",
+    question: "Answer the following questions about the solution architecture.",
+    subQuestions: [
+      {
+        id: "d5-020a",
+        type: "single",
+        question: "Which Azure service should be used to transcribe the 5,000 audio recordings?",
+        options: [
+          { key: "A", text: "Azure Speech Services \u2014 Real-time Speech-to-Text via the SDK" },
+          { key: "B", text: "Azure Speech Services \u2014 Batch Transcription API" },
+          { key: "C", text: "Azure Speech Services \u2014 Fast Transcription API" },
+          { key: "D", text: "Azure OpenAI \u2014 Whisper model" }
+        ],
+        answer: "B",
+        explanation: "<strong>Batch Transcription</strong> is designed for processing large volumes of pre-recorded audio stored in files. It processes audio asynchronously and handles multiple files concurrently. Fast Transcription is limited to files under 2 hours / 300 MB and is synchronous. Real-time STT is for live streaming, not batch processing of archives."
+      },
+      {
+        id: "d5-020b",
+        type: "single",
+        question: "After transcription, which combination of APIs should extract artist names, album titles, and main topics from the transcripts?",
+        options: [
+          { key: "A", text: "Named Entity Recognition (NER) for entities + Key Phrase Extraction for topics" },
+          { key: "B", text: "PII Detection for names + Sentiment Analysis for topics" },
+          { key: "C", text: "Entity Linking for entities + Language Detection for topics" },
+          { key: "D", text: "Custom NER only \u2014 train a model for all entity types" }
+        ],
+        answer: "A",
+        explanation: "<strong>NER</strong> identifies entities like Person, Location, and Organization from text. <strong>Key Phrase Extraction</strong> pulls out the main talking points and topics. Together, they provide both structured entity extraction and topic identification from the transcripts."
+      },
+      {
+        id: "d5-020c",
+        type: "single",
+        question: "For the interactive kiosk's text-to-speech feature, which SSML approach should be used to create warm, expressive audio output?",
+        options: [
+          { key: "A", text: "Use <code>&lt;prosody pitch=\"high\" rate=\"slow\"&gt;</code> to simulate warmth" },
+          { key: "B", text: "Use <code>&lt;mstts:express-as style=\"friendly\"&gt;</code> with a supported neural voice" },
+          { key: "C", text: "Use <code>&lt;emphasis level=\"strong\"&gt;</code> on every sentence" },
+          { key: "D", text: "Use <code>&lt;voice effect=\"warm\"&gt;</code> to apply a warm filter" }
+        ],
+        answer: "B",
+        explanation: "The <code>&lt;mstts:express-as&gt;</code> element with the <code>style</code> attribute (e.g., <code>friendly</code>, <code>cheerful</code>, <code>empathetic</code>) is the correct way to apply expressive speaking styles. The <code>styledegree</code> attribute (0.01\u20132) can fine-tune intensity. Not all voices support all styles, so choose a voice that supports the desired style."
+      }
+    ],
+    explanation: "This case study tests the ability to select appropriate Azure AI services for an audio archive digitization project, combining Batch Transcription for large-scale audio processing, Text Analytics APIs for entity and topic extraction, and SSML for expressive speech synthesis.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  // ── NEW: REST & PORTAL (5) ──────────────────────────────────
+  {
+    id: "d5-021",
+    type: "code-fill",
+    domain: "D5",
+    topic: "REST API: Translator",
+    question: "Complete this curl command to translate text from English to Spanish and French using the Azure Translator REST API:",
+    codeTemplate: "curl -X POST \"https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=en&to=es&to=fr\" \\\n  -H \"[BLANK1]: YOUR_KEY\" \\\n  -H \"[BLANK2]: eastus\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '[{\"text\": \"Welcome to Memphis, Tennessee.\"}]'",
+    blanks: [
+      {
+        id: "BLANK1",
+        options: ["Ocp-Apim-Subscription-Key", "api-key", "Authorization", "X-Subscription-Key"],
+        answer: "Ocp-Apim-Subscription-Key"
+      },
+      {
+        id: "BLANK2",
+        options: ["Ocp-Apim-Subscription-Region", "X-Azure-Region", "Azure-Region", "Subscription-Region"],
+        answer: "Ocp-Apim-Subscription-Region"
+      }
+    ],
+    explanation: "The Azure Translator REST API requires two authentication headers: <code>Ocp-Apim-Subscription-Key</code> (your API key) and <code>Ocp-Apim-Subscription-Region</code> (the region of your resource, e.g., 'eastus'). The region header is required for single-service Translator resources. Multiple target languages are specified by repeating the <code>&to=</code> query parameter.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-022",
+    type: "single",
+    domain: "D5",
+    topic: "REST API: CLU Prediction",
+    question: "Memphis Light Gas & Water is calling the CLU prediction REST API. Which URL path is correct for sending a conversation analysis request?",
+    options: [
+      { key: "A", text: "<code>POST /language/:analyze-conversations?api-version=2024-11-15-preview</code>" },
+      { key: "B", text: "<code>POST /language/analyze-conversations?api-version=2024-11-15-preview</code>" },
+      { key: "C", text: "<code>POST /language/conversations/predict?api-version=2024-11-15-preview</code>" },
+      { key: "D", text: "<code>POST /text/analytics/v3.2/conversations</code>" }
+    ],
+    answer: "A",
+    explanation: "The CLU prediction REST API uses the path <code>/language/:analyze-conversations</code> with the colon prefix. This follows the Azure AI Language REST convention where the colon (<code>:</code>) prefix denotes an action endpoint. The request body must include <code>kind: \"Conversation\"</code>, the conversation item with text/id/participantId, and the project and deployment names.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-023",
+    type: "single",
+    domain: "D5",
+    topic: "Portal: Language Studio",
+    question: "A developer at the University of Memphis wants to create a new CLU project in Language Studio (language.cognitive.azure.com). After signing in and selecting their Language resource, where do they go to create the project?",
+    options: [
+      { key: "A", text: "Select 'Conversational language understanding' from the landing page, then click 'Create new project'" },
+      { key: "B", text: "Navigate to Settings > Projects, then click 'New CLU project'" },
+      { key: "C", text: "Go to the Azure portal and create a Language resource, which auto-creates a CLU project" },
+      { key: "D", text: "Use the REST API only — CLU projects cannot be created through Language Studio" }
+    ],
+    answer: "A",
+    explanation: "In Language Studio, <strong>Conversational language understanding</strong> is listed as a task on the landing page under the 'Understand questions and conversational language' category. Clicking it shows your existing projects and a <strong>Create new project</strong> button. You specify the project name, language, and description. Language Studio provides a full visual interface for project creation, schema definition, labeling, training, and deployment.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-024",
+    type: "order",
+    domain: "D5",
+    topic: "Portal: CLU Project Lifecycle",
+    question: "Place the steps for building and deploying a CLU model in Language Studio in the correct order:",
+    options: [
+      { key: "A", text: "Define the schema: create intents and entities for your project" },
+      { key: "B", text: "Label utterances: tag example phrases with their correct intents and entities" },
+      { key: "C", text: "Train the model: select training mode (Standard or Advanced) and start a training job" },
+      { key: "D", text: "Deploy the model: assign the trained model to a deployment slot with a deployment name" },
+      { key: "E", text: "Test the deployment: send test utterances in the Testing tab to verify predictions" }
+    ],
+    answer: ["A", "B", "C", "D", "E"],
+    explanation: "The CLU lifecycle in Language Studio follows: (1) <strong>Schema</strong> — define intents (what the user wants) and entities (key information to extract), (2) <strong>Label</strong> — add example utterances and tag them, (3) <strong>Train</strong> — run a training job (Standard for English-only fast training, Advanced for multilingual neural models), (4) <strong>Deploy</strong> — assign the trained model to a named deployment, (5) <strong>Test</strong> — verify predictions. You can iterate by adding more utterances and retraining.",
+    cramRef: "../03-nlp-speech.html"
+  },
+  {
+    id: "d5-025",
+    type: "single",
+    domain: "D5",
+    topic: "Portal: Speech Studio",
+    question: "Stax Museum of American Soul Music needs to set up a batch transcription job for their audio archive. Where in Azure Speech Studio (speech.microsoft.com) should they navigate?",
+    options: [
+      { key: "A", text: "Speech-to-text section > Batch transcription > Create new transcription" },
+      { key: "B", text: "Custom speech section > Upload audio files > Start transcription" },
+      { key: "C", text: "Real-time speech-to-text section > Upload file tab" },
+      { key: "D", text: "Voice gallery section > Transcription tools" }
+    ],
+    answer: "A",
+    explanation: "In Azure Speech Studio, <strong>Batch transcription</strong> is found under the <strong>Speech-to-text</strong> section. You create a new transcription by providing the audio file URLs (from Azure Blob Storage), selecting the language and model, and configuring output options. Custom speech is for training custom speech recognition models, not for running batch transcription. Real-time STT is for live audio, not file processing.",
+    cramRef: "../03-nlp-speech.html"
+  }
+];
+
+// ========== QUIZ ENGINE ==========
+const state = {
+  questions: [...QUESTIONS],
+  answers: {},
+  checked: {},
+  score: 0,
+  total: 0,
+  timerSec: 1500,
+  timerRef: null,
+  finished: false
+};
+
+function init() {
+  renderQuestions();
+  startTimer();
+  updateProgress();
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function toggleShuffle() {
+  state.questions = shuffle(state.questions);
+  state.answers = {};
+  state.checked = {};
+  state.score = 0;
+  state.total = 0;
+  state.finished = false;
+  document.getElementById('summary').style.display = 'none';
+  document.getElementById('summary').innerHTML = '';
+  renderQuestions();
+  updateProgress();
+}
+
+function startTimer() {
+  const el = document.getElementById('timer');
+  state.timerRef = setInterval(() => {
+    if (state.timerSec <= 0) { clearInterval(state.timerRef); finishExam(); return; }
+    state.timerSec--;
+    const m = Math.floor(state.timerSec / 60);
+    const s = state.timerSec % 60;
+    el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    if (state.timerSec < 300) el.classList.add('warning');
+  }, 1000);
+}
+
+function renderQuestions() {
+  const container = document.getElementById('questions');
+  container.innerHTML = state.questions.map((q, i) => renderQuestion(q, i)).join('');
+}
+
+function renderQuestion(q, idx) {
+  let body = '';
+  if (q.type !== 'casestudy' && q.scenario) body += `<div class="scenario-box">${q.scenario}</div>`;
+  if (q.code) body += `<pre><code>${q.code}</code></pre>`;
+
+  let instruction = '';
+  if (q.type === 'multi') instruction = `<div class="q-instruction">Select ${q.selectCount || 2} answers</div>`;
+  if (q.type === 'order') instruction = `<div class="q-instruction">Select the correct order (1 = first)</div>`;
+  if (q.type === 'match') instruction = `<div class="q-instruction">Match each item on the left to its corresponding item on the right</div>`;
+  if (q.type === 'code-fill') instruction = `<div class="q-instruction">Select the correct value for each blank in the code</div>`;
+  if (q.type === 'hotarea') instruction = `<div class="q-instruction">Click the line(s) that contain errors</div>`;
+  if (q.type === 'casestudy') instruction = `<div class="q-instruction">Read the scenario and answer all parts below</div>`;
+
+  let optionsHtml = '';
+  if (q.type === 'order') {
+    optionsHtml = '<div class="order-items">' + q.options.map((o, oi) => {
+      const selOpts = `<option value="">-</option>` + q.options.map((_, si) => `<option value="${si+1}">${si+1}</option>`).join('');
+      return `<div class="order-item" id="order-${q.id}-${o.key}"><select class="order-select" onchange="handleOrder('${q.id}','${o.key}',this.value)">${selOpts}</select><span class="order-text"><strong>${o.key}.</strong> ${o.text}</span></div>`;
+    }).join('') + '</div>';
+  } else if (q.type === 'match') {
+    optionsHtml = renderMatch(q);
+  } else if (q.type === 'code-fill') {
+    optionsHtml = renderCodeFill(q);
+  } else if (q.type === 'hotarea') {
+    optionsHtml = renderHotarea(q);
+  } else if (q.type === 'casestudy') {
+    optionsHtml = renderCaseStudy(q);
+  } else {
+    optionsHtml = '<div class="options">' + q.options.map(o =>
+      `<div class="option-row" id="opt-${q.id}-${o.key}" tabindex="0" role="button" onclick="handleSelect('${q.id}','${o.key}','${q.type}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();handleSelect('${q.id}','${o.key}','${q.type}');}"><span class="option-key">${o.key}.</span><span class="option-text">${o.text}</span><span class="option-indicator" id="ind-${q.id}-${o.key}"></span></div>`
+    ).join('') + '</div>';
+  }
+
+  return `<div class="question-card" id="qcard-${q.id}">
+    <div class="q-header"><div class="q-meta"><span class="badge badge-cyan">${q.topic}</span></div><span class="q-num">Q${idx+1} of ${state.questions.length}</span></div>
+    <div class="q-text">${q.question}</div>
+    ${body}${instruction}${optionsHtml}
+    <button class="btn btn-primary btn-sm" id="checkbtn-${q.id}" onclick="checkAnswer('${q.id}')">Check Answer</button>
+    <div class="feedback" id="fb-${q.id}"></div>
+  </div>`;
+}
+
+// ========== RENDER FUNCTIONS FOR NEW TYPES ==========
+
+function renderMatch(q) {
+  const shuffled = q.pairs.map((p, i) => ({...p, origIdx: i}));
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  if (!window._matchShuffles) window._matchShuffles = {};
+  window._matchShuffles[q.id] = shuffled;
+
+  const leftHtml = q.pairs.map((p, i) =>
+    `<div class="match-item" id="match-l-${q.id}-${i}"><span class="match-num">${i+1}.</span> ${p.left}</div>`
+  ).join('');
+
+  const selOpts = `<option value="">-</option>` + q.pairs.map((_, i) =>
+    `<option value="${i}">${i+1}</option>`
+  ).join('');
+
+  const rightHtml = shuffled.map((p, i) =>
+    `<div class="match-item" id="match-r-${q.id}-${i}"><select class="match-select" onchange="handleMatch('${q.id}',${i},this.value)">${selOpts}</select> ${p.right}</div>`
+  ).join('');
+
+  return `<div class="match-container"><div class="match-col"><div class="match-col-header">Term</div>${leftHtml}</div><div class="match-col"><div class="match-col-header">Definition</div>${rightHtml}</div></div>`;
+}
+
+function renderCodeFill(q) {
+  let html = q.codeTemplate;
+  q.blanks.forEach(b => {
+    const opts = `<option value="">---</option>` + b.options.map(o =>
+      `<option value="${o}">${o}</option>`
+    ).join('');
+    html = html.replace(`[${b.id}]`, `<select class="code-fill-select" id="cf-${q.id}-${b.id}" onchange="handleCodeFill('${q.id}','${b.id}',this.value)">${opts}</select>`);
+  });
+  return `<pre class="code-fill-pre"><code>${html}</code></pre>`;
+}
+
+function renderHotarea(q) {
+  const lines = q.codeLines.map(l =>
+    `<div class="hotarea-line" id="ha-${q.id}-${l.id}" tabindex="0" role="button" onclick="handleHotarea('${q.id}',${l.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();handleHotarea('${q.id}',${l.id});}"><span class="hotarea-linenum">${l.id}</span><span class="hotarea-code">${l.text}</span></div>`
+  ).join('');
+  return `<div class="hotarea-lines">${lines}</div>`;
+}
+
+function renderCaseStudy(q) {
+  let html = `<div class="casestudy-scenario">${q.scenario}</div>`;
+  q.subQuestions.forEach((sq, si) => {
+    const sqInstruction = sq.type === 'multi' ? `<div class="q-instruction">Select ${sq.selectCount || 2} answers</div>` : '';
+    const sqOptions = sq.options.map(o =>
+      `<div class="option-row" id="opt-${sq.id}-${o.key}" tabindex="0" role="button" onclick="handleSelect('${sq.id}','${o.key}','${sq.type}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();handleSelect('${sq.id}','${o.key}','${sq.type}');}"><span class="option-key">${o.key}.</span><span class="option-text">${o.text}</span><span class="option-indicator" id="ind-${sq.id}-${o.key}"></span></div>`
+    ).join('');
+    html += `<div class="casestudy-subq"><div class="casestudy-subq-label">Part ${String.fromCharCode(65+si)}</div><div class="q-text">${sq.question}</div>${sqInstruction}<div class="options">${sqOptions}</div><div class="feedback" id="fb-${sq.id}"></div></div>`;
+  });
+  return html;
+}
+
+// ========== HANDLER FUNCTIONS ==========
+
+function handleSelect(qId, key, type) {
+  if (state.checked[qId]) return;
+  if (type === 'multi') {
+    if (!state.answers[qId]) state.answers[qId] = [];
+    const idx = state.answers[qId].indexOf(key);
+    if (idx > -1) state.answers[qId].splice(idx, 1);
+    else state.answers[qId].push(key);
+  } else {
+    state.answers[qId] = key;
+  }
+  // Update UI
+  const q = state.questions.find(x => x.id === qId);
+  // For casestudy sub-questions, find the sub-question's options
+  let opts;
+  if (q && q.options) {
+    opts = q.options;
+  } else {
+    // Search sub-questions across all casestudy questions
+    for (const cq of state.questions) {
+      if (cq.type === 'casestudy' && cq.subQuestions) {
+        const sq = cq.subQuestions.find(s => s.id === qId);
+        if (sq) { opts = sq.options; break; }
+      }
+    }
+  }
+  if (opts) {
+    opts.forEach(o => {
+      const el = document.getElementById(`opt-${qId}-${o.key}`);
+      if (!el) return;
+      el.classList.remove('selected');
+      if (type === 'multi') {
+        if (state.answers[qId] && state.answers[qId].includes(o.key)) el.classList.add('selected');
+      } else {
+        if (state.answers[qId] === o.key) el.classList.add('selected');
+      }
+    });
+  }
+  // Mark card as answered
+  if (q) {
+    document.getElementById('qcard-' + qId).classList.add('has-answer');
+  } else {
+    // This is a casestudy sub-question; mark the parent card
+    for (const cq of state.questions) {
+      if (cq.type === 'casestudy' && cq.subQuestions) {
+        const sq = cq.subQuestions.find(s => s.id === qId);
+        if (sq) { document.getElementById('qcard-' + cq.id).classList.add('has-answer'); break; }
+      }
+    }
+  }
+  updateProgress();
+}
+
+function handleOrder(qId, key, val) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = {};
+  state.answers[qId][key] = parseInt(val);
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+function handleMatch(qId, rightIdx, leftIdx) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = {};
+  state.answers[qId][rightIdx] = leftIdx === '' ? null : parseInt(leftIdx);
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+function handleCodeFill(qId, blankId, value) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = {};
+  state.answers[qId][blankId] = value;
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+function handleHotarea(qId, lineId) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = [];
+  const idx = state.answers[qId].indexOf(lineId);
+  if (idx > -1) state.answers[qId].splice(idx, 1);
+  else state.answers[qId].push(lineId);
+  const el = document.getElementById(`ha-${qId}-${lineId}`);
+  el.classList.toggle('selected');
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+// ========== GRADING ==========
+
+function checkAnswer(qId) {
+  if (state.checked[qId]) return;
+  const q = state.questions.find(x => x.id === qId);
+
+  // Check if question has been answered
+  let hasAnswer;
+  if (q.type === 'casestudy') {
+    hasAnswer = q.subQuestions && q.subQuestions.some(sq => state.answers[sq.id] !== undefined);
+  } else if (q.type === 'match' || q.type === 'order' || q.type === 'code-fill') {
+    hasAnswer = state.answers[qId] && Object.keys(state.answers[qId]).length > 0;
+  } else if (q.type === 'multi') {
+    hasAnswer = state.answers[qId] && state.answers[qId].length > 0;
+  } else if (q.type === 'hotarea') {
+    hasAnswer = state.answers[qId] && state.answers[qId].length > 0;
+  } else {
+    hasAnswer = state.answers[qId] !== undefined;
+  }
+  if (!hasAnswer) {
+    const card = document.getElementById(`qcard-${qId}`);
+    card.style.borderColor = 'var(--amber)';
+    card.style.transition = 'border-color 0.3s';
+    setTimeout(() => { card.style.borderColor = ''; }, 1000);
+    return;
+  }
+
+  state.checked[qId] = true;
+  state.total++;
+
+  let correct = false;
+
+  if (q.type === 'order') {
+    const ans = state.answers[qId] || {};
+    correct = true;
+    q.options.forEach(o => {
+      const userPos = ans[o.key];
+      const correctPos = q.answer.indexOf(o.key) + 1;
+      const el = document.getElementById(`order-${qId}-${o.key}`);
+      if (userPos === correctPos) {
+        el.classList.add('correct-pos');
+      } else {
+        el.classList.add('wrong-pos');
+        correct = false;
+      }
+      el.querySelector('select').disabled = true;
+    });
+
+  } else if (q.type === 'match') {
+    const ans = state.answers[qId] || {};
+    const shuffled = window._matchShuffles[qId];
+    correct = true;
+    shuffled.forEach((p, ri) => {
+      const userLeft = ans[ri];
+      const correctLeft = p.origIdx;
+      const el = document.getElementById(`match-r-${qId}-${ri}`);
+      if (userLeft === correctLeft) {
+        el.classList.add('correct-match');
+      } else {
+        el.classList.add('wrong-match');
+        correct = false;
+      }
+      el.querySelector('select').disabled = true;
+    });
+    shuffled.forEach((p, ri) => {
+      const userLeft = ans[ri];
+      const correctLeft = p.origIdx;
+      if (userLeft === correctLeft) {
+        document.getElementById(`match-l-${qId}-${correctLeft}`).classList.add('correct-match');
+      }
+    });
+
+  } else if (q.type === 'code-fill') {
+    const ans = state.answers[qId] || {};
+    correct = true;
+    q.blanks.forEach(b => {
+      const sel = document.getElementById(`cf-${qId}-${b.id}`);
+      if (ans[b.id] === b.answer) {
+        sel.classList.add('correct-blank');
+      } else {
+        sel.classList.add('wrong-blank');
+        correct = false;
+      }
+      sel.disabled = true;
+    });
+
+  } else if (q.type === 'hotarea') {
+    const userLines = (state.answers[qId] || []).sort();
+    const correctLines = [...q.answer].sort();
+    correct = userLines.length === correctLines.length && userLines.every((v, i) => v === correctLines[i]);
+    q.codeLines.forEach(l => {
+      const el = document.getElementById(`ha-${qId}-${l.id}`);
+      el.style.cursor = 'default';
+      const isCorrect = q.answer.includes(l.id);
+      const isSelected = (state.answers[qId] || []).includes(l.id);
+      if (isCorrect && isSelected) el.classList.add('correct-line');
+      else if (isCorrect && !isSelected) el.classList.add('missed-line');
+      else if (!isCorrect && isSelected) el.classList.add('wrong-line');
+      el.classList.remove('selected');
+      el.onclick = null;
+    });
+
+  } else if (q.type === 'casestudy') {
+    correct = true;
+    q.subQuestions.forEach(sq => {
+      let sqCorrect = false;
+      if (sq.type === 'multi') {
+        const userAns = (state.answers[sq.id] || []).sort();
+        const correctAns = [...sq.answer].sort();
+        sqCorrect = userAns.length === correctAns.length && userAns.every((v, i) => v === correctAns[i]);
+      } else {
+        sqCorrect = state.answers[sq.id] === sq.answer;
+      }
+      if (!sqCorrect) correct = false;
+      // Highlight sub-question options
+      sq.options.forEach(o => {
+        const el = document.getElementById(`opt-${sq.id}-${o.key}`);
+        if (el) {
+          el.classList.add('disabled');
+          const isCorrectKey = Array.isArray(sq.answer) ? sq.answer.includes(o.key) : sq.answer === o.key;
+          const isSelected = Array.isArray(state.answers[sq.id]) ? (state.answers[sq.id] || []).includes(o.key) : state.answers[sq.id] === o.key;
+          if (isCorrectKey) { el.classList.add('correct-answer'); const ind = document.getElementById(`ind-${sq.id}-${o.key}`); if(ind) ind.textContent = '\u2713'; }
+          else if (isSelected) { el.classList.add('wrong-answer'); const ind = document.getElementById(`ind-${sq.id}-${o.key}`); if(ind) ind.textContent = '\u2717'; }
+        }
+      });
+      // Show sub-question feedback
+      const fb = document.getElementById(`fb-${sq.id}`);
+      if (fb) {
+        fb.className = `feedback show ${sqCorrect ? 'correct' : 'incorrect'}`;
+        fb.innerHTML = `<strong>${sqCorrect ? '\u2713 Correct' : '\u2717 Incorrect'}</strong>${sq.explanation}`;
+      }
+    });
+
+  } else {
+    // single, multi, scenario
+    if (q.type === 'multi') {
+      const userAns = (state.answers[qId] || []).sort();
+      const correctAns = [...q.answer].sort();
+      correct = userAns.length === correctAns.length && userAns.every((v, i) => v === correctAns[i]);
+    } else {
+      correct = state.answers[qId] === q.answer;
+    }
+    // Highlight options
+    q.options.forEach(o => {
+      const el = document.getElementById(`opt-${qId}-${o.key}`);
+      el.classList.add('disabled');
+      const isCorrectKey = Array.isArray(q.answer) ? q.answer.includes(o.key) : q.answer === o.key;
+      const isSelected = Array.isArray(state.answers[qId]) ? state.answers[qId].includes(o.key) : state.answers[qId] === o.key;
+      if (isCorrectKey) {
+        el.classList.add('correct-answer');
+        document.getElementById(`ind-${qId}-${o.key}`).textContent = '\u2713';
+      } else if (isSelected && !isCorrectKey) {
+        el.classList.add('wrong-answer');
+        document.getElementById(`ind-${qId}-${o.key}`).textContent = '\u2717';
+      }
+    });
+  }
+
+  if (correct) state.score++;
+  const card = document.getElementById(`qcard-${qId}`);
+  card.classList.add(correct ? 'correct' : 'incorrect');
+  document.getElementById(`checkbtn-${qId}`).disabled = true;
+
+  const fb = document.getElementById(`fb-${qId}`);
+  fb.className = `feedback show ${correct ? 'correct' : 'incorrect'}`;
+  fb.innerHTML = `<strong>${correct ? '\u2713 Correct!' : '\u2717 Incorrect'}</strong>${q.explanation}${q.cramRef ? `<div class="cram-link"><a href="${q.cramRef}" target="_blank">Study this topic \u2192</a></div>` : ''}`;
+
+  updateProgress();
+}
+
+function gradeAll() {
+  if (!confirm('Grade all unanswered questions? Unanswered questions will be marked incorrect.')) return;
+  // Force-grade unanswered by temporarily setting empty answers
+  state.questions.forEach(q => {
+    if (!state.checked[q.id]) {
+      // Ensure answer exists so checkAnswer doesn't bounce
+      if (state.answers[q.id] === undefined) {
+        if (q.type === 'multi' || q.type === 'hotarea') state.answers[q.id] = [];
+        else if (q.type === 'order' || q.type === 'match' || q.type === 'code-fill') state.answers[q.id] = {};
+        else if (q.type === 'casestudy') {
+          q.subQuestions.forEach(sq => { if (state.answers[sq.id] === undefined) state.answers[sq.id] = sq.type === 'multi' ? [] : ''; });
+        }
+        else state.answers[q.id] = '';
+      }
+      checkAnswer(q.id);
+    }
+  });
+}
+
+function finishExam() {
+  if (state.finished) return;
+  state.finished = true;
+  clearInterval(state.timerRef);
+  gradeAll();
+
+  const pct = state.questions.length > 0 ? Math.round((state.score / state.questions.length) * 100) : 0;
+  const pass = pct >= 70;
+
+  // Topic breakdown
+  const topics = {};
+  state.questions.forEach(q => {
+    if (!topics[q.topic]) topics[q.topic] = { correct: 0, total: 0 };
+    topics[q.topic].total++;
+    const isCorrect = state.checked[q.id] && document.getElementById(`qcard-${q.id}`).classList.contains('correct');
+    if (isCorrect) topics[q.topic].correct++;
+  });
+
+  let breakdownHtml = Object.entries(topics).map(([topic, data]) => {
+    const tPct = Math.round((data.correct / data.total) * 100);
+    const color = tPct >= 70 ? 'var(--green)' : 'var(--red)';
+    return `<div class="breakdown-row"><span>${topic}</span><div class="breakdown-bar"><div class="breakdown-bar-fill" style="width:${tPct}%;background:${color};"></div></div><span>${data.correct}/${data.total}</span></div>`;
+  }).join('');
+
+  // Review list
+  let reviewHtml = state.questions.map((q, i) => {
+    const card = document.getElementById(`qcard-${q.id}`);
+    const isCorrect = card.classList.contains('correct');
+    const isIncorrect = card.classList.contains('incorrect');
+    const dotClass = isCorrect ? 'correct' : (isIncorrect ? 'incorrect' : 'unanswered');
+    return `<div class="review-item" onclick="document.getElementById('qcard-${q.id}').scrollIntoView({behavior:'smooth'})"><div class="review-dot ${dotClass}"></div>Q${i+1}: ${q.topic}</div>`;
+  }).join('');
+
+  const summary = document.getElementById('summary');
+  summary.style.display = 'block';
+  summary.innerHTML = `<div class="summary-card">
+    <div class="score-big ${pass ? 'pass' : 'fail'}">${pct}%</div>
+    <div class="score-label">${state.score} of ${state.questions.length} correct</div>
+    <div class="pass-fail ${pass ? 'pass' : 'fail'}">${pass ? 'PASS' : 'NEEDS MORE STUDY'}</div>
+    <div class="breakdown"><h3>Topic Breakdown</h3>${breakdownHtml}</div>
+    <div class="review-list"><h3 style="color:var(--accent);font-size:0.95rem;margin:1rem 0 0.5rem;">Question Review</h3>${reviewHtml}</div>
+    <div class="btn-group" style="justify-content:center;margin-top:1.5rem;">
+      <button class="btn btn-primary" onclick="location.reload()">Retake Test</button>
+      <button class="btn btn-secondary" onclick="window.scrollTo({top:0,behavior:'smooth'})">Review Answers</button>
+      <a href="../index.html" class="btn btn-secondary" style="text-decoration:none;">Study Cram Sheets</a>
+    </div>
+  </div>`;
+  summary.scrollIntoView({ behavior: 'smooth' });
+}
+
+function updateProgress() {
+  // Count answered questions (for casestudy, count the parent question if any sub-question is answered)
+  let answered = 0;
+  state.questions.forEach(q => {
+    if (q.type === 'casestudy') {
+      const allAnswered = q.subQuestions && q.subQuestions.every(sq => state.answers[sq.id] !== undefined);
+      if (allAnswered) answered++;
+    } else if (state.answers[q.id] !== undefined) {
+      answered++;
+    }
+  });
+  const total = state.questions.length;
+  document.getElementById('progressFill').style.width = `${(answered/total)*100}%`;
+  document.getElementById('progressText').textContent = `${answered} of ${total} answered`;
+  document.getElementById('scoreDisplay').textContent = `Score: ${state.score}/${state.total}`;
+}
+
+init();
+</script>
+</body>
+</html>

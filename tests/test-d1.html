@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D1: Plan &amp; Manage | AI-102 Practice Test</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #232733; --border: #2e3345;
+    --text: #e4e6ef; --text-dim: #8b8fa3;
+    --amber: #f5a623; --amber-dim: rgba(245,166,35,0.25);
+    --green: #34d399; --green-dim: rgba(52,211,153,0.25);
+    --blue: #60a5fa; --blue-dim: rgba(96,165,250,0.25);
+    --red: #f87171; --red-dim: rgba(248,113,113,0.25);
+    --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.25);
+    --cyan: #22d3ee; --cyan-dim: rgba(34,211,238,0.25);
+    --accent: var(--amber); --accent-dim: var(--amber-dim);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 900px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--accent); }
+  .header h1 { font-size: 2rem; color: var(--accent); margin-bottom: 0.3rem; }
+  .header .subtitle { color: var(--text-dim); font-size: 0.95rem; }
+  .badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); }
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-red { background: var(--red-dim); color: var(--red); }
+  .badge-purple { background: var(--purple-dim); color: var(--purple); }
+  .badge-cyan { background: var(--cyan-dim); color: var(--cyan); }
+  code { background: var(--surface2); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.8rem; color: var(--cyan); }
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.5; margin: 0.75rem 0; }
+  pre code { background: none; padding: 0; }
+
+  /* Controls Bar */
+  .controls { position: sticky; top: 0; z-index: 100; background: rgba(26,29,39,0.95); border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .progress-wrap { flex: 1; min-width: 120px; }
+  .progress-bar { height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.3s; width: 0%; }
+  .progress-text { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+  .score-display { font-size: 0.9rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+  .timer { font-family: 'Consolas', 'Courier New', monospace; font-size: 1rem; color: var(--accent); white-space: nowrap; }
+  .timer.warning { color: var(--red); }
+
+  /* Buttons */
+  .btn { padding: 0.4rem 1rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.75rem; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .option-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .order-select:focus-visible, .match-select:focus-visible, .code-fill-select:focus-visible { outline: 2px solid var(--accent); }
+  .hotarea-line:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  /* Question Cards */
+  .question-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem; transition: border-color 0.2s; }
+  .question-card.has-answer { border-top: 2px solid var(--accent); }
+  .question-card.correct { border-left: 3px solid var(--green); }
+  .question-card.incorrect { border-left: 3px solid var(--red); }
+  .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+  .q-meta { display: flex; gap: 0.5rem; align-items: center; }
+  .q-num { font-size: 0.75rem; color: var(--text-dim); }
+  .q-text { font-size: 0.95rem; margin-bottom: 1rem; line-height: 1.6; }
+  .q-instruction { font-size: 0.8rem; color: var(--accent); margin-bottom: 0.75rem; font-style: italic; }
+
+  /* Scenario Box */
+  .scenario-box { background: var(--surface2); border-left: 3px solid var(--accent); padding: 1rem; margin-bottom: 1rem; border-radius: 0 8px 8px 0; font-size: 0.85rem; line-height: 1.6; }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem; }
+  .option-row { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer; transition: background 0.15s; border: 1px solid transparent; user-select: none; min-height: 40px; }
+  .option-row:hover { background: var(--surface2); }
+  .option-row.selected { background: var(--accent-dim); border-color: var(--accent); }
+  .option-row.correct-answer { background: var(--green-dim); border-color: var(--green); }
+  .option-row.wrong-answer { background: var(--red-dim); border-color: var(--red); }
+  .option-row.disabled { pointer-events: none; opacity: 0.8; }
+  .option-key { font-weight: 700; color: var(--accent); min-width: 20px; }
+  .option-text { font-size: 0.85rem; }
+  .option-indicator { margin-left: auto; font-size: 0.85rem; }
+
+  /* Order Items */
+  .order-items { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem; }
+  .order-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 1rem; background: var(--surface2); border-radius: 8px; border: 1px solid transparent; min-height: 40px; }
+  .order-item.correct-pos { border-color: var(--green); background: var(--green-dim); }
+  .order-item.wrong-pos { border-color: var(--red); background: var(--red-dim); }
+  .order-select { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 0.3rem 0.5rem; font-size: 0.8rem; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+  .order-text { font-size: 0.85rem; }
+
+  /* Match type */
+  .match-container { display: flex; gap: 1.5rem; margin-bottom: 0.75rem; }
+  .match-col { flex: 1; display: flex; flex-direction: column; gap: 0.4rem; }
+  .match-col-header { font-size: 0.75rem; color: var(--accent); text-transform: uppercase; font-weight: 600; margin-bottom: 0.25rem; }
+  .match-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; background: var(--surface2); border-radius: 8px; font-size: 0.85rem; border: 1px solid transparent; min-height: 40px; }
+  .match-item.correct-match { border-color: var(--green); background: var(--green-dim); }
+  .match-item.wrong-match { border-color: var(--red); background: var(--red-dim); }
+  .match-select { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 0.3rem 0.5rem; font-size: 0.8rem; min-width: 40px; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+  .match-num { font-weight: 700; color: var(--accent); min-width: 20px; }
+
+  /* Code-fill type */
+  .code-fill-pre { position: relative; overflow: visible; }
+  .code-fill-select { font-family: 'Consolas', 'Courier New', monospace; background: var(--surface); color: var(--cyan); border: 1px solid var(--accent); border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.8rem; z-index: 10; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+  .code-fill-select.correct-blank { border-color: var(--green); background: var(--green-dim); }
+  .code-fill-select.wrong-blank { border-color: var(--red); background: var(--red-dim); }
+
+  /* Hotarea type */
+  .hotarea-lines { font-family: 'Consolas', 'Courier New', monospace; font-size: 0.8rem; margin-bottom: 0.75rem; }
+  .hotarea-line { display: flex; align-items: center; gap: 0.75rem; padding: 0.4rem 0.75rem; cursor: pointer; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; user-select: none; min-height: 40px; }
+  .hotarea-line:hover { background: var(--surface2); }
+  .hotarea-line.selected { background: var(--accent-dim); border-color: var(--accent); }
+  .hotarea-line.correct-line { background: var(--green-dim); border-color: var(--green); }
+  .hotarea-line.wrong-line { background: var(--red-dim); border-color: var(--red); }
+  .hotarea-line.missed-line { border: 1px dashed var(--green); }
+  .hotarea-linenum { color: var(--text-dim); min-width: 24px; text-align: right; }
+  .hotarea-code { white-space: pre; }
+
+  /* Case study type */
+  .casestudy-scenario { background: var(--surface2); border-left: 3px solid var(--accent); padding: 1rem; margin-bottom: 1rem; border-radius: 0 8px 8px 0; font-size: 0.85rem; line-height: 1.6; max-height: 250px; overflow-y: auto; }
+  .casestudy-subq { padding: 0.75rem 0; border-top: 1px solid var(--border); }
+  .casestudy-subq:first-child { border-top: none; }
+  .casestudy-subq-label { font-size: 0.75rem; color: var(--accent); margin-bottom: 0.5rem; }
+
+  /* Feedback */
+  .feedback { border-radius: 8px; padding: 0.75rem 1rem; margin-top: 0.75rem; font-size: 0.85rem; display: none; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: var(--green-dim); border: 1px solid rgba(52,211,153,0.3); }
+  .feedback.incorrect { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.3); }
+  .feedback strong { display: block; margin-bottom: 0.3rem; }
+  .feedback .cram-link { margin-top: 0.5rem; }
+  .feedback .cram-link a { color: var(--blue); text-decoration: none; font-size: 0.8rem; }
+  .feedback .cram-link a:hover { text-decoration: underline; }
+
+  /* Summary */
+  #summary { display: none; }
+  .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; text-align: center; margin-bottom: 1.5rem; }
+  .score-big { font-size: 3.5rem; font-weight: 800; line-height: 1; }
+  .score-big.pass { color: var(--green); }
+  .score-big.fail { color: var(--red); }
+  .score-label { font-size: 1rem; color: var(--text-dim); margin-top: 0.25rem; }
+  .pass-fail { font-size: 1.2rem; font-weight: 700; margin-top: 0.5rem; }
+  .pass-fail.pass { color: var(--green); }
+  .pass-fail.fail { color: var(--red); }
+  .breakdown { text-align: left; margin-top: 1.5rem; }
+  .breakdown h3 { font-size: 0.95rem; color: var(--accent); margin-bottom: 0.75rem; }
+  .breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+  .breakdown-bar { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; margin: 0 1rem; }
+  .breakdown-bar-fill { height: 100%; border-radius: 3px; }
+  .review-list { text-align: left; margin-top: 1.5rem; }
+  .review-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0; font-size: 0.8rem; cursor: pointer; }
+  .review-item:hover { color: var(--accent); }
+  .review-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .review-dot.correct { background: var(--green); }
+  .review-dot.incorrect { background: var(--red); }
+  .review-dot.unanswered { background: var(--text-dim); }
+
+  /* Nav Links */
+  .nav-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .nav-links a { color: var(--blue); text-decoration: none; font-size: 0.8rem; padding: 0.3rem 0.8rem; border: 1px solid var(--blue); border-radius: 6px; }
+  .nav-links a:hover { background: var(--blue-dim); }
+
+  @media (max-width: 640px) {
+    body { padding: 1rem; }
+    .header h1 { font-size: 1.5rem; }
+    .controls { flex-direction: column; gap: 0.5rem; padding: 0.5rem 0.75rem; }
+    .match-container { flex-direction: column; gap: 0.75rem; }
+    .btn-group { width: 100%; justify-content: center; }
+    .q-text { font-size: 0.9rem; }
+    .option-row { padding: 0.75rem 1rem; }
+    .hotarea-line { padding: 0.6rem 0.75rem; }
+    .score-display, .timer { font-size: 0.8rem; }
+    pre { font-size: 0.7rem; }
+  }
+
+  @media print {
+    body { background: #fff; color: #000; padding: 1rem; }
+    .controls, .btn, .timer { display: none !important; }
+    .question-card { border: 1px solid #ccc; break-inside: avoid; }
+    .feedback { display: block !important; background: #f0f0f0; border: 1px solid #ccc; }
+    .option-row.correct-answer { border: 2px solid #000; }
+    .header h1 { color: #333; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Domain 1: Plan &amp; Manage an Azure AI Solution</h1>
+  <div class="subtitle">30 Questions &bull; ~30 minutes &bull; <span class="badge badge-amber">20-25% of Exam</span></div>
+</div>
+
+<div class="controls" id="controls">
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText" aria-live="polite">0 of 0 answered</div>
+  </div>
+  <div class="score-display" id="scoreDisplay" aria-live="polite">Score: 0/0</div>
+  <div class="timer" id="timer">30:00</div>
+  <div class="btn-group">
+    <button class="btn btn-secondary btn-sm" onclick="toggleShuffle()">Shuffle</button>
+    <button class="btn btn-secondary btn-sm" onclick="gradeAll()">Grade All</button>
+    <button class="btn btn-primary btn-sm" onclick="finishExam()">Finish Exam</button>
+  </div>
+</div>
+
+<div id="questions"></div>
+
+<div id="summary"></div>
+
+<div class="nav-links">
+  <a href="index.html">&larr; All Tests</a>
+  <a href="test-d1.html">D1</a>
+  <a href="test-d2.html">D2</a>
+  <a href="test-d3.html">D3</a>
+  <a href="test-d4.html">D4</a>
+  <a href="test-d5.html">D5</a>
+  <a href="test-d6.html">D6</a>
+  <a href="test-full.html">Full Exam</a>
+  <a href="../index.html">Cram Library</a>
+</div>
+
+<script>
+const QUESTIONS = [
+// ── SINGLE-CHOICE (9) ──────────────────────────────────────────────
+{id:"d1-001", type:"single", domain:"D1", topic:"Multi-Service vs Single-Service Resources",
+ question:"The Memphis Zoo is building an animal monitoring system that uses Language, Vision, and Speech services. A developer proposes creating separate single-service resources for each. What is the PRIMARY advantage of using a single multi-service Foundry resource instead?",
+ options:[
+  {key:"A",text:"Multi-service resources offer higher API rate limits per service"},
+  {key:"B",text:"A single endpoint and key simplifies management and billing across services"},
+  {key:"C",text:"Multi-service resources automatically enable private endpoints"},
+  {key:"D",text:"Single-service resources cannot be deployed in the same region"}
+ ],
+ answer:"B",
+ explanation:"A multi-service (Foundry) resource provides one endpoint and one key that works across multiple AI services, simplifying credential management and consolidating billing. Rate limits are per-service regardless of resource type. Private endpoints and regional deployment are available for both resource types.",
+ cramRef:"../00-exam-overview.html"},
+
+{id:"d1-002", type:"single", domain:"D1", topic:"Content Safety Severity Levels",
+ question:"Shelby County Schools is implementing Azure AI Content Safety to filter student-generated content. The API returns a severity score of 4 for a piece of text in the Violence category. What does this severity level indicate?",
+ options:[
+  {key:"A",text:"Safe - content uses terms in professional contexts appropriate for most audiences"},
+  {key:"B",text:"Low - content includes stereotyping or offensive language at low intensity"},
+  {key:"C",text:"Medium - content includes depictions of seeking and executing harmful instructions at medium intensity"},
+  {key:"D",text:"High - content displays explicit and severe harmful instructions or actions"}
+ ],
+ answer:"C",
+ explanation:"Azure AI Content Safety uses severity levels 0 (Safe), 2 (Low), 4 (Medium), and 6 (High) in the trimmed scale. Severity level 4 corresponds to Medium, which describes content that uses offensive, insulting, or demeaning language, or depicts harmful instructions at medium intensity. The full 0-7 scale maps [4,5] to severity 4.",
+ cramRef:"../05-responsible-ai.html"},
+
+{id:"d1-003", type:"single", domain:"D1", topic:"Content Filter Default Thresholds",
+ question:"A developer at FedEx logistics deploys a GPT-4o model on Azure OpenAI without configuring any custom content filters. A user submits a prompt that is classified as 'low' severity for the Hate category. What happens?",
+ options:[
+  {key:"A",text:"The prompt is blocked because the default threshold filters all non-safe content"},
+  {key:"B",text:"The prompt is allowed through because the default threshold is set to medium"},
+  {key:"C",text:"The prompt is blocked because Hate has a stricter default threshold than other categories"},
+  {key:"D",text:"The prompt is allowed through because content filtering is disabled by default"}
+ ],
+ answer:"B",
+ explanation:"The default content filtering configuration for Azure OpenAI text models filters at the medium severity threshold for all four harm categories (Hate, Violence, Sexual, Self-Harm) on both prompts and completions. Content at low or safe severity passes through; only medium and high severity content is filtered by default.",
+ cramRef:"../05-responsible-ai.html"},
+
+{id:"d1-004", type:"single", domain:"D1", topic:"Responsible AI Principles",
+ question:"St. Jude Children's Research Hospital is deploying an AI system to help prioritize patient imaging reviews. During testing, the team discovers the model performs significantly better for one demographic group than another. Which Microsoft Responsible AI principle is MOST directly violated?",
+ options:[
+  {key:"A",text:"Transparency"},
+  {key:"B",text:"Accountability"},
+  {key:"C",text:"Fairness"},
+  {key:"D",text:"Privacy and Security"}
+ ],
+ answer:"C",
+ explanation:"Microsoft's six Responsible AI principles are: Fairness, Reliability and Safety, Privacy and Security, Inclusiveness, Transparency, and Accountability. When an AI system performs differently across demographic groups, this most directly violates the Fairness principle, which states AI systems should treat everyone fairly and avoid affecting similarly situated groups differently.",
+ cramRef:"../05-responsible-ai.html"},
+
+{id:"d1-005", type:"single", domain:"D1", topic:"RBAC Roles for Azure OpenAI",
+ question:"A Beale Street Entertainment District developer needs to make inference API calls to an Azure OpenAI resource using Microsoft Entra ID authentication. They do NOT need to create deployments or manage keys. Which is the LEAST privileged role that meets these requirements?",
+ options:[
+  {key:"A",text:"Cognitive Services Contributor"},
+  {key:"B",text:"Cognitive Services OpenAI Contributor"},
+  {key:"C",text:"Cognitive Services OpenAI User"},
+  {key:"D",text:"Cognitive Services Usages Reader"}
+ ],
+ answer:"C",
+ explanation:"Cognitive Services OpenAI User is the least privileged role that allows making inference API calls with Microsoft Entra ID. It can view the resource, view deployments, and use playground and API for inference. It cannot create deployments, manage keys, or upload fine-tuning data. Cognitive Services OpenAI Contributor adds deployment management. Cognitive Services Contributor adds resource creation and key access. Usages Reader only provides quota viewing.",
+ cramRef:"../00-exam-overview.html"},
+
+{id:"d1-006", type:"single", domain:"D1", topic:"Container Deployment",
+ question:"The Memphis Grizzlies fan engagement platform team wants to deploy an Azure AI Services container for real-time sentiment analysis in an air-gapped environment. Which statement about Azure AI containers is correct?",
+ options:[
+  {key:"A",text:"Containers can run indefinitely without any connection to Azure"},
+  {key:"B",text:"Containers must connect to Azure periodically for billing, or they stop serving requests"},
+  {key:"C",text:"Containers require a GPU on the host machine to function"},
+  {key:"D",text:"Containers include their own built-in billing system that works offline"}
+ ],
+ answer:"B",
+ explanation:"Azure AI Services containers must connect to the billing endpoint periodically. The container reports usage every 10-15 minutes. If it cannot connect within the allowed time window (approximately 10 attempts at 10-15 minute intervals), it stops serving requests. Containers are CPU-based (x64 Linux) and do not require GPUs. Disconnected containers are available for specific scenarios with a separate commitment plan.",
+ cramRef:"../00-exam-overview.html"},
+
+{id:"d1-007", type:"single", domain:"D1", topic:"Diagnostic Logging",
+ question:"A Shelby Farms Park wildlife monitoring system administrator wants to capture all API request and response data from their Azure AI Services resource. Where should they configure this?",
+ options:[
+  {key:"A",text:"In the resource's Diagnostic settings, sending to a Log Analytics workspace"},
+  {key:"B",text:"In Azure Active Directory, under Application Registrations"},
+  {key:"C",text:"In the resource's Networking tab, under Request Logging"},
+  {key:"D",text:"In Azure Policy, by creating a custom logging policy"}
+ ],
+ answer:"A",
+ explanation:"Azure AI Services diagnostic logging is configured through Diagnostic settings under the Monitoring section of the resource. You create a diagnostic setting that selects log categories (Audit, RequestResponse, AllMetrics) and a destination (Log Analytics workspace, Storage account, or Event Hub). Log Analytics is recommended because it allows running Kusto queries against the data.",
+ cramRef:"../00-exam-overview.html"},
+
+{id:"d1-008", type:"single", domain:"D1", topic:"Content Safety Categories",
+ question:"FedEx logistics is using Azure AI Content Safety to moderate user-submitted package description text. The API returns scores for four categories. Which of the following is NOT one of the four default harm categories?",
+ options:[
+  {key:"A",text:"Hate and Fairness"},
+  {key:"B",text:"Violence"},
+  {key:"C",text:"Misinformation"},
+  {key:"D",text:"Self-Harm"}
+ ],
+ answer:"C",
+ explanation:"Azure AI Content Safety detects four default harm categories: Hate (and Fairness), Sexual, Violence, and Self-Harm. Misinformation is not one of the built-in categories. Users can define custom categories for additional moderation needs like brand protection or misinformation detection.",
+ cramRef:"../05-responsible-ai.html"},
+
+{id:"d1-009", type:"single", domain:"D1", topic:"Resource Monitoring",
+ question:"A Memphis 311 administrator notices that API calls to their Azure AI Services resource are being throttled. Which Azure Monitor feature should they use FIRST to investigate the issue?",
+ options:[
+  {key:"A",text:"Activity Log to check for recent configuration changes"},
+  {key:"B",text:"Metrics Explorer to view request counts and HTTP 429 responses"},
+  {key:"C",text:"Log Analytics to run a Kusto query against resource logs"},
+  {key:"D",text:"Azure Advisor to check for performance recommendations"}
+ ],
+ answer:"B",
+ explanation:"HTTP 429 status codes indicate rate limiting (throttling). Metrics Explorer provides real-time views of platform metrics including request counts, error rates, and latency. It is the fastest way to confirm throttling and see usage patterns. While Log Analytics provides deeper analysis, Metrics Explorer gives the quickest initial view of the problem.",
+ cramRef:"../00-exam-overview.html"},
+
+// ── MULTI-SELECT (4) ───────────────────────────────────────────────
+{id:"d1-010", type:"multi", domain:"D1", topic:"Responsible AI Principles", selectCount:2,
+ question:"Memphis Zoo is publishing a transparency report for their AI-powered animal health monitoring system. According to Microsoft's six Responsible AI principles, which TWO of the following are actual principles? (Select 2)",
+ options:[
+  {key:"A",text:"Fairness"},
+  {key:"B",text:"Profitability"},
+  {key:"C",text:"Inclusiveness"},
+  {key:"D",text:"Scalability"}
+ ],
+ answer:["A","C"],
+ explanation:"Microsoft's six Responsible AI principles are: (1) Fairness, (2) Reliability and Safety, (3) Privacy and Security, (4) Inclusiveness, (5) Transparency, and (6) Accountability. Profitability and Scalability are not among the six principles.",
+ cramRef:"../05-responsible-ai.html"},
+
+{id:"d1-011", type:"multi", domain:"D1", topic:"RBAC Role Capabilities", selectCount:2,
+ question:"A Shelby County Schools IT administrator assigns the Cognitive Services OpenAI Contributor role to a developer. Which TWO actions can this developer perform that a Cognitive Services OpenAI User cannot? (Select 2)",
+ options:[
+  {key:"A",text:"Create or edit model deployments"},
+  {key:"B",text:"View and copy API keys under Keys and Endpoint"},
+  {key:"C",text:"Upload datasets for fine-tuning"},
+  {key:"D",text:"Create new Azure OpenAI resources"}
+ ],
+ answer:["A","C"],
+ explanation:"Cognitive Services OpenAI Contributor can do everything OpenAI User can, plus: create/edit model deployments, create/deploy custom fine-tuned models, upload datasets for fine-tuning, and view stored completions data. Viewing/copying keys and creating new resources require the Cognitive Services Contributor role.",
+ cramRef:"../00-exam-overview.html"},
+
+{id:"d1-012", type:"multi", domain:"D1", topic:"Content Filter Configuration", selectCount:2,
+ question:"A developer at the Beale Street Entertainment District is configuring custom content filters for their Azure OpenAI deployment. Which TWO statements about content filter configurability are correct? (Select 2)",
+ options:[
+  {key:"A",text:"Content filters can be configured separately for prompts and completions"},
+  {key:"B",text:"Any customer can completely disable all content filters without approval"},
+  {key:"C",text:"Content filter configurations are created at the resource level and associated with deployments"},
+  {key:"D",text:"The GPT-image-1 model supports custom content filter configurations"}
+ ],
+ answer:["A","C"],
+ explanation:"Content filters can be independently configured for prompts (inputs) and completions (outputs) at different severity levels. Configurations are created at the resource level and then associated with one or more deployments. Completely disabling filters requires special approval via a limited access request form. The GPT-image-1 model does not support content filtering configuration; only the default filter is used.",
+ cramRef:"../05-responsible-ai.html"},
+
+{id:"d1-013", type:"multi", domain:"D1", topic:"Diagnostic Settings Destinations", selectCount:3,
+ question:"St. Jude Children's Research Hospital needs to configure diagnostic settings for their Azure AI Services resource. Which THREE are valid destinations for diagnostic data? (Select 3)",
+ options:[
+  {key:"A",text:"Log Analytics workspace"},
+  {key:"B",text:"Azure Storage account"},
+  {key:"C",text:"Azure Event Hub"},
+  {key:"D",text:"Azure SQL Database"},
+  {key:"E",text:"Azure Cosmos DB"}
+ ],
+ answer:["A","B","C"],
+ explanation:"Azure Monitor diagnostic settings support three destination types: Log Analytics workspace (for Kusto queries), Azure Storage account (for archival), and Azure Event Hub (for streaming to external systems or partner solutions). Azure SQL Database and Cosmos DB are not direct destinations for diagnostic settings.",
+ cramRef:"../00-exam-overview.html"},
+
+// ── ORDER (3) ──────────────────────────────────────────────────────
+{id:"d1-014", type:"order", domain:"D1", topic:"Container Deployment Steps",
+ question:"Place the following steps for deploying an Azure AI Services container in the correct order:",
+ options:[
+  {key:"A",text:"Run the container with docker run, providing the billing endpoint and API key"},
+  {key:"B",text:"Create an Azure AI Services resource in the Azure portal"},
+  {key:"C",text:"Pull the container image from the Microsoft Container Registry"},
+  {key:"D",text:"Call the container's local endpoint to verify it returns HTTP 200"}
+ ],
+ answer:["B","C","A","D"],
+ explanation:"The correct order is: (1) Create an Azure AI Services resource to get the billing endpoint and key, (2) Pull the container image using docker pull from MCR, (3) Run the container with docker run providing the Eula, Billing, and ApiKey parameters, (4) Verify the container is running by calling its local endpoint.",
+ cramRef:"../00-exam-overview.html"},
+
+{id:"d1-015", type:"order", domain:"D1", topic:"Diagnostic Logging Setup",
+ question:"Place the steps for configuring Azure AI Services diagnostic logging in the correct order:",
+ options:[
+  {key:"A",text:"Select log categories (Audit, RequestResponse, AllMetrics)"},
+  {key:"B",text:"Navigate to the resource's Diagnostic settings under Monitoring"},
+  {key:"C",text:"Select Add diagnostic setting and provide a name"},
+  {key:"D",text:"Choose a destination (Log Analytics workspace) and save"}
+ ],
+ answer:["B","C","A","D"],
+ explanation:"The correct sequence is: navigate to the resource's Monitoring > Diagnostic settings, add a new diagnostic setting with a descriptive name, select the log categories you want to collect, then choose the destination and save. Data typically takes up to two hours to become available for querying.",
+ cramRef:"../00-exam-overview.html"},
+
+{id:"d1-016", type:"order", domain:"D1", topic:"Managed Identity Setup",
+ question:"Place the steps for configuring managed identity access to Azure AI Services in the correct order:",
+ options:[
+  {key:"A",text:"Assign the Cognitive Services User role to the managed identity on the AI Services resource"},
+  {key:"B",text:"Enable system-assigned managed identity on the client Azure resource (e.g., App Service)"},
+  {key:"C",text:"Update application code to use DefaultAzureCredential instead of API keys"},
+  {key:"D",text:"Test the connection and wait up to several hours for role assignment to take effect"}
+ ],
+ answer:["B","A","C","D"],
+ explanation:"First enable the managed identity on the client resource, then assign the appropriate RBAC role (like Cognitive Services User) on the target AI Services resource. Next, update the application code to use token-based authentication (DefaultAzureCredential). Finally, test the connection, noting that managed identity token caching means role changes can take several hours to propagate.",
+ cramRef:"../00-exam-overview.html"},
+
+// ── SCENARIO (3) ───────────────────────────────────────────────────
+{id:"d1-017", type:"scenario", domain:"D1", topic:"Resource Planning",
+ scenario:"Shelby Farms Park is building a wildlife monitoring system that uses Azure AI Vision for camera trap image analysis, Azure AI Language for visitor feedback sentiment analysis, and Azure Speech for ranger voice commands. The team has a single Azure subscription and wants to minimize the number of resources and keys to manage. All services will be deployed to the East US region.",
+ question:"What resource configuration should the team use?",
+ options:[
+  {key:"A",text:"Create one multi-service Foundry resource (kind: AIServices, SKU: S0) in East US"},
+  {key:"B",text:"Create three separate single-service resources, one for each AI service"},
+  {key:"C",text:"Create one Azure OpenAI resource, which includes all AI services"},
+  {key:"D",text:"Create one Azure AI Search resource with integrated AI capabilities"}
+ ],
+ answer:"A",
+ explanation:"A multi-service Foundry resource (kind: AIServices) provides access to Vision, Language, Speech, and other services through a single endpoint and key. This minimizes management overhead. Azure OpenAI is a separate specialized resource type and does not include Vision or Language. Azure AI Search is for search workloads, not general AI services.",
+ cramRef:"../00-exam-overview.html"},
+
+{id:"d1-018", type:"scenario", domain:"D1", topic:"Content Safety Implementation",
+ scenario:"The Memphis Grizzlies fan engagement platform allows fans to post messages during live games. The moderation team wants to automatically flag content that contains hate speech or violent threats while allowing passionate sports commentary. They need to balance safety with user experience, avoiding over-blocking of legitimate sports discussion.",
+ question:"What content filtering configuration should they implement?",
+ options:[
+  {key:"A",text:"Set all four Content Safety categories to severity threshold 0 to catch everything"},
+  {key:"B",text:"Set Hate and Violence thresholds to severity 4 (medium) and Sexual and Self-Harm to severity 6 (high)"},
+  {key:"C",text:"Disable content filtering entirely and rely on human moderators"},
+  {key:"D",text:"Use only blocklist-based filtering with a list of banned words"}
+ ],
+ answer:"B",
+ explanation:"Setting Hate and Violence to medium (4) catches genuinely harmful content while allowing passionate sports language that might score low severity. Setting Sexual and Self-Harm to high (6) is appropriate since these are less likely in sports chat and a higher threshold avoids false positives. Threshold 0 would over-block legitimate commentary. Disabling filters entirely creates unacceptable risk. Blocklists alone cannot assess context and severity.",
+ cramRef:"../05-responsible-ai.html"},
+
+{id:"d1-019", type:"scenario", domain:"D1", topic:"Security and Compliance",
+ scenario:"St. Jude Children's Research Hospital must deploy an AI text analytics solution that processes patient feedback. Due to HIPAA compliance requirements, no patient data can leave the hospital's private network. The hospital has an on-premises Kubernetes cluster. They still need an Azure AI Services resource for billing purposes.",
+ question:"What deployment approach should the hospital use?",
+ options:[
+  {key:"A",text:"Deploy Azure AI Services containers on the on-premises Kubernetes cluster with periodic billing connection to Azure"},
+  {key:"B",text:"Use the Azure AI Services REST API with a VPN connection to Azure"},
+  {key:"C",text:"Deploy the solution entirely in Azure with Private Link endpoints"},
+  {key:"D",text:"Use Azure Arc to extend the Azure AI Services resource to on-premises"}
+ ],
+ answer:"A",
+ explanation:"Azure AI Services containers allow processing data locally on the hospital's private network while only sending billing telemetry to Azure. Patient data stays on-premises within the HIPAA boundary. The container connects to the billing endpoint periodically but processes all inference locally. A VPN still sends data to Azure. Private Link keeps data in Azure (not on-premises). Azure Arc does not extend AI Services in this way.",
+ cramRef:"../00-exam-overview.html"},
+
+// ── MATCH (2) ──────────────────────────────────────────────────────
+{id:"d1-020", type:"match", domain:"D1", topic:"RBAC Roles",
+ question:"Match each Azure OpenAI RBAC role to its key capability:",
+ pairs:[
+  {left:"Cognitive Services OpenAI User",right:"Make inference API calls with Entra ID authentication"},
+  {left:"Cognitive Services OpenAI Contributor",right:"Create and edit model deployments and upload fine-tuning data"},
+  {left:"Cognitive Services Contributor",right:"Create new Azure OpenAI resources and view/regenerate API keys"},
+  {left:"Cognitive Services Usages Reader",right:"View quota allocations at the subscription level"}
+ ],
+ explanation:"OpenAI User provides inference access. OpenAI Contributor adds deployment and fine-tuning management. Contributor adds resource creation and key management. Usages Reader is a subscription-level role solely for viewing quota information.",
+ cramRef:"../00-exam-overview.html"},
+
+{id:"d1-021", type:"match", domain:"D1", topic:"Content Safety Severity Levels",
+ question:"Match each Azure AI Content Safety severity level to its description:",
+ pairs:[
+  {left:"Severity 0 (Safe)",right:"Terms used in general, journalistic, or professional contexts"},
+  {left:"Severity 2 (Low)",right:"Prejudiced or offensive language, stereotyping at low intensity"},
+  {left:"Severity 4 (Medium)",right:"Insulting, intimidating language towards identity groups at medium intensity"},
+  {left:"Severity 6 (High)",right:"Explicit severe harmful instructions, endorsement of extreme harm"}
+ ],
+ explanation:"Azure AI Content Safety uses a trimmed severity scale of 0, 2, 4, 6 mapped from the full 0-7 scale. Each level represents increasing severity of potentially harmful content, from safe professional usage to explicit severe harm.",
+ cramRef:"../05-responsible-ai.html"},
+
+// ── CODE-FILL (2) ──────────────────────────────────────────────────
+{id:"d1-022", type:"code-fill", domain:"D1", topic:"Content Safety API",
+ question:"Complete this Python code to analyze text with Azure AI Content Safety:",
+ codeTemplate:"from azure.ai.contentsafety import ContentSafetyClient\nfrom azure.ai.contentsafety.models import [BLANK1]\nfrom azure.core.credentials import AzureKeyCredential\n\nclient = ContentSafetyClient(endpoint, AzureKeyCredential(key))\nrequest = [BLANK1](text=\"User submitted text here\")\nresult = client.[BLANK2](request)",
+ blanks:[
+  {id:"BLANK1",options:["AnalyzeTextOptions","TextAnalyticsInput","ContentSafetyRequest","SafetyAnalysisOptions"],answer:"AnalyzeTextOptions"},
+  {id:"BLANK2",options:["analyze_text","detect_content","evaluate_safety","moderate_text"],answer:"analyze_text"}
+ ],
+ explanation:"The Azure AI Content Safety Python SDK uses the ContentSafetyClient with AnalyzeTextOptions to specify the text to analyze. The analyze_text() method sends the request and returns severity scores for each harm category (Hate, Sexual, Violence, Self-Harm).",
+ cramRef:"../05-responsible-ai.html"},
+
+{id:"d1-023", type:"code-fill", domain:"D1", topic:"Azure Identity Authentication",
+ question:"Complete this Python code to authenticate to Azure AI Services using managed identity instead of API keys:",
+ codeTemplate:"from azure.identity import [BLANK1]\nfrom azure.ai.textanalytics import TextAnalyticsClient\n\ncredential = [BLANK1]()\nclient = TextAnalyticsClient(\n    endpoint=endpoint,\n    credential=[BLANK2]\n)",
+ blanks:[
+  {id:"BLANK1",options:["DefaultAzureCredential","ManagedIdentityCredential","AzureKeyCredential","ClientSecretCredential"],answer:"DefaultAzureCredential"},
+  {id:"BLANK2",options:["credential","AzureKeyCredential(key)","os.environ['API_KEY']","get_token()"],answer:"credential"}
+ ],
+ explanation:"DefaultAzureCredential from the azure-identity library provides a seamless authentication experience that works across local development (using CLI/VS Code credentials) and Azure-hosted environments (using managed identity). The credential object is passed directly to the client constructor, replacing the need for API keys.",
+ cramRef:"../00-exam-overview.html"},
+
+// ── HOTAREA (1) ────────────────────────────────────────────────────
+{id:"d1-024", type:"hotarea", domain:"D1", topic:"Container Configuration",
+ question:"FedEx logistics is deploying an Azure AI Language container. Which lines in this docker run command contain errors?",
+ codeLines:[
+  {id:1,text:"docker run --rm -it -p 5000:5000 \\",correct:false},
+  {id:2,text:"  mcr.microsoft.com/azure-cognitive-services/textanalytics/language \\",correct:false},
+  {id:3,text:"  Eula=accept \\",correct:false},
+  {id:4,text:"  Billing=https://myresource.cognitiveservices.azure.com \\",correct:false},
+  {id:5,text:"  ApiKey=NONE \\",correct:true},
+  {id:6,text:"  --memory 2g --cpus 1",correct:true}
+ ],
+ answer:[5,6],
+ explanation:"Line 5 is incorrect: ApiKey must be set to a valid Azure AI Services resource key (not NONE). The container requires a real API key to connect to the billing endpoint. Line 6 is incorrect: the recommended minimum for Language containers is 4 CPU cores and 4 GB memory (not 1 CPU and 2 GB). These values would cause the container to underperform or fail.",
+ cramRef:"../00-exam-overview.html"},
+
+// ── CASE STUDY (1) ─────────────────────────────────────────────────
+{id:"d1-025", type:"casestudy", domain:"D1", topic:"Enterprise AI Governance",
+ scenario:"Memphis 311 is deploying a city-wide AI platform that includes: (1) A citizen complaint triage system using Azure OpenAI GPT-4o, (2) An image analysis system for code enforcement using Azure AI Vision, (3) A multilingual translation system for non-English-speaking residents using Azure Translator. The platform must meet the following requirements: - Three developer teams need access with different permission levels - All API usage must be logged for audit purposes - The platform must comply with the city's responsible AI policy - Cost tracking must be centralized across all services",
+ question:"Answer the following questions about the Memphis 311 platform design:",
+ subQuestions:[
+  {id:"d1-025a", type:"single",
+   question:"The lead architect team needs to create resources and manage API keys. The triage team needs to create and manage model deployments but not manage keys. The translation team only needs to make inference calls. What is the correct role assignment?",
+   options:[
+    {key:"A",text:"Architects: Owner; Triage: Contributor; Translation: Reader"},
+    {key:"B",text:"Architects: Cognitive Services Contributor; Triage: Cognitive Services OpenAI Contributor; Translation: Cognitive Services OpenAI User"},
+    {key:"C",text:"Architects: Cognitive Services OpenAI Contributor; Triage: Cognitive Services OpenAI User; Translation: Cognitive Services Usages Reader"},
+    {key:"D",text:"All teams: Cognitive Services Contributor for simplicity"}
+   ],
+   answer:"B",
+   explanation:"Cognitive Services Contributor allows creating resources and viewing/regenerating keys (for architects). Cognitive Services OpenAI Contributor allows creating/editing deployments and uploading fine-tuning data but not managing keys (for triage team). Cognitive Services OpenAI User allows only inference calls (for translation team). This follows the principle of least privilege."},
+  {id:"d1-025b", type:"multi",
+   question:"To meet the audit logging and cost tracking requirements, which TWO actions should the administrator take? (Select 2)",
+   selectCount:2,
+   options:[
+    {key:"A",text:"Configure diagnostic settings on each AI resource to send logs to a shared Log Analytics workspace"},
+    {key:"B",text:"Enable Azure Policy to automatically block all unlogged API calls"},
+    {key:"C",text:"Use a single multi-service Foundry resource to centralize billing across Vision, Language, and Translator"},
+    {key:"D",text:"Configure each team to use separate Azure subscriptions for cost isolation"}
+   ],
+   answer:["A","C"],
+   explanation:"Diagnostic settings with a shared Log Analytics workspace centralizes audit logs across all AI resources. A multi-service Foundry resource consolidates billing for Vision, Language, and Translator under one resource. Azure Policy cannot block unlogged API calls in this way. Separate subscriptions would fragment rather than centralize cost tracking."}
+ ],
+ explanation:"This scenario tests understanding of RBAC role assignment following least privilege, diagnostic logging for audit compliance, and resource architecture decisions for cost management.",
+ cramRef:"../00-exam-overview.html"},
+
+// ── NEW: REST & PORTAL (5) ──────────────────────────────────
+{id:"d1-026", type:"code-fill", domain:"D1", topic:"REST API: Content Safety",
+ question:"Complete this curl command to analyze text with Azure AI Content Safety:",
+ codeTemplate:"curl -X POST \"https://myresource.cognitiveservices.azure.com/contentsafety/text:analyze?api-version=2024-09-01\" \\\n  -H \"[BLANK1]: YOUR_API_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"text\": \"Sample text to analyze\",\n    \"categories\": [\"Hate\", \"Violence\", \"Sexual\", \"SelfHarm\"],\n    \"outputType\": \"[BLANK2]\"\n  }'",
+ blanks:[
+  {id:"BLANK1",options:["Ocp-Apim-Subscription-Key","Authorization","X-Api-Key","Api-Key"],answer:"Ocp-Apim-Subscription-Key"},
+  {id:"BLANK2",options:["FourSeverityLevels","EightSeverityLevels","0,2,4,6","HateOnly"],answer:"FourSeverityLevels"}
+ ],
+ explanation:"Azure AI Services REST APIs authenticate using the <code>Ocp-Apim-Subscription-Key</code> header with your resource key. For Content Safety, <code>outputType</code> is a <em>string</em> that controls the severity scale returned (for example, <code>FourSeverityLevels</code> results in severities such as 0/2/4/6). The array <code>[0, 2, 4, 6]</code> represents possible returned severities, not an input value. <code>Authorization</code> is used with bearer tokens for Entra ID auth, not API keys.",
+ cramRef:"../05-responsible-ai.html"},
+
+{id:"d1-027", type:"single", domain:"D1", topic:"REST API Authentication",
+ question:"A Memphis 311 developer is writing a REST API call to Azure AI Services using an API key (not Microsoft Entra ID). Which HTTP header must they include to authenticate the request?",
+ options:[
+  {key:"A",text:"Authorization: Bearer <api-key>"},
+  {key:"B",text:"Ocp-Apim-Subscription-Key: <api-key>"},
+  {key:"C",text:"X-API-Key: <api-key>"},
+  {key:"D",text:"api-key: <api-key>"}
+ ],
+ answer:"B",
+ explanation:"Azure AI Services REST APIs use the <code>Ocp-Apim-Subscription-Key</code> header for API key authentication. <code>Authorization: Bearer</code> is used with Microsoft Entra ID tokens, not API keys. <code>api-key</code> is used by Azure AI Search (not AI Services). <code>X-API-Key</code> is not a recognized Azure header.",
+ cramRef:"../00-exam-overview.html"},
+
+{id:"d1-028", type:"single", domain:"D1", topic:"Portal: Keys and Endpoint",
+ question:"A new developer at Shelby County Schools needs to find the endpoint URL and API keys for their Azure AI Services resource. Where in the Azure portal should they navigate?",
+ options:[
+  {key:"A",text:"The resource's Overview page, under the Essentials section"},
+  {key:"B",text:"The resource's Keys and Endpoint page under the Resource Management section"},
+  {key:"C",text:"The resource's Properties page under the Settings section"},
+  {key:"D",text:"The resource's Access Control (IAM) page"}
+ ],
+ answer:"B",
+ explanation:"The <strong>Keys and Endpoint</strong> page is found under the <strong>Resource Management</strong> section in the left navigation of an Azure AI Services resource. It displays both Key 1 and Key 2 (for rotation) and the endpoint URL. The Overview page shows general information but not the full key values. Access Control (IAM) manages RBAC roles, not keys.",
+ cramRef:"../00-exam-overview.html"},
+
+{id:"d1-029", type:"order", domain:"D1", topic:"Portal: Private Endpoint Setup",
+ question:"Place the steps for configuring a private endpoint for an Azure AI Services resource in the correct order:",
+ options:[
+  {key:"A",text:"Disable public network access on the AI Services resource under the Networking tab"},
+  {key:"B",text:"Create a private endpoint from the Private endpoint connections tab, selecting the target resource and sub-resource"},
+  {key:"C",text:"Configure a private DNS zone to resolve the resource's hostname to the private IP"},
+  {key:"D",text:"Test connectivity from a VM within the virtual network to confirm the private endpoint works"}
+ ],
+ answer:["B","C","D","A"],
+ explanation:"The correct order: (1) Create the private endpoint first (selecting resource and sub-resource type), (2) Configure private DNS zone so the hostname resolves to the private IP, (3) Disable public network access only after confirming private connectivity works, (4) Test from within the VNet. Disabling public access before setting up the private endpoint would lock you out.",
+ cramRef:"../00-exam-overview.html"},
+
+{id:"d1-030", type:"single", domain:"D1", topic:"Portal: Networking Configuration",
+ question:"The Memphis Grizzlies platform team needs to restrict their Azure AI Services resource so it only accepts requests from their corporate virtual network. Which section of the Azure portal contains the network firewall and virtual network rules?",
+ options:[
+  {key:"A",text:"The resource's Networking page under the Resource Management section"},
+  {key:"B",text:"The resource's Properties page under the Settings section"},
+  {key:"C",text:"The subscription-level Network Watcher service"},
+  {key:"D",text:"The resource's Diagnostic settings under the Monitoring section"}
+ ],
+ answer:"A",
+ explanation:"The <strong>Networking</strong> page under <strong>Resource Management</strong> is where you configure network access rules for Azure AI Services. It has tabs for Firewalls and Virtual Networks (to allow specific VNets and IP ranges) and Private Endpoint Connections. You can set the default action to Deny and add allowed networks. Network Watcher is a monitoring tool, not a configuration tool.",
+ cramRef:"../00-exam-overview.html"}
+];
+
+// ========== QUIZ ENGINE ==========
+const state = {
+  questions: [...QUESTIONS],
+  answers: {},
+  checked: {},
+  score: 0,
+  total: 0,
+  timerSec: 1800,
+  timerRef: null,
+  finished: false
+};
+
+function init() {
+  renderQuestions();
+  startTimer();
+  updateProgress();
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function toggleShuffle() {
+  state.questions = shuffle(state.questions);
+  state.answers = {};
+  state.checked = {};
+  state.score = 0;
+  state.total = 0;
+  state.finished = false;
+  document.getElementById('summary').style.display = 'none';
+  document.getElementById('summary').innerHTML = '';
+  renderQuestions();
+  updateProgress();
+}
+
+function startTimer() {
+  const el = document.getElementById('timer');
+  state.timerRef = setInterval(() => {
+    if (state.timerSec <= 0) { clearInterval(state.timerRef); finishExam(); return; }
+    state.timerSec--;
+    const m = Math.floor(state.timerSec / 60);
+    const s = state.timerSec % 60;
+    el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    if (state.timerSec < 300) el.classList.add('warning');
+  }, 1000);
+}
+
+function renderQuestions() {
+  const container = document.getElementById('questions');
+  container.innerHTML = state.questions.map((q, i) => renderQuestion(q, i)).join('');
+}
+
+function renderQuestion(q, idx) {
+  let body = '';
+  if (q.type !== 'casestudy' && q.scenario) body += `<div class="scenario-box">${q.scenario}</div>`;
+  if (q.code) body += `<pre><code>${q.code}</code></pre>`;
+
+  let instruction = '';
+  if (q.type === 'multi') instruction = `<div class="q-instruction">Select ${q.selectCount || 2} answers</div>`;
+  if (q.type === 'order') instruction = `<div class="q-instruction">Select the correct order (1 = first)</div>`;
+  if (q.type === 'match') instruction = `<div class="q-instruction">Match each item on the left to its corresponding item on the right</div>`;
+  if (q.type === 'code-fill') instruction = `<div class="q-instruction">Select the correct value for each blank in the code</div>`;
+  if (q.type === 'hotarea') instruction = `<div class="q-instruction">Click the line(s) that contain errors</div>`;
+  if (q.type === 'casestudy') instruction = `<div class="q-instruction">Read the scenario and answer all parts below</div>`;
+
+  let optionsHtml = '';
+  if (q.type === 'order') {
+    optionsHtml = '<div class="order-items">' + q.options.map((o, oi) => {
+      const selOpts = `<option value="">-</option>` + q.options.map((_, si) => `<option value="${si+1}">${si+1}</option>`).join('');
+      return `<div class="order-item" id="order-${q.id}-${o.key}"><select class="order-select" onchange="handleOrder('${q.id}','${o.key}',this.value)">${selOpts}</select><span class="order-text"><strong>${o.key}.</strong> ${o.text}</span></div>`;
+    }).join('') + '</div>';
+  } else if (q.type === 'match') {
+    optionsHtml = renderMatch(q);
+  } else if (q.type === 'code-fill') {
+    optionsHtml = renderCodeFill(q);
+  } else if (q.type === 'hotarea') {
+    optionsHtml = renderHotarea(q);
+  } else if (q.type === 'casestudy') {
+    optionsHtml = renderCaseStudy(q);
+  } else {
+    optionsHtml = '<div class="options">' + q.options.map(o =>
+      `<div class="option-row" id="opt-${q.id}-${o.key}" tabindex="0" role="button" onclick="handleSelect('${q.id}','${o.key}','${q.type}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();handleSelect('${q.id}','${o.key}','${q.type}');}"><span class="option-key">${o.key}.</span><span class="option-text">${o.text}</span><span class="option-indicator" id="ind-${q.id}-${o.key}"></span></div>`
+    ).join('') + '</div>';
+  }
+
+  return `<div class="question-card" id="qcard-${q.id}">
+    <div class="q-header"><div class="q-meta"><span class="badge badge-amber">${q.topic}</span></div><span class="q-num">Q${idx+1} of ${state.questions.length}</span></div>
+    <div class="q-text">${q.question}</div>
+    ${body}${instruction}${optionsHtml}
+    <button class="btn btn-primary btn-sm" id="checkbtn-${q.id}" onclick="checkAnswer('${q.id}')">Check Answer</button>
+    <div class="feedback" id="fb-${q.id}"></div>
+  </div>`;
+}
+
+// ========== RENDER FUNCTIONS FOR NEW TYPES ==========
+
+function renderMatch(q) {
+  const shuffled = q.pairs.map((p, i) => ({...p, origIdx: i}));
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  if (!window._matchShuffles) window._matchShuffles = {};
+  window._matchShuffles[q.id] = shuffled;
+
+  const leftHtml = q.pairs.map((p, i) =>
+    `<div class="match-item" id="match-l-${q.id}-${i}"><span class="match-num">${i+1}.</span> ${p.left}</div>`
+  ).join('');
+
+  const selOpts = `<option value="">-</option>` + q.pairs.map((_, i) =>
+    `<option value="${i}">${i+1}</option>`
+  ).join('');
+
+  const rightHtml = shuffled.map((p, i) =>
+    `<div class="match-item" id="match-r-${q.id}-${i}"><select class="match-select" onchange="handleMatch('${q.id}',${i},this.value)">${selOpts}</select> ${p.right}</div>`
+  ).join('');
+
+  return `<div class="match-container"><div class="match-col"><div class="match-col-header">Term</div>${leftHtml}</div><div class="match-col"><div class="match-col-header">Definition</div>${rightHtml}</div></div>`;
+}
+
+function renderCodeFill(q) {
+  let html = q.codeTemplate;
+  q.blanks.forEach(b => {
+    const opts = `<option value="">---</option>` + b.options.map(o =>
+      `<option value="${o}">${o}</option>`
+    ).join('');
+    html = html.replace(`[${b.id}]`, `<select class="code-fill-select" id="cf-${q.id}-${b.id}" onchange="handleCodeFill('${q.id}','${b.id}',this.value)">${opts}</select>`);
+  });
+  return `<pre class="code-fill-pre"><code>${html}</code></pre>`;
+}
+
+function renderHotarea(q) {
+  const lines = q.codeLines.map(l =>
+    `<div class="hotarea-line" id="ha-${q.id}-${l.id}" tabindex="0" role="button" onclick="handleHotarea('${q.id}',${l.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();handleHotarea('${q.id}',${l.id});}"><span class="hotarea-linenum">${l.id}</span><span class="hotarea-code">${l.text}</span></div>`
+  ).join('');
+  return `<div class="hotarea-lines">${lines}</div>`;
+}
+
+function renderCaseStudy(q) {
+  let html = `<div class="casestudy-scenario">${q.scenario}</div>`;
+  q.subQuestions.forEach((sq, si) => {
+    const sqInstruction = sq.type === 'multi' ? `<div class="q-instruction">Select ${sq.selectCount || 2} answers</div>` : '';
+    const sqOptions = sq.options.map(o =>
+      `<div class="option-row" id="opt-${sq.id}-${o.key}" tabindex="0" role="button" onclick="handleSelect('${sq.id}','${o.key}','${sq.type}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();handleSelect('${sq.id}','${o.key}','${sq.type}');}"><span class="option-key">${o.key}.</span><span class="option-text">${o.text}</span><span class="option-indicator" id="ind-${sq.id}-${o.key}"></span></div>`
+    ).join('');
+    html += `<div class="casestudy-subq"><div class="casestudy-subq-label">Part ${String.fromCharCode(65+si)}</div><div class="q-text">${sq.question}</div>${sqInstruction}<div class="options">${sqOptions}</div><div class="feedback" id="fb-${sq.id}"></div></div>`;
+  });
+  return html;
+}
+
+// ========== HANDLER FUNCTIONS ==========
+
+function handleSelect(qId, key, type) {
+  if (state.checked[qId]) return;
+  if (type === 'multi') {
+    if (!state.answers[qId]) state.answers[qId] = [];
+    const idx = state.answers[qId].indexOf(key);
+    if (idx > -1) state.answers[qId].splice(idx, 1);
+    else state.answers[qId].push(key);
+  } else {
+    state.answers[qId] = key;
+  }
+  // Update UI
+  const q = state.questions.find(x => x.id === qId);
+  // For casestudy sub-questions, find the sub-question's options
+  let opts;
+  if (q && q.options) {
+    opts = q.options;
+  } else {
+    // Search sub-questions across all casestudy questions
+    for (const cq of state.questions) {
+      if (cq.type === 'casestudy' && cq.subQuestions) {
+        const sq = cq.subQuestions.find(s => s.id === qId);
+        if (sq) { opts = sq.options; break; }
+      }
+    }
+  }
+  if (opts) {
+    opts.forEach(o => {
+      const el = document.getElementById(`opt-${qId}-${o.key}`);
+      if (!el) return;
+      el.classList.remove('selected');
+      if (type === 'multi') {
+        if (state.answers[qId] && state.answers[qId].includes(o.key)) el.classList.add('selected');
+      } else {
+        if (state.answers[qId] === o.key) el.classList.add('selected');
+      }
+    });
+  }
+  // Mark card as answered
+  if (q) {
+    document.getElementById('qcard-' + qId).classList.add('has-answer');
+  } else {
+    // This is a casestudy sub-question; mark the parent card
+    for (const cq of state.questions) {
+      if (cq.type === 'casestudy' && cq.subQuestions) {
+        const sq = cq.subQuestions.find(s => s.id === qId);
+        if (sq) { document.getElementById('qcard-' + cq.id).classList.add('has-answer'); break; }
+      }
+    }
+  }
+  updateProgress();
+}
+
+function handleOrder(qId, key, val) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = {};
+  state.answers[qId][key] = parseInt(val);
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+function handleMatch(qId, rightIdx, leftIdx) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = {};
+  state.answers[qId][rightIdx] = leftIdx === '' ? null : parseInt(leftIdx);
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+function handleCodeFill(qId, blankId, value) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = {};
+  state.answers[qId][blankId] = value;
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+function handleHotarea(qId, lineId) {
+  if (state.checked[qId]) return;
+  if (!state.answers[qId]) state.answers[qId] = [];
+  const idx = state.answers[qId].indexOf(lineId);
+  if (idx > -1) state.answers[qId].splice(idx, 1);
+  else state.answers[qId].push(lineId);
+  const el = document.getElementById(`ha-${qId}-${lineId}`);
+  el.classList.toggle('selected');
+  document.getElementById('qcard-' + qId).classList.add('has-answer');
+  updateProgress();
+}
+
+// ========== GRADING ==========
+
+function checkAnswer(qId) {
+  if (state.checked[qId]) return;
+  const q = state.questions.find(x => x.id === qId);
+
+  // Check if question has been answered
+  let hasAnswer;
+  if (q.type === 'casestudy') {
+    hasAnswer = q.subQuestions && q.subQuestions.some(sq => state.answers[sq.id] !== undefined);
+  } else if (q.type === 'match' || q.type === 'order' || q.type === 'code-fill') {
+    hasAnswer = state.answers[qId] && Object.keys(state.answers[qId]).length > 0;
+  } else if (q.type === 'multi') {
+    hasAnswer = state.answers[qId] && state.answers[qId].length > 0;
+  } else if (q.type === 'hotarea') {
+    hasAnswer = state.answers[qId] && state.answers[qId].length > 0;
+  } else {
+    hasAnswer = state.answers[qId] !== undefined;
+  }
+  if (!hasAnswer) {
+    const card = document.getElementById(`qcard-${qId}`);
+    card.style.borderColor = 'var(--amber)';
+    card.style.transition = 'border-color 0.3s';
+    setTimeout(() => { card.style.borderColor = ''; }, 1000);
+    return;
+  }
+
+  state.checked[qId] = true;
+  state.total++;
+
+  let correct = false;
+
+  if (q.type === 'order') {
+    const ans = state.answers[qId] || {};
+    correct = true;
+    q.options.forEach(o => {
+      const userPos = ans[o.key];
+      const correctPos = q.answer.indexOf(o.key) + 1;
+      const el = document.getElementById(`order-${qId}-${o.key}`);
+      if (userPos === correctPos) {
+        el.classList.add('correct-pos');
+      } else {
+        el.classList.add('wrong-pos');
+        correct = false;
+      }
+      el.querySelector('select').disabled = true;
+    });
+
+  } else if (q.type === 'match') {
+    const ans = state.answers[qId] || {};
+    const shuffled = window._matchShuffles[qId];
+    correct = true;
+    shuffled.forEach((p, ri) => {
+      const userLeft = ans[ri];
+      const correctLeft = p.origIdx;
+      const el = document.getElementById(`match-r-${qId}-${ri}`);
+      if (userLeft === correctLeft) {
+        el.classList.add('correct-match');
+      } else {
+        el.classList.add('wrong-match');
+        correct = false;
+      }
+      el.querySelector('select').disabled = true;
+    });
+    shuffled.forEach((p, ri) => {
+      const userLeft = ans[ri];
+      const correctLeft = p.origIdx;
+      if (userLeft === correctLeft) {
+        document.getElementById(`match-l-${qId}-${correctLeft}`).classList.add('correct-match');
+      }
+    });
+
+  } else if (q.type === 'code-fill') {
+    const ans = state.answers[qId] || {};
+    correct = true;
+    q.blanks.forEach(b => {
+      const sel = document.getElementById(`cf-${qId}-${b.id}`);
+      if (ans[b.id] === b.answer) {
+        sel.classList.add('correct-blank');
+      } else {
+        sel.classList.add('wrong-blank');
+        correct = false;
+      }
+      sel.disabled = true;
+    });
+
+  } else if (q.type === 'hotarea') {
+    const userLines = (state.answers[qId] || []).sort();
+    const correctLines = [...q.answer].sort();
+    correct = userLines.length === correctLines.length && userLines.every((v, i) => v === correctLines[i]);
+    q.codeLines.forEach(l => {
+      const el = document.getElementById(`ha-${qId}-${l.id}`);
+      el.style.cursor = 'default';
+      const isCorrect = q.answer.includes(l.id);
+      const isSelected = (state.answers[qId] || []).includes(l.id);
+      if (isCorrect && isSelected) el.classList.add('correct-line');
+      else if (isCorrect && !isSelected) el.classList.add('missed-line');
+      else if (!isCorrect && isSelected) el.classList.add('wrong-line');
+      el.classList.remove('selected');
+      el.onclick = null;
+    });
+
+  } else if (q.type === 'casestudy') {
+    correct = true;
+    q.subQuestions.forEach(sq => {
+      let sqCorrect = false;
+      if (sq.type === 'multi') {
+        const userAns = (state.answers[sq.id] || []).sort();
+        const correctAns = [...sq.answer].sort();
+        sqCorrect = userAns.length === correctAns.length && userAns.every((v, i) => v === correctAns[i]);
+      } else {
+        sqCorrect = state.answers[sq.id] === sq.answer;
+      }
+      if (!sqCorrect) correct = false;
+      // Highlight sub-question options
+      sq.options.forEach(o => {
+        const el = document.getElementById(`opt-${sq.id}-${o.key}`);
+        if (el) {
+          el.classList.add('disabled');
+          const isCorrectKey = Array.isArray(sq.answer) ? sq.answer.includes(o.key) : sq.answer === o.key;
+          const isSelected = Array.isArray(state.answers[sq.id]) ? (state.answers[sq.id] || []).includes(o.key) : state.answers[sq.id] === o.key;
+          if (isCorrectKey) { el.classList.add('correct-answer'); const ind = document.getElementById(`ind-${sq.id}-${o.key}`); if(ind) ind.textContent = '\u2713'; }
+          else if (isSelected) { el.classList.add('wrong-answer'); const ind = document.getElementById(`ind-${sq.id}-${o.key}`); if(ind) ind.textContent = '\u2717'; }
+        }
+      });
+      // Show sub-question feedback
+      const fb = document.getElementById(`fb-${sq.id}`);
+      if (fb) {
+        fb.className = `feedback show ${sqCorrect ? 'correct' : 'incorrect'}`;
+        fb.innerHTML = `<strong>${sqCorrect ? '\u2713 Correct' : '\u2717 Incorrect'}</strong>${sq.explanation}`;
+      }
+    });
+
+  } else {
+    // single, multi, scenario
+    if (q.type === 'multi') {
+      const userAns = (state.answers[qId] || []).sort();
+      const correctAns = [...q.answer].sort();
+      correct = userAns.length === correctAns.length && userAns.every((v, i) => v === correctAns[i]);
+    } else {
+      correct = state.answers[qId] === q.answer;
+    }
+    // Highlight options
+    q.options.forEach(o => {
+      const el = document.getElementById(`opt-${qId}-${o.key}`);
+      el.classList.add('disabled');
+      const isCorrectKey = Array.isArray(q.answer) ? q.answer.includes(o.key) : q.answer === o.key;
+      const isSelected = Array.isArray(state.answers[qId]) ? state.answers[qId].includes(o.key) : state.answers[qId] === o.key;
+      if (isCorrectKey) {
+        el.classList.add('correct-answer');
+        document.getElementById(`ind-${qId}-${o.key}`).textContent = '\u2713';
+      } else if (isSelected && !isCorrectKey) {
+        el.classList.add('wrong-answer');
+        document.getElementById(`ind-${qId}-${o.key}`).textContent = '\u2717';
+      }
+    });
+  }
+
+  if (correct) state.score++;
+  const card = document.getElementById(`qcard-${qId}`);
+  card.classList.add(correct ? 'correct' : 'incorrect');
+  document.getElementById(`checkbtn-${qId}`).disabled = true;
+
+  const fb = document.getElementById(`fb-${qId}`);
+  fb.className = `feedback show ${correct ? 'correct' : 'incorrect'}`;
+  fb.innerHTML = `<strong>${correct ? '\u2713 Correct!' : '\u2717 Incorrect'}</strong>${q.explanation}${q.cramRef ? `<div class="cram-link"><a href="${q.cramRef}" target="_blank">Study this topic \u2192</a></div>` : ''}`;
+
+  updateProgress();
+}
+
+function gradeAll() {
+  if (!confirm('Grade all unanswered questions? Unanswered questions will be marked incorrect.')) return;
+  // Force-grade unanswered by temporarily setting empty answers
+  state.questions.forEach(q => {
+    if (!state.checked[q.id]) {
+      // Ensure answer exists so checkAnswer doesn't bounce
+      if (state.answers[q.id] === undefined) {
+        if (q.type === 'multi' || q.type === 'hotarea') state.answers[q.id] = [];
+        else if (q.type === 'order' || q.type === 'match' || q.type === 'code-fill') state.answers[q.id] = {};
+        else if (q.type === 'casestudy') {
+          q.subQuestions.forEach(sq => { if (state.answers[sq.id] === undefined) state.answers[sq.id] = sq.type === 'multi' ? [] : ''; });
+        }
+        else state.answers[q.id] = '';
+      }
+      checkAnswer(q.id);
+    }
+  });
+}
+
+function finishExam() {
+  if (state.finished) return;
+  state.finished = true;
+  clearInterval(state.timerRef);
+  gradeAll();
+
+  const pct = state.questions.length > 0 ? Math.round((state.score / state.questions.length) * 100) : 0;
+  const pass = pct >= 70;
+
+  // Topic breakdown
+  const topics = {};
+  state.questions.forEach(q => {
+    if (!topics[q.topic]) topics[q.topic] = { correct: 0, total: 0 };
+    topics[q.topic].total++;
+    const isCorrect = state.checked[q.id] && document.getElementById(`qcard-${q.id}`).classList.contains('correct');
+    if (isCorrect) topics[q.topic].correct++;
+  });
+
+  let breakdownHtml = Object.entries(topics).map(([topic, data]) => {
+    const tPct = Math.round((data.correct / data.total) * 100);
+    const color = tPct >= 70 ? 'var(--green)' : 'var(--red)';
+    return `<div class="breakdown-row"><span>${topic}</span><div class="breakdown-bar"><div class="breakdown-bar-fill" style="width:${tPct}%;background:${color};"></div></div><span>${data.correct}/${data.total}</span></div>`;
+  }).join('');
+
+  // Review list
+  let reviewHtml = state.questions.map((q, i) => {
+    const card = document.getElementById(`qcard-${q.id}`);
+    const isCorrect = card.classList.contains('correct');
+    const isIncorrect = card.classList.contains('incorrect');
+    const dotClass = isCorrect ? 'correct' : (isIncorrect ? 'incorrect' : 'unanswered');
+    return `<div class="review-item" onclick="document.getElementById('qcard-${q.id}').scrollIntoView({behavior:'smooth'})"><div class="review-dot ${dotClass}"></div>Q${i+1}: ${q.topic}</div>`;
+  }).join('');
+
+  const summary = document.getElementById('summary');
+  summary.style.display = 'block';
+  summary.innerHTML = `<div class="summary-card">
+    <div class="score-big ${pass ? 'pass' : 'fail'}">${pct}%</div>
+    <div class="score-label">${state.score} of ${state.questions.length} correct</div>
+    <div class="pass-fail ${pass ? 'pass' : 'fail'}">${pass ? 'PASS' : 'NEEDS MORE STUDY'}</div>
+    <div class="breakdown"><h3>Topic Breakdown</h3>${breakdownHtml}</div>
+    <div class="review-list"><h3 style="color:var(--accent);font-size:0.95rem;margin:1rem 0 0.5rem;">Question Review</h3>${reviewHtml}</div>
+    <div class="btn-group" style="justify-content:center;margin-top:1.5rem;">
+      <button class="btn btn-primary" onclick="location.reload()">Retake Test</button>
+      <button class="btn btn-secondary" onclick="window.scrollTo({top:0,behavior:'smooth'})">Review Answers</button>
+      <a href="../index.html" class="btn btn-secondary" style="text-decoration:none;">Study Cram Sheets</a>
+    </div>
+  </div>`;
+  summary.scrollIntoView({ behavior: 'smooth' });
+}
+
+function updateProgress() {
+  // Count answered questions (for casestudy, count the parent question if any sub-question is answered)
+  let answered = 0;
+  state.questions.forEach(q => {
+    if (q.type === 'casestudy') {
+      const allAnswered = q.subQuestions && q.subQuestions.every(sq => state.answers[sq.id] !== undefined);
+      if (allAnswered) answered++;
+    } else if (state.answers[q.id] !== undefined) {
+      answered++;
+    }
+  });
+  const total = state.questions.length;
+  document.getElementById('progressFill').style.width = `${(answered/total)*100}%`;
+  document.getElementById('progressText').textContent = `${answered} of ${total} answered`;
+  document.getElementById('scoreDisplay').textContent = `Score: ${state.score}/${state.total}`;
+}
+
+init();
+</script>
+</body>
+</html>

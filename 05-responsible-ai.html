@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsible AI &amp; Content Safety | AI-102 Cram Sheet</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #232733; --border: #2e3345;
+    --text: #e4e6ef; --text-dim: #8b8fa3;
+    --amber: #f5a623; --amber-dim: rgba(245,166,35,0.15);
+    --green: #34d399; --green-dim: rgba(52,211,153,0.15);
+    --blue: #60a5fa; --blue-dim: rgba(96,165,250,0.15);
+    --red: #f87171; --red-dim: rgba(248,113,113,0.15);
+    --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.15);
+    --cyan: #22d3ee; --cyan-dim: rgba(34,211,238,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--amber); }
+  .header h1 { font-size: 2.2rem; color: var(--amber); margin-bottom: 0.3rem; }
+  .header .subtitle { color: var(--text-dim); font-size: 1rem; }
+  .badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); }
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); }
+  .badge-red { background: var(--red-dim); color: var(--red); }
+  .badge-purple { background: var(--purple-dim); color: var(--purple); }
+  .badge-cyan { background: var(--cyan-dim); color: var(--cyan); }
+  .grid { display: grid; gap: 1.5rem; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+  .card:hover { border-color: var(--amber); }
+  .card h2 { font-size: 1.1rem; margin-bottom: 1rem; }
+  .card h3 { font-size: 0.95rem; color: var(--amber); margin: 1rem 0 0.5rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--amber); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+  tr:hover td { background: var(--surface2); }
+  code { background: var(--surface2); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.8rem; color: var(--cyan); }
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.5; margin: 0.75rem 0; }
+  pre code { background: none; padding: 0; }
+  .key-fact { background: var(--surface2); border-left: 3px solid var(--amber); padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0; font-size: 0.85rem; }
+  .key-fact strong { color: var(--amber); }
+  .tip { background: var(--green-dim); border: 1px solid rgba(52,211,153,0.3); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; }
+  .tip strong { color: var(--green); }
+  .warning { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.3); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; }
+  .warning strong { color: var(--red); }
+  .nav-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .nav-links a { color: var(--blue); text-decoration: none; font-size: 0.8rem; padding: 0.3rem 0.8rem; border: 1px solid var(--blue); border-radius: 6px; }
+  .nav-links a:hover { background: var(--blue-dim); }
+  @media print { body { background: #fff; color: #000; } .card { border: 1px solid #ccc; break-inside: avoid; } }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- HEADER                                                        -->
+<!-- ============================================================ -->
+<div class="header">
+  <h1>Responsible AI &amp; Content Safety</h1>
+  <div class="subtitle">AI-102 Cram Sheet 05 &mdash; Microsoft's RAI Principles, Azure Content Safety, Content Filters, Governance</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MICROSOFT'S 6 RAI PRINCIPLES                                  -->
+<!-- ============================================================ -->
+<div class="card" style="margin-bottom: 1.5rem;">
+  <h2><span class="badge badge-amber">Must Memorize</span> Microsoft's 6 Responsible AI Principles</h2>
+  <table>
+    <tr><th>Principle</th><th>Description</th><th>Mnemonic</th></tr>
+    <tr><td><strong>Fairness</strong></td><td>Treat everyone fairly; avoid bias based on gender, ethnicity, age, disability, or other protected characteristics</td><td rowspan="6" style="vertical-align: middle; color: var(--amber); font-weight: 600; font-size: 1rem;">F-R-P-I-T-A<br><span style="color: var(--text-dim); font-weight: 400; font-size: 0.8rem;">"Fair, Reliable, Private, Inclusive, Transparent, Accountable"</span></td></tr>
+    <tr><td><strong>Reliability &amp; Safety</strong></td><td>Perform reliably under expected conditions; resist harmful manipulation; function safely</td></tr>
+    <tr><td><strong>Privacy &amp; Security</strong></td><td>Be secure; respect privacy; protect personal data throughout the lifecycle</td></tr>
+    <tr><td><strong>Inclusiveness</strong></td><td>Empower everyone; engage all communities; design for accessibility</td></tr>
+    <tr><td><strong>Transparency</strong></td><td>Be understandable; open about how and why AI systems are built and how they behave</td></tr>
+    <tr><td><strong>Accountability</strong></td><td>People must be accountable for AI systems; clear governance structures and oversight</td></tr>
+  </table>
+  <div class="warning"><strong>Exam Trap:</strong> Microsoft lists exactly 6 principles. "Sustainability" and "Explainability" are NOT separate principles. Explainability falls under Transparency; environmental concerns are not in the official six.</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- AZURE CONTENT SAFETY + SEVERITY LEVELS                        -->
+<!-- ============================================================ -->
+<div class="grid grid-2">
+  <div class="card">
+    <h2><span class="badge badge-red">Core</span> Azure Content Safety &mdash; 4 Harm Categories</h2>
+    <table>
+      <tr><th>Category</th><th>API Term</th><th>Description</th></tr>
+      <tr><td>Hate and Fairness</td><td><code>Hate</code></td><td>Discriminatory language targeting identity groups (race, gender, religion, etc.)</td></tr>
+      <tr><td>Sexual</td><td><code>Sexual</code></td><td>Sexual content, nudity, exploitation, solicitation</td></tr>
+      <tr><td>Violence</td><td><code>Violence</code></td><td>Physical harm, weapons, terrorism, graphic depictions</td></tr>
+      <tr><td>Self-Harm</td><td><code>SelfHarm</code></td><td>Self-injury, suicide, eating disorders, self-destructive behavior</td></tr>
+    </table>
+    <div class="key-fact"><strong>Multi-label classification:</strong> Content can trigger multiple categories simultaneously. Each category gets its own independent severity score.</div>
+
+    <h3>4 Severity Levels</h3>
+    <table>
+      <tr><th>Level</th><th>Value</th><th>Description</th></tr>
+      <tr><td><span class="badge badge-green">Safe</span></td><td><code>0</code></td><td>General/professional context, appropriate for most audiences</td></tr>
+      <tr><td><span class="badge badge-blue">Low</span></td><td><code>2</code></td><td>Prejudiced views, stereotyping, low-intensity harmful content</td></tr>
+      <tr><td><span class="badge badge-amber">Medium</span></td><td><code>4</code></td><td>Offensive, insulting, or harmful instructions with moderate detail</td></tr>
+      <tr><td><span class="badge badge-red">High</span></td><td><code>6</code></td><td>Explicit, severe harmful content; radicalization; detailed harmful instructions</td></tr>
+    </table>
+    <div class="key-fact"><strong>Severity values are even numbers:</strong> 0, 2, 4, 6 &mdash; not 0-3 or 1-4. This is a common exam trick.</div>
+
+    <h3>Input Limits</h3>
+    <table>
+      <tr><th>Modality</th><th>Limit</th></tr>
+      <tr><td>Text</td><td>10,000 characters max</td></tr>
+      <tr><td>Image</td><td>4 MB max; 50&times;50 to 7,200&times;7,200 pixels</td></tr>
+      <tr><td>Image Formats</td><td>JPEG, PNG, GIF, BMP, TIFF, WEBP</td></tr>
+    </table>
+  </div>
+
+  <!-- CONTENT FILTERS IN AZURE OPENAI -->
+  <div class="card">
+    <h2><span class="badge badge-purple">Key</span> Content Filters in Azure OpenAI</h2>
+    <div class="key-fact"><strong>Default behavior:</strong> Medium threshold for all 4 categories on both prompts AND completions. Blocks Medium + High severity; allows Safe + Low.</div>
+
+    <h3>Configurable Threshold Levels</h3>
+    <table>
+      <tr><th>Threshold</th><th>What Gets Blocked</th><th>Strictness</th></tr>
+      <tr><td>Low + Med + High</td><td>Blocks everything except Safe (0)</td><td><span class="badge badge-red">Strictest</span></td></tr>
+      <tr><td>Med + High</td><td>Blocks Medium (4) and High (6)</td><td><span class="badge badge-amber">Default</span></td></tr>
+      <tr><td>High only</td><td>Blocks only High (6)</td><td><span class="badge badge-blue">Lenient</span></td></tr>
+      <tr><td>No filters</td><td>Nothing blocked</td><td><span class="badge badge-purple">Requires approval</span></td></tr>
+      <tr><td>Annotate only</td><td>Nothing blocked, annotations returned</td><td><span class="badge badge-purple">Requires approval</span></td></tr>
+    </table>
+    <div class="tip"><strong>Tip:</strong> Filters are configurable <em>separately</em> for prompts (input) and completions (output). You can be strict on input and lenient on output, or vice versa.</div>
+
+    <h3>HTTP Response Behavior</h3>
+    <table>
+      <tr><th>Scenario</th><th>HTTP Code</th><th>Key Field</th></tr>
+      <tr><td>Prompt blocked</td><td><code>400</code></td><td><code>"code": "content_filter"</code></td></tr>
+      <tr><td>Completion blocked</td><td><code>200</code></td><td><code>"finish_reason": "content_filter"</code></td></tr>
+      <tr><td>Normal completion</td><td><code>200</code></td><td><code>"finish_reason": "stop"</code> or <code>"length"</code></td></tr>
+    </table>
+    <div class="warning"><strong>Exam Trap:</strong> A blocked <em>completion</em> still returns HTTP 200, not 400. Only blocked <em>prompts</em> return 400. Check <code>finish_reason</code> to detect filtered output.</div>
+
+    <h3>content_filter_results Annotation</h3>
+<pre><code>{
+  "content_filter_results": {
+    "hate": {
+      "filtered": false,
+      "severity": "safe"
+    },
+    "self_harm": {
+      "filtered": false,
+      "severity": "safe"
+    },
+    "sexual": {
+      "filtered": false,
+      "severity": "safe"
+    },
+    "violence": {
+      "filtered": true,
+      "severity": "medium"
+    }
+  }
+}</code></pre>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- OPTIONAL FEATURES + BLOCKLISTS                                -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top: 1.5rem;">
+  <div class="card">
+    <h2><span class="badge badge-blue">Features</span> Optional Content Filter Features</h2>
+    <table>
+      <tr><th>Feature</th><th>Applied To</th><th>Default</th></tr>
+      <tr><td>Prompt Shields (User Attacks)</td><td>Input</td><td><span class="badge badge-green">On</span></td></tr>
+      <tr><td>Indirect Attacks (XPIA)</td><td>Input</td><td><span class="badge badge-green">On</span></td></tr>
+      <tr><td>Protected Material &mdash; Text</td><td>Output</td><td><span class="badge badge-green">On</span></td></tr>
+      <tr><td>Protected Material &mdash; Code</td><td>Output</td><td><span class="badge badge-green">On</span></td></tr>
+      <tr><td>Groundedness Detection</td><td>Output</td><td><span class="badge badge-red">Off</span></td></tr>
+      <tr><td>PII Detection</td><td>Output</td><td><span class="badge badge-red">Off</span></td></tr>
+      <tr><td>Custom Blocklists</td><td>Input / Output</td><td><span class="badge badge-red">Off</span></td></tr>
+    </table>
+    <div class="key-fact"><strong>Remember:</strong> Prompt Shields and Protected Material are ON by default. Groundedness, PII, and Blocklists must be explicitly enabled.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="badge badge-cyan">Config</span> Custom Blocklists</h2>
+    <table>
+      <tr><th>Limit</th><th>Value</th></tr>
+      <tr><td>Max terms per blocklist</td><td>10,000 terms</td></tr>
+      <tr><td>Max terms per batch add</td><td>100 terms</td></tr>
+      <tr><td>Max characters per term</td><td>128 characters</td></tr>
+      <tr><td>Regex patterns</td><td>Supported</td></tr>
+      <tr><td>Built-in profanity list</td><td>Available from Microsoft</td></tr>
+    </table>
+    <div class="tip"><strong>Tip:</strong> Blocklists apply to both input and output. They supplement (not replace) the severity-based content filters.</div>
+
+    <h3>Prompt Shields &mdash; Two Attack Types</h3>
+    <table>
+      <tr><th>Attack Type</th><th>Description</th></tr>
+      <tr><td><strong>User Prompt Attacks</strong></td><td>User directly tries to jailbreak: change system rules, mockup conversations, role-play exploits, encoding attacks (Base64, ROT13)</td></tr>
+      <tr><td><strong>Document Attacks (XPIA)</strong></td><td>Third-party content (retrieved documents, emails, web pages) embeds malicious prompts that hijack the model</td></tr>
+    </table>
+    <div class="warning"><strong>XPIA = Cross-domain Prompt Injection Attack.</strong> This targets RAG scenarios where retrieved documents contain hidden instructions. Prompt Shields detect these automatically when enabled.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- GROUNDEDNESS + PROTECTED MATERIAL                             -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top: 1.5rem;">
+  <div class="card">
+    <h2><span class="badge badge-green">Detection</span> Groundedness Detection</h2>
+    <p style="font-size: 0.85rem; margin-bottom: 0.75rem;">Detects hallucinated or ungrounded content by comparing model output against provided source materials.</p>
+    <table>
+      <tr><th>Parameter</th><th>Limit</th></tr>
+      <tr><td>Grounding sources</td><td>55,000 characters max</td></tr>
+      <tr><td>Query + completion text</td><td>7,500 characters max</td></tr>
+    </table>
+    <div class="key-fact"><strong>Correction feature:</strong> When enabled, returns a <code>correctedText</code> field that rewrites ungrounded claims to align with the source material.</div>
+    <div class="tip"><strong>Tip:</strong> Groundedness detection is OFF by default. You must explicitly enable it in your content filter configuration. Useful for RAG pipelines where factual accuracy matters.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="badge badge-purple">Detection</span> Protected Material Detection</h2>
+    <h3>Text Detection</h3>
+    <p style="font-size: 0.85rem;">Identifies known copyrighted or protected content: song lyrics, news articles, recipes, and other published text.</p>
+
+    <h3>Code Detection</h3>
+    <p style="font-size: 0.85rem;">Detects code from public GitHub repositories (indexed through April 6, 2023).</p>
+    <table>
+      <tr><th>Returns</th><th>Details</th></tr>
+      <tr><td>Citation URL</td><td>Link to the source GitHub repository</td></tr>
+      <tr><td>License info</td><td>The license type (MIT, GPL, Apache, etc.)</td></tr>
+    </table>
+    <div class="key-fact"><strong>Both text and code protected material detection are ON by default.</strong> They run on output (completions) only.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- LIMITED ACCESS + RAI DASHBOARD                                -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top: 1.5rem;">
+  <div class="card">
+    <h2><span class="badge badge-red">Access</span> Limited Access Policies</h2>
+    <p style="font-size: 0.85rem; margin-bottom: 0.75rem;">These services require a separate registration/approval form before access is granted:</p>
+    <table>
+      <tr><th>Service</th><th>Restricted Feature</th></tr>
+      <tr><td>Azure AI Speech</td><td>Custom Neural Voice</td></tr>
+      <tr><td>Azure AI Speech</td><td>Custom Text-to-Speech Avatar</td></tr>
+      <tr><td>Azure AI Speech</td><td>Speaker Recognition (Identify/Verify)</td></tr>
+      <tr><td>Azure AI Face</td><td>Face Identification &amp; Verification</td></tr>
+      <tr><td>Azure AI Vision</td><td>Celebrity Recognition</td></tr>
+      <tr><td>Azure OpenAI</td><td>Content filter modification (disable/annotate-only)</td></tr>
+    </table>
+    <div class="warning"><strong>Exam alert:</strong> You cannot remove or weaken content filters in Azure OpenAI without Microsoft approval. "No filters" and "Annotate only" modes require a Limited Access application.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="badge badge-blue">Dashboard</span> Responsible AI Dashboard (Azure ML)</h2>
+    <p style="font-size: 0.85rem; margin-bottom: 0.75rem;">Azure Machine Learning's RAI Dashboard provides 6 components for model assessment:</p>
+    <table>
+      <tr><th>Component</th><th>Purpose</th></tr>
+      <tr><td><strong>Data Analysis</strong></td><td>Explore dataset distributions and statistics</td></tr>
+      <tr><td><strong>Model Overview &amp; Fairness</strong></td><td>Performance metrics across demographic groups; fairness disparity analysis</td></tr>
+      <tr><td><strong>Error Analysis</strong></td><td>Identify error patterns via decision tree and heatmap visualizations</td></tr>
+      <tr><td><strong>Model Interpretability</strong></td><td>Feature importance (global and local); understand why predictions are made</td></tr>
+      <tr><td><strong>Counterfactual What-If</strong></td><td>Explore what minimal input changes would flip predictions</td></tr>
+      <tr><td><strong>Causal Analysis</strong></td><td>Understand causal relationships between features and outcomes</td></tr>
+    </table>
+    <div class="key-fact"><strong>Scorecard:</strong> The RAI Dashboard generates an exportable PDF scorecard for compliance documentation and stakeholder review.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- AI GOVERNANCE LIFECYCLE + SHARED RESPONSIBILITY                -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top: 1.5rem;">
+  <div class="card">
+    <h2><span class="badge badge-amber">Framework</span> AI Governance Lifecycle (NIST AI RMF-aligned)</h2>
+    <p style="font-size: 0.85rem; margin-bottom: 0.75rem;">Microsoft's AI risk management follows four phases aligned to NIST AI Risk Management Framework:</p>
+    <table>
+      <tr><th>#</th><th>Phase</th><th>Activities</th></tr>
+      <tr><td>1</td><td><strong>Govern</strong></td><td>Define roles &amp; responsibilities; establish policies; adopt RAI Standard; create oversight boards</td></tr>
+      <tr><td>2</td><td><strong>Map</strong></td><td>Risk identification; red teaming; threat modeling; stakeholder impact assessment</td></tr>
+      <tr><td>3</td><td><strong>Measure</strong></td><td>Safety evaluations; fairness metrics; benchmark testing; automated testing pipelines</td></tr>
+      <tr><td>4</td><td><strong>Manage</strong></td><td>Deploy with guardrails; monitor in production; incident response; feedback loops</td></tr>
+    </table>
+    <div class="key-fact"><strong>Mnemonic: G-M-M-M</strong> &mdash; Govern, Map, Measure, Manage. The cycle is continuous, not one-time.</div>
+    <div class="tip"><strong>Tip:</strong> Red teaming falls under the <strong>Map</strong> phase (risk identification), not the Measure phase. Measure is about quantitative evaluation.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="badge badge-red">Ownership</span> Shared Responsibility Model</h2>
+    <h3>Microsoft's Responsibilities</h3>
+    <table>
+      <tr><td>Infrastructure security and availability</td></tr>
+      <tr><td>Base model safety training and alignment</td></tr>
+      <tr><td>Security Development Lifecycle (SDL)</td></tr>
+      <tr><td>Abuse detection and monitoring at platform level</td></tr>
+      <tr><td>Default content filters on all Azure OpenAI deployments</td></tr>
+    </table>
+
+    <h3>Customer's Responsibilities</h3>
+    <table>
+      <tr><td>Application-level safety (system prompts, guardrails)</td></tr>
+      <tr><td>Prompt engineering and grounding strategies</td></tr>
+      <tr><td>Content filter configuration for your use case</td></tr>
+      <tr><td>Use case compliance (legal, ethical, industry-specific)</td></tr>
+      <tr><td>Monitoring and logging of AI interactions</td></tr>
+      <tr><td>End-user transparency (disclosing AI usage)</td></tr>
+    </table>
+    <div class="warning"><strong>Key point:</strong> Even though Microsoft provides default content filters, the <em>customer</em> is responsible for configuring them appropriately and ensuring overall application safety. Microsoft provides the tools; you own the implementation.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- QUICK REFERENCE DECISION TABLE                                -->
+<!-- ============================================================ -->
+<div class="card" style="margin-top: 1.5rem;">
+  <h2><span class="badge badge-cyan">Quick Ref</span> Exam Scenario Decision Guide</h2>
+  <table>
+    <tr><th>Scenario</th><th>Solution</th></tr>
+    <tr><td>Block specific offensive terms in your app</td><td>Custom Blocklist</td></tr>
+    <tr><td>Prevent jailbreak attempts from users</td><td>Prompt Shields (User Attacks)</td></tr>
+    <tr><td>RAG app returns manipulated content from documents</td><td>Prompt Shields (XPIA / Indirect Attacks)</td></tr>
+    <tr><td>Model output contains fabricated facts not in source data</td><td>Groundedness Detection</td></tr>
+    <tr><td>Model outputs song lyrics or copyrighted text</td><td>Protected Material &mdash; Text</td></tr>
+    <tr><td>Model outputs GPL-licensed code without attribution</td><td>Protected Material &mdash; Code</td></tr>
+    <tr><td>Assess model fairness across demographic groups</td><td>RAI Dashboard &mdash; Fairness component</td></tr>
+    <tr><td>Understand why model made a specific prediction</td><td>RAI Dashboard &mdash; Model Interpretability</td></tr>
+    <tr><td>Need to disable content filters for research</td><td>Limited Access application required</td></tr>
+    <tr><td>Completion returns <code>finish_reason: content_filter</code></td><td>Output was filtered; HTTP is still 200</td></tr>
+    <tr><td>API returns HTTP 400 with <code>content_filter</code> code</td><td>Input prompt was blocked</td></tr>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- NAVIGATION                                                    -->
+<!-- ============================================================ -->
+<div class="nav-links">
+  <a href="index.html">&larr; All Sheets</a>
+  <a href="00-exam-overview.html">00 Exam Overview</a>
+  <a href="01-azure-openai.html">01 Azure OpenAI</a>
+  <a href="02-computer-vision.html">02 Computer Vision</a>
+  <a href="03-nlp-speech.html">03 NLP &amp; Speech</a>
+  <a href="04-search-knowledge.html">04 AI Search</a>
+  <a href="05-responsible-ai.html"><strong>05 Responsible AI</strong></a>
+  <a href="06-foundry-agents.html">06 Foundry &amp; Agents</a>
+  <a href="07-sdk-reference.html">07 SDK Reference</a>
+  <a href="08-portal-workflows.html">08 Portal Workflows</a>
+</div>
+
+</body>
+</html>

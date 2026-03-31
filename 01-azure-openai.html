@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure OpenAI & Generative AI | AI-102 Cram Sheet</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #232733; --border: #2e3345;
+    --text: #e4e6ef; --text-dim: #8b8fa3;
+    --amber: #f5a623; --amber-dim: rgba(245,166,35,0.15);
+    --green: #34d399; --green-dim: rgba(52,211,153,0.15);
+    --blue: #60a5fa; --blue-dim: rgba(96,165,250,0.15);
+    --red: #f87171; --red-dim: rgba(248,113,113,0.15);
+    --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.15);
+    --cyan: #22d3ee; --cyan-dim: rgba(34,211,238,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--amber); }
+  .header h1 { font-size: 2.2rem; color: var(--amber); margin-bottom: 0.3rem; }
+  .header .subtitle { color: var(--text-dim); font-size: 1rem; }
+  .badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); }
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); }
+  .badge-red { background: var(--red-dim); color: var(--red); }
+  .badge-purple { background: var(--purple-dim); color: var(--purple); }
+  .badge-cyan { background: var(--cyan-dim); color: var(--cyan); }
+  .grid { display: grid; gap: 1.5rem; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+  .card:hover { border-color: var(--amber); }
+  .card h2 { font-size: 1.1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+  .card h3 { font-size: 0.95rem; color: var(--amber); margin: 1rem 0 0.5rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--amber); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  tr:hover td { background: var(--surface2); }
+  code { background: var(--surface2); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.8rem; color: var(--cyan); }
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.5; margin: 0.75rem 0; }
+  pre code { background: none; padding: 0; }
+  .key-fact { background: var(--surface2); border-left: 3px solid var(--amber); padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0; font-size: 0.85rem; }
+  .key-fact strong { color: var(--amber); }
+  .tip { background: var(--green-dim); border: 1px solid rgba(52,211,153,0.3); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; }
+  .tip strong { color: var(--green); }
+  .warning { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.3); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; }
+  .warning strong { color: var(--red); }
+  .nav-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .nav-links a { color: var(--blue); text-decoration: none; font-size: 0.8rem; padding: 0.3rem 0.8rem; border: 1px solid var(--blue); border-radius: 6px; }
+  .nav-links a:hover { background: var(--blue-dim); }
+  /* ── Code Language Tabs ── */
+  .code-tabs { margin: 0.75rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .code-tab-bar { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0; gap: 0; }
+  .code-tab { background: none; border: none; color: var(--text-dim); font-family: inherit; font-size: 0.75rem; font-weight: 600; padding: 0.5rem 1rem; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; text-transform: uppercase; letter-spacing: 0.04em; }
+  .code-tab:hover { color: var(--text); }
+  .code-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+  .code-panel { display: none; }
+  .code-panel.active { display: block; }
+  .code-tabs pre { margin: 0; border: none; border-radius: 0; }
+  .code-print-label { display: none; }
+  @media print { body { background: #fff; color: #000; } .card { border: 1px solid #ccc; break-inside: avoid; } th { color: #333; } .header h1 { color: #333; } .code-tab-bar { display: none; } .code-panel { display: block !important; } .code-print-label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #666; padding: 0.25rem 1rem 0; } .code-tabs { border: 1px solid #ccc; } }
+  @media (max-width: 480px) { .code-tab { padding: 0.4rem 0.6rem; font-size: 0.65rem; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>01 &mdash; Azure OpenAI &amp; Generative AI</h1>
+  <div class="subtitle">AI-102 Cram Sheet &bull; Models, API, Deployment, Prompt Engineering, Fine-Tuning, Content Safety</div>
+</div>
+
+<!-- ───────────────── MODELS TABLE ───────────────── -->
+<div class="card">
+  <h2><span class="badge badge-amber">Core</span> Available Models</h2>
+
+  <h3>Chat / Completion Models</h3>
+  <table>
+    <thead>
+      <tr><th>Model</th><th>Context Window</th><th>Max Output</th><th>Key Feature</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="color:var(--amber);">GPT-4o (2024-11-20)</td><td>128K</td><td>16,384</td><td>Multimodal (text+images), fastest GPT-4 class</td></tr>
+      <tr><td style="color:var(--amber);">GPT-4o mini</td><td>128K</td><td>16,384</td><td>Cheaper, fast, multimodal</td></tr>
+      <tr><td>GPT-4 Turbo</td><td>128K</td><td>4,096</td><td>Vision, JSON mode</td></tr>
+      <tr><td>GPT-4</td><td>8,192</td><td>8,192</td><td>Text only</td></tr>
+      <tr><td>GPT-4-32k</td><td>32,768</td><td>32,768</td><td>Extended context</td></tr>
+      <tr><td>GPT-3.5-Turbo</td><td>16,385</td><td>4,096</td><td>Cheap, fast</td></tr>
+      <tr><td style="color:var(--purple);">o1 / o1-mini</td><td>128K&ndash;200K</td><td>Varies</td><td>Reasoning models &mdash; no system message, uses <code>developer</code> role</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Embedding Models</h3>
+  <table>
+    <thead>
+      <tr><th>Model</th><th>Input Limit</th><th>Dimensions</th><th>Key Feature</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>text-embedding-ada-002</td><td>8,192 tokens</td><td>1,536 (fixed)</td><td>Legacy embeddings</td></tr>
+      <tr><td style="color:var(--green);">text-embedding-3-small</td><td>8,192 tokens</td><td>1&ndash;1,536 (adjustable)</td><td>Supports <code>dimensions</code> param</td></tr>
+      <tr><td style="color:var(--green);">text-embedding-3-large</td><td>8,192 tokens</td><td>1&ndash;3,072 (adjustable)</td><td>Best quality embeddings</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Image &amp; Audio Models</h3>
+  <table>
+    <thead>
+      <tr><th>Model</th><th>Details</th><th>Key Feature</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="color:var(--cyan);">DALL-E 3</td><td>N/A</td><td>1024&times;1024, 1792&times;1024, 1024&times;1792</td></tr>
+      <tr><td style="color:var(--cyan);">Whisper</td><td>N/A</td><td>25 MB audio file limit</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ───────────────── CHAT COMPLETIONS API ───────────────── -->
+<div class="card" style="margin-top:1.5rem;">
+  <h2><span class="badge badge-blue">API</span> Chat Completions Endpoint</h2>
+
+  <div class="key-fact"><strong>POST Endpoint:</strong>
+    <code>{endpoint}/openai/deployments/{deployment-id}/chat/completions?api-version=2024-10-21</code>
+  </div>
+
+  <h3>SDK Usage</h3>
+  <div class="code-tabs" data-languages="python,csharp,curl">
+    <div class="code-tab-bar" role="tablist">
+      <button class="code-tab active" data-lang="python" role="tab">Python</button>
+      <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+      <button class="code-tab" data-lang="curl" role="tab">cURL</button>
+    </div>
+    <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+      <pre><code># pip install openai
+from openai import AzureOpenAI
+
+client = AzureOpenAI(
+    azure_endpoint=endpoint,
+    api_key=api_key,
+    api_version="2024-10-21"
+)
+
+response = client.chat.completions.create(
+    model="gpt-4o",  # deployment name
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Hello!"}
+    ],
+    temperature=0.7,
+    max_tokens=800
+)
+
+print(response.choices[0].message.content)
+print(f"Finish reason: {response.choices[0].finish_reason}")
+print(f"Usage: {response.usage.prompt_tokens} + {response.usage.completion_tokens}")</code></pre>
+    </div>
+    <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+      <pre><code>// dotnet add package Azure.AI.OpenAI
+using Azure;
+using Azure.AI.OpenAI;
+using OpenAI.Chat;
+
+var client = new AzureOpenAIClient(
+    new Uri(endpoint),
+    new AzureKeyCredential(apiKey));
+
+var chatClient = client.GetChatClient("gpt-4o");  // deployment name
+
+ChatCompletion completion = chatClient.CompleteChat(
+    new ChatMessage[]
+    {
+        new SystemChatMessage("You are a helpful assistant."),
+        new UserChatMessage("Hello!")
+    },
+    new ChatCompletionOptions
+    {
+        Temperature = 0.7f,
+        MaxOutputTokenCount = 800,
+        TopP = 1f,
+        FrequencyPenalty = 0f,
+        PresencePenalty = 0f
+    });
+
+Console.WriteLine(completion.Content[0].Text);
+Console.WriteLine($"Finish reason: {completion.FinishReason}");
+Console.WriteLine($"Usage: {completion.Usage.InputTokenCount} + {completion.Usage.OutputTokenCount}");</code></pre>
+    </div>
+    <div class="code-panel" data-lang="curl" role="tabpanel"><span class="code-print-label" aria-hidden="true">cURL</span>
+      <pre><code>curl -X POST "{endpoint}/openai/deployments/gpt-4o/chat/completions?api-version=2024-10-21" \
+  -H "Content-Type: application/json" \
+  -H "api-key: {api-key}" \
+  -d '{
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "Hello!"}
+    ],
+    "temperature": 0.7,
+    "max_tokens": 800
+  }'</code></pre>
+    </div>
+  </div>
+
+  <h3>Request Structure (JSON)</h3>
+  <pre><code>{
+  "messages": [
+    { "role": "system",    "content": "You are a helpful assistant." },
+    { "role": "developer", "content": "Instructions for o-series models only." },
+    { "role": "user",      "content": "Hello!" },
+    { "role": "assistant", "content": "Hi there! How can I help?" },
+    { "role": "user",      "content": [
+        { "type": "text",      "text": "What is in this image?" },
+        { "type": "image_url", "image_url": { "url": "https://..." } }
+    ]},
+    { "role": "tool",      "tool_call_id": "call_abc123",
+                            "content": "{\"result\": \"72\"}" }
+  ],
+  "temperature": 0.7,
+  "top_p": 1,
+  "max_tokens": 800,
+  "frequency_penalty": 0,
+  "presence_penalty": 0,
+  "stop": null,
+  "n": 1,
+  "stream": false,
+  "seed": null,
+  "response_format": { "type": "json_object" },
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_weather",
+        "description": "Get current weather for a city",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "city": { "type": "string" }
+          },
+          "required": ["city"]
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto"
+}</code></pre>
+
+  <h3>Message Roles</h3>
+  <table>
+    <thead>
+      <tr><th>Role</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="color:var(--amber);"><code>system</code></td><td>Sets behavior, personality, constraints. Processed first. Not for o-series models.</td></tr>
+      <tr><td style="color:var(--purple);"><code>developer</code></td><td>Replaces <code>system</code> for o1/o1-mini reasoning models.</td></tr>
+      <tr><td style="color:var(--green);"><code>user</code></td><td>User prompts. Can be string or array (for multimodal: text + image_url).</td></tr>
+      <tr><td style="color:var(--blue);"><code>assistant</code></td><td>Model responses &amp; few-shot examples. May contain <code>tool_calls</code>.</td></tr>
+      <tr><td style="color:var(--cyan);"><code>tool</code></td><td>Function call results. Must include <code>tool_call_id</code> matching the request.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ───────────────── ALL PARAMETERS ───────────────── -->
+<div class="card" style="margin-top:1.5rem;">
+  <h2><span class="badge badge-blue">API</span> All Request Parameters</h2>
+  <table>
+    <thead>
+      <tr><th>Parameter</th><th>Type</th><th>Range</th><th>Default</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>temperature</code></td><td>float</td><td>0&ndash;2</td><td>1</td><td>Controls randomness. Higher = more creative.</td></tr>
+      <tr><td><code>top_p</code></td><td>float</td><td>0&ndash;1</td><td>1</td><td>Nucleus sampling. <strong style="color:var(--red);">Change ONE of temp OR top_p, not both.</strong></td></tr>
+      <tr><td><code>max_tokens</code></td><td>int</td><td>1&ndash;model_max</td><td>varies</td><td>Maximum tokens in the completion.</td></tr>
+      <tr><td><code>frequency_penalty</code></td><td>float</td><td>-2 to 2</td><td>0</td><td>Penalize tokens by how often they appeared. Reduces repetition.</td></tr>
+      <tr><td><code>presence_penalty</code></td><td>float</td><td>-2 to 2</td><td>0</td><td>Penalize tokens that appeared at all. Encourages new topics.</td></tr>
+      <tr><td><code>stop</code></td><td>string/array</td><td>up to 4</td><td>null</td><td>Stop sequences &mdash; generation halts when encountered.</td></tr>
+      <tr><td><code>n</code></td><td>int</td><td>1+</td><td>1</td><td>Number of completions to generate per request.</td></tr>
+      <tr><td><code>stream</code></td><td>bool</td><td>&mdash;</td><td>false</td><td>Server-Sent Events (SSE) streaming.</td></tr>
+      <tr><td><code>seed</code></td><td>int</td><td>&mdash;</td><td>null</td><td>Deterministic sampling &mdash; same seed + params = same output.</td></tr>
+      <tr><td><code>response_format</code></td><td>object</td><td>&mdash;</td><td>&mdash;</td><td><code>text</code>, <code>json_object</code>, or <code>json_schema</code> (structured output).</td></tr>
+      <tr><td><code>tools</code></td><td>array</td><td>max 128</td><td>null</td><td>Function definitions for tool/function calling.</td></tr>
+      <tr><td><code>tool_choice</code></td><td>string/obj</td><td>&mdash;</td><td>auto</td><td><code>none</code>, <code>auto</code>, <code>required</code>, or specific function name.</td></tr>
+    </tbody>
+  </table>
+  <div class="warning"><strong>Exam Trap:</strong> <code>frequency_penalty</code> scales by count (repeat 10x = 10x penalty). <code>presence_penalty</code> is flat (appeared = penalized). Know the difference.</div>
+</div>
+
+<!-- ───────────────── RESPONSE STRUCTURE ───────────────── -->
+<div class="card" style="margin-top:1.5rem;">
+  <h2><span class="badge badge-blue">API</span> Response Structure</h2>
+  <pre><code>{
+  "id": "chatcmpl-abc123",
+  "object": "chat.completion",
+  "created": 1700000000,
+  "model": "gpt-4o",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Hello! How can I help you today?",
+        "tool_calls": null
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 25,
+    "completion_tokens": 12,
+    "total_tokens": 37
+  },
+  "system_fingerprint": "fp_abc123"
+}</code></pre>
+
+  <h3><code>finish_reason</code> Values</h3>
+  <table>
+    <thead>
+      <tr><th>Value</th><th>Meaning</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="color:var(--green);"><code>stop</code></td><td>Model completed naturally or hit a stop sequence.</td></tr>
+      <tr><td style="color:var(--amber);"><code>length</code></td><td>Hit <code>max_tokens</code> limit &mdash; output was truncated.</td></tr>
+      <tr><td style="color:var(--red);"><code>content_filter</code></td><td>Completion blocked by content filtering.</td></tr>
+      <tr><td style="color:var(--purple);"><code>tool_calls</code></td><td>Model wants to call one or more functions.</td></tr>
+    </tbody>
+  </table>
+  <div class="tip"><strong>Exam Tip:</strong> <code>usage.prompt_tokens</code> + <code>usage.completion_tokens</code> = <code>usage.total_tokens</code>. Billing is based on total tokens.</div>
+</div>
+
+<!-- ───────────────── DEPLOYMENT TYPES ───────────────── -->
+<div class="card" style="margin-top:1.5rem;">
+  <h2><span class="badge badge-green">Deploy</span> Deployment Types</h2>
+  <table>
+    <thead>
+      <tr><th>Type</th><th>Routing</th><th>Billing</th><th>Key Characteristics</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="color:var(--amber);">Global Standard</td><td>Global</td><td>Pay-per-token</td><td>Highest default quota. <strong style="color:var(--red);">Data may leave region.</strong></td></tr>
+      <tr><td style="color:var(--green);">Standard</td><td>Regional</td><td>Pay-per-token</td><td>Data stays in region. Most common for production.</td></tr>
+      <tr><td style="color:var(--blue);">Data Zone Standard</td><td>US or EU zone</td><td>Pay-per-token</td><td>Routes within US/EU data zone only.</td></tr>
+      <tr><td style="color:var(--purple);">Global Provisioned</td><td>Global</td><td>Reserved PTU</td><td>Reserved capacity + global routing.</td></tr>
+      <tr><td style="color:var(--cyan);">Provisioned</td><td>Regional</td><td>Reserved PTU</td><td>Single region. Lowest latency variance. Best for predictable workloads.</td></tr>
+      <tr><td style="color:var(--amber);">Global Batch</td><td>Global</td><td>50% discount</td><td>Async processing. Up to 100K requests/file. 24-hour SLA.</td></tr>
+    </tbody>
+  </table>
+  <div class="key-fact"><strong>PTU (Provisioned Throughput Units):</strong> Reserved compute capacity billed hourly, regardless of usage. Guarantees throughput for production workloads.</div>
+  <div class="warning"><strong>Exam Trap:</strong> "Global" deployments can process data outside your selected region. If data residency is required, use <strong>Standard</strong> or <strong>Provisioned</strong> (regional).</div>
+</div>
+
+<!-- ───────────────── DALL-E 3 ───────────────── -->
+<div class="grid grid-2" style="margin-top:1.5rem;">
+<div class="card">
+  <h2><span class="badge badge-cyan">Images</span> DALL-E 3 Specifics</h2>
+  <table>
+    <thead>
+      <tr><th>Parameter</th><th>Options</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Sizes</td><td><code>1024x1024</code>, <code>1792x1024</code>, <code>1024x1792</code></td></tr>
+      <tr><td>Quality</td><td><code>standard</code> (default), <code>hd</code></td></tr>
+      <tr><td>Style</td><td><code>vivid</code> (default), <code>natural</code></td></tr>
+      <tr><td><code>n</code></td><td><strong>1 only</strong> (DALL-E 3 limitation)</td></tr>
+      <tr><td>Max prompt</td><td>4,000 characters</td></tr>
+      <tr><td><code>response_format</code></td><td><code>url</code> (valid 60 min) or <code>b64_json</code></td></tr>
+    </tbody>
+  </table>
+  <div class="warning"><strong>Exam Trap:</strong> DALL-E 3 always <code>n=1</code>. For multiple images, make multiple API calls. URL expires after 60 minutes &mdash; download or use <code>b64_json</code>.</div>
+</div>
+
+<!-- ───────────────── KEY LIMITS ───────────────── -->
+<div class="card">
+  <h2><span class="badge badge-red">Limits</span> Key Limits &amp; Quotas</h2>
+  <table>
+    <thead>
+      <tr><th>Limit</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Max messages per request</td><td style="color:var(--amber);"><strong>2,048</strong></td></tr>
+      <tr><td>Max tools / functions</td><td style="color:var(--amber);"><strong>128</strong></td></tr>
+      <tr><td>Max embeddings inputs per request</td><td style="color:var(--amber);"><strong>2,048</strong></td></tr>
+      <tr><td>Max images per request (GPT-4o)</td><td style="color:var(--amber);"><strong>50</strong></td></tr>
+      <tr><td>Azure OpenAI resources per region/sub</td><td style="color:var(--amber);"><strong>30</strong></td></tr>
+      <tr><td>Max deployments per resource</td><td style="color:var(--amber);"><strong>32</strong></td></tr>
+      <tr><td>Whisper audio file limit</td><td style="color:var(--amber);"><strong>25 MB</strong></td></tr>
+      <tr><td>DALL-E 3 prompt limit</td><td style="color:var(--amber);"><strong>4,000 chars</strong></td></tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+<!-- ───────────────── PROMPT ENGINEERING ───────────────── -->
+<div class="card" style="margin-top:1.5rem;">
+  <h2><span class="badge badge-purple">Prompting</span> Prompt Engineering Techniques</h2>
+
+  <div class="grid grid-2" style="gap:1rem;">
+    <div>
+      <h3>Shot Techniques</h3>
+      <table>
+        <thead>
+          <tr><th>Technique</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="color:var(--green);">Zero-shot</td><td>No examples. Relies on model's training. Good for simple tasks.</td></tr>
+          <tr><td style="color:var(--blue);">One-shot</td><td>One example in the prompt. Sets format and tone.</td></tr>
+          <tr><td style="color:var(--purple);">Few-shot</td><td>Multiple examples (3&ndash;5). Best for consistent format &amp; style.</td></tr>
+          <tr><td style="color:var(--amber);">Chain-of-thought</td><td>"Let's think step by step." Forces reasoning before answering.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Delimiter Patterns</h3>
+      <table>
+        <thead>
+          <tr><th>Delimiter</th><th>Usage</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>###</code></td><td>Section separators</td></tr>
+          <tr><td><code>"""</code></td><td>Wrap user-provided input (prevents injection)</td></tr>
+          <tr><td><code>---</code></td><td>Example boundaries in few-shot</td></tr>
+          <tr><td><code>&lt;tag&gt;</code></td><td>XML-style tags for structured sections</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h3>System Message Best Practices</h3>
+      <ul style="font-size:0.85rem; padding-left:1.2rem;">
+        <li>Define the persona and task clearly</li>
+        <li>Specify output format (JSON, markdown, etc.)</li>
+        <li>Set constraints: what NOT to do</li>
+        <li>Include safety guardrails and fallback behavior</li>
+        <li>Place few-shot examples after system instructions</li>
+      </ul>
+
+      <h3>Temperature Tuning Guide</h3>
+      <table>
+        <thead>
+          <tr><th>Use Case</th><th>Temperature</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="color:var(--cyan);">Code generation, factual Q&amp;A</td><td><strong>0.0 &ndash; 0.3</strong></td></tr>
+          <tr><td style="color:var(--green);">Summarization, classification</td><td><strong>0.3 &ndash; 0.7</strong></td></tr>
+          <tr><td style="color:var(--purple);">Creative writing, brainstorming</td><td><strong>0.7 &ndash; 1.5</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Structured Output</h3>
+      <div class="key-fact"><strong>response_format:</strong> Use <code>{"type": "json_object"}</code> to force valid JSON output. Must mention "JSON" in the prompt or you get an error. For strict schemas use <code>{"type": "json_schema", "json_schema": {...}}</code>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────── FINE-TUNING ───────────────── -->
+<div class="card" style="margin-top:1.5rem;">
+  <h2><span class="badge badge-green">Fine-Tuning</span> Custom Model Training</h2>
+
+  <div class="grid grid-2" style="gap:1rem;">
+    <div>
+      <h3>Supported Models</h3>
+      <table>
+        <thead>
+          <tr><th>Model</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="color:var(--amber);">GPT-4o</td><td>Best quality fine-tuning</td></tr>
+          <tr><td style="color:var(--green);">GPT-4o-mini</td><td>Cost-effective fine-tuning</td></tr>
+          <tr><td>GPT-3.5-Turbo</td><td>Legacy option, still supported</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Data Requirements</h3>
+      <table>
+        <thead>
+          <tr><th>Requirement</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Format</td><td><strong>JSONL</strong> (one JSON object per line)</td></tr>
+          <tr><td>Encoding</td><td>UTF-8 with BOM</td></tr>
+          <tr><td>Max file size</td><td><strong>512 MB</strong></td></tr>
+          <tr><td>Minimum examples</td><td><strong>10</strong> (hundreds recommended)</td></tr>
+          <tr><td>Max training time</td><td><strong>720 hours</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h3>Fine-Tuning Workflow</h3>
+      <div style="font-size:0.85rem;">
+        <div class="key-fact" style="border-left-color:var(--green);"><strong>1. Prepare</strong> &mdash; Create JSONL with <code>messages</code> array (system, user, assistant turns)</div>
+        <div class="key-fact" style="border-left-color:var(--blue);"><strong>2. Upload</strong> &mdash; Upload training file via Files API (<code>purpose: "fine-tune"</code>)</div>
+        <div class="key-fact" style="border-left-color:var(--purple);"><strong>3. Train</strong> &mdash; Create fine-tuning job. Set hyperparameters (epochs, learning rate, batch size)</div>
+        <div class="key-fact" style="border-left-color:var(--amber);"><strong>4. Deploy</strong> &mdash; Deploy the custom model to an endpoint</div>
+        <div class="key-fact" style="border-left-color:var(--cyan);"><strong>5. Use</strong> &mdash; Call the deployment like any other Chat Completions endpoint</div>
+      </div>
+
+      <div class="warning" style="margin-top:1rem;"><strong>Required RBAC:</strong> <code>Cognitive Services OpenAI Contributor</code> role. Regular <code>Cognitive Services User</code> is NOT enough for fine-tuning.</div>
+
+      <h3>JSONL Training Format</h3>
+      <pre><code>{"messages": [
+  {"role": "system", "content": "You classify support tickets."},
+  {"role": "user", "content": "My internet is down"},
+  {"role": "assistant", "content": "Category: Network"}
+]}</code></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────── CONTENT FILTERING ───────────────── -->
+<div class="card" style="margin-top:1.5rem;">
+  <h2><span class="badge badge-red">Safety</span> Content Filtering</h2>
+
+  <div class="grid grid-2" style="gap:1rem;">
+    <div>
+      <h3>Four Content Categories</h3>
+      <table>
+        <thead>
+          <tr><th>Category</th><th>Covers</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="color:var(--red);">Hate</td><td>Hate speech, discrimination, slurs</td></tr>
+          <tr><td style="color:var(--red);">Sexual</td><td>Sexually explicit content</td></tr>
+          <tr><td style="color:var(--red);">Violence</td><td>Violent acts, graphic content</td></tr>
+          <tr><td style="color:var(--red);">Self-Harm</td><td>Self-injury, suicide</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Severity Levels</h3>
+      <table>
+        <thead>
+          <tr><th>Level</th><th>Value</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="color:var(--green);">Safe</td><td>0</td><td>No harmful content detected</td></tr>
+          <tr><td style="color:var(--amber);">Low</td><td>2</td><td>Minor concerns</td></tr>
+          <tr><td style="color:var(--red);">Medium</td><td>4</td><td>Moderate severity</td></tr>
+          <tr><td style="color:var(--red);">High</td><td>6</td><td>Severe content</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h3>Default Behavior</h3>
+      <div class="key-fact"><strong>Default threshold:</strong> Medium &mdash; blocks Medium (4) + High (6) severity. Allows Safe (0) + Low (2).</div>
+
+      <h3>HTTP Response Behavior</h3>
+      <table>
+        <thead>
+          <tr><th>Scenario</th><th>HTTP Code</th><th>Details</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="color:var(--red);">Prompt blocked</td><td><strong>400</strong></td><td>Request rejected before processing</td></tr>
+          <tr><td style="color:var(--amber);">Completion blocked</td><td><strong>200</strong></td><td><code>finish_reason: "content_filter"</code></td></tr>
+        </tbody>
+      </table>
+      <div class="warning"><strong>Exam Trap:</strong> Blocked completions return HTTP <strong>200</strong> (not 400!). Check <code>finish_reason</code> to detect filtered output.</div>
+
+      <h3>Optional Safety Features</h3>
+      <table>
+        <thead>
+          <tr><th>Feature</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Prompt Shields</td><td>Detect jailbreak &amp; indirect injection attacks</td></tr>
+          <tr><td>Protected Material</td><td>Detect copyrighted text / code</td></tr>
+          <tr><td>Groundedness</td><td>Detect hallucination vs grounding docs</td></tr>
+          <tr><td>Custom Blocklists</td><td>Block specific terms / patterns</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────── NAVIGATION ───────────────── -->
+<div class="nav-links">
+  <a href="index.html">&larr; All Sheets</a>
+  <a href="00-exam-overview.html">Exam Overview</a>
+  <a href="02-computer-vision.html">Computer Vision</a>
+  <a href="03-nlp-speech.html">NLP &amp; Speech</a>
+  <a href="04-search-knowledge.html">AI Search</a>
+  <a href="05-responsible-ai.html">Responsible AI</a>
+  <a href="06-foundry-agents.html">Foundry &amp; Agents</a>
+  <a href="07-sdk-reference.html">SDK Reference</a>
+  <a href="08-portal-workflows.html">Portal Workflows</a>
+</div>
+
+<script>
+(function() {
+  var KEY = 'cram-lang-pref';
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch(e) {}
+
+  function activate(lang) {
+    document.querySelectorAll('.code-tabs').forEach(function(c) {
+      var langs = c.getAttribute('data-languages').split(',');
+      var target = langs.indexOf(lang) !== -1 ? lang : langs[0];
+      c.querySelectorAll('.code-tab').forEach(function(t) {
+        t.classList.toggle('active', t.getAttribute('data-lang') === target);
+        t.setAttribute('aria-selected', t.getAttribute('data-lang') === target);
+      });
+      c.querySelectorAll('.code-panel').forEach(function(p) {
+        p.classList.toggle('active', p.getAttribute('data-lang') === target);
+      });
+    });
+    try { localStorage.setItem(KEY, lang); } catch(e) {}
+  }
+
+  document.querySelectorAll('.code-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() { activate(tab.getAttribute('data-lang')); });
+  });
+
+  if (saved) { activate(saved); }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure AI Foundry &amp; Agents | AI-102 Cram Sheet</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #232733; --border: #2e3345;
+    --text: #e4e6ef; --text-dim: #8b8fa3;
+    --amber: #f5a623; --amber-dim: rgba(245,166,35,0.15);
+    --green: #34d399; --green-dim: rgba(52,211,153,0.15);
+    --blue: #60a5fa; --blue-dim: rgba(96,165,250,0.15);
+    --red: #f87171; --red-dim: rgba(248,113,113,0.15);
+    --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.15);
+    --cyan: #22d3ee; --cyan-dim: rgba(34,211,238,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--purple); }
+  .header h1 { font-size: 2.2rem; color: var(--purple); margin-bottom: 0.3rem; }
+  .header .subtitle { color: var(--text-dim); font-size: 1rem; }
+  .badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); }
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); }
+  .badge-red { background: var(--red-dim); color: var(--red); }
+  .badge-purple { background: var(--purple-dim); color: var(--purple); }
+  .badge-cyan { background: var(--cyan-dim); color: var(--cyan); }
+  .grid { display: grid; gap: 1.5rem; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+  .card:hover { border-color: var(--purple); }
+  .card h2 { font-size: 1.1rem; margin-bottom: 1rem; }
+  .card h3 { font-size: 0.95rem; color: var(--purple); margin: 1rem 0 0.5rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--purple); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+  tr:hover td { background: var(--surface2); }
+  code { background: var(--surface2); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.8rem; color: var(--cyan); }
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.5; margin: 0.75rem 0; }
+  pre code { background: none; padding: 0; }
+  .key-fact { background: var(--surface2); border-left: 3px solid var(--purple); padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0; font-size: 0.85rem; }
+  .key-fact strong { color: var(--purple); }
+  .tip { background: var(--green-dim); border: 1px solid rgba(52,211,153,0.3); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; }
+  .tip strong { color: var(--green); }
+  .warning { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.3); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; }
+  .warning strong { color: var(--red); }
+  .nav-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .nav-links a { color: var(--blue); text-decoration: none; font-size: 0.8rem; padding: 0.3rem 0.8rem; border: 1px solid var(--blue); border-radius: 6px; }
+  .nav-links a:hover { background: var(--blue-dim); }
+  /* ── Code Language Tabs ── */
+  .code-tabs { margin: 0.75rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .code-tab-bar { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0; gap: 0; }
+  .code-tab { background: none; border: none; color: var(--text-dim); font-family: inherit; font-size: 0.75rem; font-weight: 600; padding: 0.5rem 1rem; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; text-transform: uppercase; letter-spacing: 0.04em; }
+  .code-tab:hover { color: var(--text); }
+  .code-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+  .code-panel { display: none; }
+  .code-panel.active { display: block; }
+  .code-tabs pre { margin: 0; border: none; border-radius: 0; }
+  .code-print-label { display: none; }
+  @media print { body { background: #fff; color: #000; } .card { border: 1px solid #ccc; break-inside: avoid; } .code-tab-bar { display: none; } .code-panel { display: block !important; } .code-print-label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #666; padding: 0.25rem 1rem 0; } .code-tabs { border: 1px solid #ccc; } }
+  @media (max-width: 480px) { .code-tab { padding: 0.4rem 0.6rem; font-size: 0.65rem; } }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- HEADER                                                        -->
+<!-- ============================================================ -->
+<div class="header">
+  <h1>Azure AI Foundry &amp; Agents</h1>
+  <div class="subtitle">AI-102 Cram Sheet &mdash; Domain 2: Build Generative AI Solutions &bull; Domain 6: Implement AI Agents</div>
+</div>
+
+<div class="warning"><strong>Exam Terminology:</strong> The exam refers to Azure AI services accessed through Foundry as <strong>"Azure [Service] in Foundry Tools"</strong> (e.g., "Azure Vision in Foundry Tools", "Azure Speech in Foundry Tools"). Same service, same API &mdash; just the Foundry-integrated access path.</div>
+
+<!-- ============================================================ -->
+<!-- AI FOUNDRY ARCHITECTURE                                       -->
+<!-- ============================================================ -->
+<div class="grid grid-2">
+  <div class="card">
+    <h2><span class="badge badge-purple">Architecture</span> AI Foundry Hub &amp; Project Hierarchy</h2>
+    <table>
+      <tr><th>Level</th><th>Shares / Scopes</th></tr>
+      <tr><td><strong>Hub</strong></td><td>Security, connections, compute, policies &mdash; shared across all projects</td></tr>
+      <tr><td><strong>Project</strong></td><td>Datasets, flows, indexes, deployments, storage containers &mdash; scoped per project</td></tr>
+    </table>
+    <h3>Auto-Provisioned Resources</h3>
+    <table>
+      <tr><th>Resource</th><th>Required</th></tr>
+      <tr><td>Resource Group</td><td>Yes</td></tr>
+      <tr><td>Hub (AI Foundry)</td><td>Yes</td></tr>
+      <tr><td>Azure AI Services</td><td>Yes</td></tr>
+      <tr><td>Storage Account</td><td>Yes</td></tr>
+      <tr><td>Key Vault</td><td>Yes</td></tr>
+      <tr><td>Application Insights</td><td>Optional</td></tr>
+      <tr><td>Container Registry</td><td>Optional</td></tr>
+    </table>
+    <div class="warning"><strong>Exam Alert:</strong> "Azure AI Foundry" was rebranded to "Microsoft Foundry" in the Dec 2025 exam update. Expect both names on the exam.</div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MODEL CATALOG                                                 -->
+  <!-- ============================================================ -->
+  <div class="card">
+    <h2><span class="badge badge-blue">Catalog</span> Model Catalog</h2>
+    <div class="key-fact"><strong>1,900+ models</strong> available in the Azure AI model catalog.</div>
+    <h3>Model Categories</h3>
+    <table>
+      <tr><th>Category</th><th>Details</th></tr>
+      <tr><td><strong>Models Sold by Azure</strong></td><td>Enterprise SLA, Microsoft-backed support</td></tr>
+      <tr><td><strong>Models from Partners / Community</strong></td><td>Open-source &amp; third-party (Hugging Face, Meta, Mistral, etc.)</td></tr>
+    </table>
+    <h3>Deployment Options</h3>
+    <table>
+      <tr><th>Option</th><th>Use Case</th></tr>
+      <tr><td><span class="badge badge-green">Standard</span></td><td>Pay-per-call, general purpose</td></tr>
+      <tr><td><span class="badge badge-amber">Provisioned</span></td><td>Reserved throughput, consistent volume</td></tr>
+      <tr><td><span class="badge badge-cyan">Batch</span></td><td>Cost-optimized, async processing</td></tr>
+      <tr><td><span class="badge badge-blue">Managed Compute</span></td><td>Dedicated VMs, full control</td></tr>
+    </table>
+    <div class="tip"><strong>Tip:</strong> Standard deployments are the fastest to set up and best for variable workloads. Use Provisioned when you need predictable latency.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PLAYGROUND + PROMPT FLOW                                       -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top: 1.5rem;">
+  <div class="card">
+    <h2><span class="badge badge-green">Interactive</span> Playground</h2>
+    <h3>Chat Playground Features</h3>
+    <table>
+      <tr><th>Feature</th><th>Purpose</th></tr>
+      <tr><td>System message</td><td>Set persona / behavioral constraints</td></tr>
+      <tr><td>Deployment selector</td><td>Switch between deployed models</td></tr>
+      <tr><td>Parameters</td><td><code>temperature</code>, <code>max_tokens</code>, <code>top_p</code>, <code>stop</code></td></tr>
+      <tr><td>Add your data (RAG)</td><td>Ground responses on your own data sources</td></tr>
+      <tr><td>View code</td><td>Export playground config as SDK code</td></tr>
+    </table>
+    <h3>RAG Settings</h3>
+    <div class="key-fact"><strong>Strictness:</strong> 1&ndash;5 (higher = more grounded, less creative). <strong>Retrieved docs:</strong> 3, 5, 10, or 20.</div>
+    <h3>Other Playgrounds</h3>
+    <p style="font-size:0.85rem; margin-top:0.3rem;">
+      <span class="badge badge-cyan">Completions</span>
+      <span class="badge badge-amber">Audio</span>
+      <span class="badge badge-purple">Agents</span>
+    </p>
+  </div>
+
+  <div class="card">
+    <h2><span class="badge badge-amber">Classic</span> Prompt Flow</h2>
+    <div class="key-fact"><strong>DAG architecture</strong> &mdash; Directed Acyclic Graph of connected nodes.</div>
+    <h3>Flow Types</h3>
+    <table>
+      <tr><th>Type</th><th>Purpose</th></tr>
+      <tr><td><strong>Standard</strong></td><td>General-purpose LLM pipelines</td></tr>
+      <tr><td><strong>Chat</strong></td><td>Conversational flows with history</td></tr>
+      <tr><td><strong>Evaluation</strong></td><td>Measure quality metrics on outputs</td></tr>
+    </table>
+    <h3>Built-in Tools</h3>
+    <table>
+      <tr><th>Tool</th><th>Purpose</th></tr>
+      <tr><td><span class="badge badge-purple">LLM</span></td><td>Send prompts to deployed language models</td></tr>
+      <tr><td><span class="badge badge-cyan">Prompt (Jinja2)</span></td><td>Template &amp; compose prompt strings with variables</td></tr>
+      <tr><td><span class="badge badge-green">Python</span></td><td>Run custom Python code for data processing</td></tr>
+      <tr><td><span class="badge badge-blue">GPT-4V</span></td><td>Multimodal image + text analysis</td></tr>
+      <tr><td><span class="badge badge-red">Content Safety</span></td><td>Check inputs/outputs against content filters</td></tr>
+      <tr><td><span class="badge badge-amber">Embedding</span></td><td>Generate vector embeddings from text</td></tr>
+      <tr><td><span class="badge badge-purple">Serp API</span></td><td>Web search via SerpAPI</td></tr>
+      <tr><td><span class="badge badge-cyan">Index Lookup</span></td><td>Query Azure AI Search indexes</td></tr>
+      <tr><td><span class="badge badge-green">Rerank</span></td><td>Re-score and reorder search results</td></tr>
+    </table>
+    <h3>Key Benefits</h3>
+    <div class="key-fact"><strong>Visual editor</strong> for building flows &bull; <strong>Prompt variants</strong> for A/B testing &bull; <strong>Built-in evaluation</strong> metrics &bull; <strong>Deployable endpoints</strong> directly from flows.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- EVALUATION                                                     -->
+<!-- ============================================================ -->
+<div class="card" style="margin-top: 1.5rem;">
+  <h2><span class="badge badge-green">Quality</span> Evaluation Framework</h2>
+  <div class="grid grid-2">
+    <div>
+      <h3>Built-in Evaluators by Category</h3>
+      <table>
+        <tr><th>Category</th><th>Evaluators</th></tr>
+        <tr><td><span class="badge badge-blue">General</span></td><td>Coherence, Fluency</td></tr>
+        <tr><td><span class="badge badge-cyan">Similarity</span></td><td>F1 Score, BLEU, ROUGE, METEOR</td></tr>
+        <tr><td><span class="badge badge-purple">RAG</span></td><td>Retrieval, Groundedness, Groundedness Pro, Relevance, Response Completeness</td></tr>
+        <tr><td><span class="badge badge-red">Safety</span></td><td>Hate/Unfairness, Sexual, Violence, Self-Harm, Protected Materials, Code Vulnerability</td></tr>
+        <tr><td><span class="badge badge-amber">Agent</span></td><td>Task Adherence, Task Completion, Intent Resolution, Tool Call Accuracy, Tool Selection</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Recommended Evaluator Combos</h3>
+      <div class="key-fact"><strong>RAG apps:</strong> Retrieval + Groundedness + Relevance + Content Safety</div>
+      <div class="key-fact"><strong>Agent apps:</strong> Tool Call Accuracy + Task Adherence + Intent Resolution + Content Safety</div>
+      <h3>Three Evaluation Stages</h3>
+      <table>
+        <tr><th>Stage</th><th>When</th></tr>
+        <tr><td><strong>1. Base model selection</strong></td><td>Compare models before building</td></tr>
+        <tr><td><strong>2. Pre-production</strong></td><td>Test against benchmarks before deploy</td></tr>
+        <tr><td><strong>3. Post-production</strong></td><td>Monitor quality in live traffic</td></tr>
+      </table>
+      <div class="tip"><strong>Tip:</strong> Groundedness Pro uses a smaller, fine-tuned model for faster/cheaper groundedness checks than the standard evaluator.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- FOUNDRY AGENT SERVICE                                          -->
+<!-- ============================================================ -->
+<div class="card" style="margin-top: 1.5rem;">
+  <h2><span class="badge badge-red">Core</span> Foundry Agent Service</h2>
+  <div class="key-fact"><strong>Agent = Model + Instructions + Tools</strong> &mdash; the fundamental building block.</div>
+  <div class="grid grid-2" style="margin-top: 1rem;">
+    <div>
+      <h3>Three Agent Types</h3>
+      <table>
+        <tr><th>Type</th><th>Code?</th><th>Details</th></tr>
+        <tr><td><span class="badge badge-green">Prompt Agents</span></td><td>No code</td><td>Fully managed, single agent</td></tr>
+        <tr><td><span class="badge badge-amber">Workflow Agents</span></td><td>No code</td><td>YAML-defined, multi-agent branching</td></tr>
+        <tr><td><span class="badge badge-purple">Hosted Agents</span></td><td>Code required</td><td>Container-based, custom frameworks</td></tr>
+      </table>
+      <h3>Development Lifecycle</h3>
+      <p style="font-size: 0.85rem;">
+        <span class="badge badge-blue">Create</span> &rarr;
+        <span class="badge badge-green">Test</span> &rarr;
+        <span class="badge badge-cyan">Trace</span> &rarr;
+        <span class="badge badge-amber">Evaluate</span> &rarr;
+        <span class="badge badge-purple">Publish</span> &rarr;
+        <span class="badge badge-red">Monitor</span>
+      </p>
+    </div>
+    <div>
+      <h3>Agent Tools &mdash; Complete Reference</h3>
+      <table>
+        <tr><th>Tool</th><th>Description</th><th>Key Limits / Notes</th></tr>
+        <tr><td style="color:var(--green);">Code Interpreter</td><td>Run Python in a sandbox (data analysis, charts, file I/O)</td><td>1hr active, 30min idle timeout</td></tr>
+        <tr><td style="color:var(--green);">File Search</td><td>Vector search over uploaded files with auto-chunking</td><td>512 MB/file, 5M tokens/file, 500 files/batch</td></tr>
+        <tr><td style="color:var(--green);">Azure AI Search</td><td>Ground agent on your search indexes (hybrid/semantic)</td><td>Requires AI Search resource connection</td></tr>
+        <tr><td style="color:var(--green);">Web Search</td><td>Real-time Bing grounding with inline citations</td><td>Requires Grounding with Bing Search resource</td></tr>
+        <tr><td style="color:var(--green);">Function Calling</td><td>Define custom JSON-schema functions the agent can invoke</td><td>You handle execution; agent sends args</td></tr>
+        <tr><td style="color:var(--green);">Azure Functions</td><td>Call serverless Azure Functions for custom backend actions</td><td>Auto-executes (unlike Function Calling)</td></tr>
+        <tr><td style="color:var(--cyan);">Image Generation</td><td>DALL-E integration for in-conversation image creation</td><td>Preview</td></tr>
+        <tr><td style="color:var(--cyan);">Browser Automation</td><td>Agent performs web browser tasks via natural language</td><td>Preview; navigates pages, fills forms</td></tr>
+        <tr><td style="color:var(--cyan);">Computer Use</td><td>Agent interacts with desktop UI elements (click, type, screenshot)</td><td>Preview</td></tr>
+        <tr><td style="color:var(--cyan);">Microsoft Fabric</td><td>Connect to Fabric data agents for enterprise analytics</td><td>Preview</td></tr>
+        <tr><td style="color:var(--cyan);">SharePoint</td><td>Chat over private SharePoint document libraries</td><td>Preview; requires M365 connection</td></tr>
+      </table>
+      <h3>Custom Tool Types</h3>
+      <table>
+        <tr><th>Type</th><th>Description</th></tr>
+        <tr><td style="color:var(--amber);">MCP (Model Context Protocol)</td><td>Open standard for connecting agents to external tools/data sources via MCP servers</td></tr>
+        <tr><td style="color:var(--amber);">OpenAPI Tool</td><td>Import an OpenAPI spec to auto-generate callable API functions</td></tr>
+        <tr><td style="color:var(--amber);">Agent-to-Agent (A2A)</td><td>Google&rsquo;s protocol for inter-agent communication and task delegation</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- CONVERSATIONS & RESPONSES + MULTI-AGENT                        -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top: 1.5rem;">
+  <div class="card">
+    <h2><span class="badge badge-cyan">Runtime</span> Conversations &amp; Responses</h2>
+    <div class="warning"><strong>Naming Change:</strong> Formerly "Threads &amp; Runs" &mdash; now "Conversations &amp; Responses" in the latest SDK.</div>
+    <h3>Three Runtime Components</h3>
+    <table>
+      <tr><th>Component</th><th>Description</th></tr>
+      <tr><td><strong>Agent</strong></td><td>Persisted definition (model + instructions + tools)</td></tr>
+      <tr><td><strong>Conversation</strong></td><td>Durable session, stores items (messages, files)</td></tr>
+      <tr><td><strong>Response</strong></td><td>Output from agent processing a conversation</td></tr>
+    </table>
+    <h3>Execution Modes</h3>
+    <div class="key-fact"><strong>Streaming:</strong> <code>stream=True</code> &mdash; real-time token delivery.</div>
+    <div class="key-fact"><strong>Background:</strong> <code>background=True</code> &mdash; async processing, poll for results.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="badge badge-amber">Patterns</span> Multi-Agent Orchestration</h2>
+    <table>
+      <tr><th>Pattern</th><th>Description</th></tr>
+      <tr><td><span class="badge badge-green">Sequential</span></td><td>Agents in order, output passes forward to next agent</td></tr>
+      <tr><td><span class="badge badge-blue">Concurrent</span></td><td>Parallel execution, results aggregated</td></tr>
+      <tr><td><span class="badge badge-purple">Magentic</span></td><td>Manager coordinates specialists dynamically</td></tr>
+      <tr><td><span class="badge badge-amber">Handoff / Swarm</span></td><td>Hand off based on expertise matching</td></tr>
+      <tr><td><span class="badge badge-red">Human-in-the-loop</span></td><td>Pause execution for human input / approval</td></tr>
+    </table>
+    <div class="tip"><strong>Exam Tip:</strong> Sequential is simplest; Magentic allows the manager agent to dynamically decide which specialist to invoke. Handoff passes full conversation context to the next agent.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DEPLOYMENT OPTIONS                                             -->
+<!-- ============================================================ -->
+<div class="card" style="margin-top: 1.5rem;">
+  <h2><span class="badge badge-blue">Deploy</span> Deployment Options</h2>
+  <div class="grid grid-2">
+    <div>
+      <table>
+        <tr><th>Deployment Type</th><th>Region</th><th>Billing</th><th>Key Feature</th></tr>
+        <tr><td><strong>Global Standard</strong></td><td>Any region</td><td>Pay-per-token</td><td>Highest available quota</td></tr>
+        <tr><td><strong>Standard</strong></td><td>Single region</td><td>Pay-per-token</td><td>Data stays in region</td></tr>
+        <tr><td><strong>Data Zone Standard</strong></td><td>Within US or EU</td><td>Pay-per-token</td><td>Data residency compliance</td></tr>
+        <tr><td><strong>Provisioned types</strong></td><td>Single region</td><td>Reserved PTU</td><td>Predictable latency</td></tr>
+        <tr><td><strong>Batch types</strong></td><td>Varies</td><td>~50% discount</td><td>Async, 24hr target SLA</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="key-fact"><strong>PTU (Provisioned Throughput Units):</strong> Reserved capacity purchased in advance. Best for steady, high-volume workloads needing guaranteed latency.</div>
+      <div class="key-fact"><strong>Global Standard:</strong> Routes requests to any available region automatically. Highest quota but data may cross regions.</div>
+      <div class="key-fact"><strong>Data Zone Standard:</strong> Keeps data within US or EU boundary &mdash; use when data residency is required but exact region is flexible.</div>
+      <div class="warning"><strong>Exam Alert:</strong> Know which deployment type to choose for data sovereignty (Data Zone Standard), cost optimization (Batch), and latency-sensitive apps (Provisioned).</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TRACING & MONITORING + CI/CD                                   -->
+<!-- ============================================================ -->
+<div class="grid grid-2" style="margin-top: 1.5rem;">
+  <div class="card">
+    <h2><span class="badge badge-cyan">Observe</span> Tracing &amp; Monitoring</h2>
+    <div class="key-fact"><strong>Built on OpenTelemetry</strong>, integrated with Azure Application Insights.</div>
+    <h3>What Gets Traced</h3>
+    <table>
+      <tr><th>Signal</th><th>Details</th></tr>
+      <tr><td>LLM calls</td><td>Prompts, completions, token counts</td></tr>
+      <tr><td>Tool invocations</td><td>Input/output per tool call</td></tr>
+      <tr><td>Agent decisions</td><td>Routing, planning steps</td></tr>
+    </table>
+    <h3>Monitoring Metrics</h3>
+    <p style="font-size: 0.85rem;">
+      <span class="badge badge-purple">Groundedness</span>
+      <span class="badge badge-blue">Relevance</span>
+      <span class="badge badge-green">Coherence</span>
+      <span class="badge badge-cyan">Fluency</span>
+      <span class="badge badge-amber">Token Consumption</span>
+      <span class="badge badge-red">Latency</span>
+      <span class="badge badge-red">Error Rates</span>
+    </p>
+    <div class="tip"><strong>Tip:</strong> Enable Application Insights at hub creation to get tracing out of the box. Traces flow automatically for Agent Service workloads.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="badge badge-green">DevOps</span> CI/CD for Agents</h2>
+    <h3>GitHub Actions</h3>
+    <div class="key-fact"><strong>Action:</strong> <code>microsoft/ai-agent-evals</code> &mdash; run automated evaluation as part of your CI pipeline.</div>
+    <pre><code># Example GitHub Actions step
+- uses: microsoft/ai-agent-evals@v1
+  with:
+    project: my-foundry-project
+    evaluators: groundedness,relevance,safety</code></pre>
+    <h3>Azure DevOps</h3>
+    <div class="key-fact"><strong>Task:</strong> <code>AIAgentEvaluation@2</code> &mdash; equivalent evaluation task for Azure Pipelines.</div>
+    <h3>Agent Versioning</h3>
+    <div class="key-fact"><strong>Format:</strong> <code>agent_name:version</code> &mdash; e.g., <code>triage-agent:v2</code>. Allows rollback and A/B testing between versions.</div>
+    <div class="warning"><strong>Exam Alert:</strong> Know that agent evaluation can be automated in CI/CD pipelines, and that agents support versioning for safe deployment.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- QUICK REFERENCE: SDK PATTERNS                                  -->
+<!-- ============================================================ -->
+<div class="card" style="margin-top: 1.5rem;">
+  <h2><span class="badge badge-purple">Code</span> SDK Quick Reference</h2>
+
+  <h3>Create &amp; Run an Agent</h3>
+  <div class="code-tabs" data-languages="python,csharp">
+    <div class="code-tab-bar" role="tablist">
+      <button class="code-tab active" data-lang="python" role="tab">Python</button>
+      <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+    </div>
+    <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+      <pre><code>from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+
+client = AIProjectClient(
+    credential=DefaultAzureCredential(),
+    project="your-project-connection-string"
+)
+
+# Create agent
+agent = client.agents.create_agent(
+    model="gpt-4o",
+    name="memphis-311-agent",
+    instructions="You are a Memphis 311 assistant.",
+    tools=[{"type": "code_interpreter"}]
+)
+
+# Create conversation and add message
+conversation = client.agents.create_conversation()
+client.agents.create_message(
+    conversation_id=conversation.id,
+    role="user",
+    content="What potholes were reported today?"
+)
+
+# Get response
+response = client.agents.create_response(
+    conversation_id=conversation.id,
+    agent_id=agent.id
+)</code></pre>
+    </div>
+    <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+      <pre><code>using Azure.AI.Projects;
+using Azure.Identity;
+
+var client = new AIProjectClient(
+    new Uri("your-project-connection-string"),
+    new DefaultAzureCredential()
+);
+
+// Create agent
+var agent = await client.Agents.CreateAgentAsync(
+    model: "gpt-4o",
+    name: "memphis-311-agent",
+    instructions: "You are a Memphis 311 assistant.",
+    tools: new[] { new CodeInterpreterToolDefinition() }
+);
+
+// Create conversation and add message
+var conversation = await client.Agents
+    .CreateConversationAsync();
+await client.Agents.CreateMessageAsync(
+    conversationId: conversation.Value.Id,
+    role: "user",
+    content: "What potholes were reported today?"
+);
+
+// Get response
+var response = await client.Agents
+    .CreateResponseAsync(
+        conversationId: conversation.Value.Id,
+        agentId: agent.Value.Id
+    );</code></pre>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div>
+      <h3>Streaming Response</h3>
+      <div class="code-tabs" data-languages="python,csharp">
+        <div class="code-tab-bar" role="tablist">
+          <button class="code-tab active" data-lang="python" role="tab">Python</button>
+          <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+        </div>
+        <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+          <pre><code># Stream tokens as they arrive
+with client.agents.create_response(
+    conversation_id=conversation.id,
+    agent_id=agent.id,
+    stream=True
+) as stream:
+    for event in stream:
+        if event.type == "content.delta":
+            print(event.delta, end="")</code></pre>
+        </div>
+        <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+          <pre><code>// Stream tokens as they arrive
+await foreach (var update in
+    client.Agents.CreateResponseStreamingAsync(
+        conversationId: conversation.Value.Id,
+        agentId: agent.Value.Id))
+{
+    if (update is ContentDeltaUpdate delta)
+    {
+        Console.Write(delta.Text);
+    }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3>Function Calling Tool</h3>
+      <div class="code-tabs" data-languages="python,csharp">
+        <div class="code-tab-bar" role="tablist">
+          <button class="code-tab active" data-lang="python" role="tab">Python</button>
+          <button class="code-tab" data-lang="csharp" role="tab">C#</button>
+        </div>
+        <div class="code-panel active" data-lang="python" role="tabpanel"><span class="code-print-label" aria-hidden="true">Python</span>
+          <pre><code>tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_311_status",
+            "description": "Look up 311 request status",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "request_id": {"type": "string"}
+                },
+                "required": ["request_id"]
+            }
+        }
+    }
+]
+
+agent = client.agents.create_agent(
+    model="gpt-4o",
+    name="status-agent",
+    tools=tools
+)</code></pre>
+        </div>
+        <div class="code-panel" data-lang="csharp" role="tabpanel"><span class="code-print-label" aria-hidden="true">C#</span>
+          <pre><code>var tools = new ToolDefinition[]
+{
+    new FunctionToolDefinition(
+        name: "get_311_status",
+        description: "Look up 311 request status",
+        parameters: BinaryData.FromString("""
+        {
+            "type": "object",
+            "properties": {
+                "request_id": { "type": "string" }
+            },
+            "required": ["request_id"]
+        }
+        """))
+};
+
+var agent = await client.Agents.CreateAgentAsync(
+    model: "gpt-4o",
+    name: "status-agent",
+    tools: tools
+);</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- NAVIGATION                                                    -->
+<!-- ============================================================ -->
+<div class="nav-links">
+  <a href="index.html">&larr; All Sheets</a>
+  <a href="00-exam-overview.html">00 Exam Overview</a>
+  <a href="01-azure-openai.html">01 Azure OpenAI</a>
+  <a href="02-computer-vision.html">02 Computer Vision</a>
+  <a href="03-nlp-speech.html">03 NLP &amp; Speech</a>
+  <a href="04-search-knowledge.html">04 AI Search</a>
+  <a href="05-responsible-ai.html">05 Responsible AI</a>
+  <a href="06-foundry-agents.html"><strong>06 Foundry &amp; Agents</strong></a>
+  <a href="07-sdk-reference.html">07 SDK Reference</a>
+  <a href="08-portal-workflows.html">08 Portal Workflows</a>
+</div>
+
+<script>
+(function() {
+  var KEY = 'cram-lang-pref';
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch(e) {}
+
+  function activate(lang) {
+    document.querySelectorAll('.code-tabs').forEach(function(c) {
+      var langs = c.getAttribute('data-languages').split(',');
+      var target = langs.indexOf(lang) !== -1 ? lang : langs[0];
+      c.querySelectorAll('.code-tab').forEach(function(t) {
+        t.classList.toggle('active', t.getAttribute('data-lang') === target);
+        t.setAttribute('aria-selected', t.getAttribute('data-lang') === target);
+      });
+      c.querySelectorAll('.code-panel').forEach(function(p) {
+        p.classList.toggle('active', p.getAttribute('data-lang') === target);
+      });
+    });
+    try { localStorage.setItem(KEY, lang); } catch(e) {}
+  }
+
+  document.querySelectorAll('.code-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() { activate(tab.getAttribute('data-lang')); });
+  });
+
+  if (saved) { activate(saved); }
+})();
+</script>
+</body>
+</html>

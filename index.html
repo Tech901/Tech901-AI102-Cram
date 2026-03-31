@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-102 Cram Library | Tech901</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232733;
+    --border: #2e3345;
+    --text: #e4e6ef;
+    --text-dim: #8b8fa3;
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.15);
+    --green: #34d399;
+    --green-dim: rgba(52,211,153,0.15);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96,165,250,0.15);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.15);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.15);
+    --cyan: #22d3ee;
+    --cyan-dim: rgba(34,211,238,0.15);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .hero {
+    text-align: center;
+    padding: 3rem 1rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--amber), var(--blue), var(--green), var(--purple), var(--cyan), var(--red));
+  }
+  .hero h1 {
+    font-family: 'Syne', 'Segoe UI', sans-serif;
+    font-size: 2.8rem;
+    background: linear-gradient(135deg, var(--amber) 0%, var(--green) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+  }
+  .hero .subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+  .hero .exam-badge {
+    display: inline-block;
+    background: var(--amber-dim);
+    color: var(--amber);
+    padding: 0.4rem 1.2rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+  }
+
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat .num {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--amber);
+  }
+  .stat .label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .sheet-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .sheet-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    transition: height 0.25s ease;
+  }
+  .sheet-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .sheet-card:hover::before {
+    height: 4px;
+  }
+
+  .sheet-card[data-color="amber"]::before { background: var(--amber); }
+  .sheet-card[data-color="amber"]:hover { border-color: var(--amber); }
+  .sheet-card[data-color="blue"]::before { background: var(--blue); }
+  .sheet-card[data-color="blue"]:hover { border-color: var(--blue); }
+  .sheet-card[data-color="green"]::before { background: var(--green); }
+  .sheet-card[data-color="green"]:hover { border-color: var(--green); }
+  .sheet-card[data-color="cyan"]::before { background: var(--cyan); }
+  .sheet-card[data-color="cyan"]:hover { border-color: var(--cyan); }
+  .sheet-card[data-color="red"]::before { background: var(--red); }
+  .sheet-card[data-color="red"]:hover { border-color: var(--red); }
+  .sheet-card[data-color="purple"]::before { background: var(--purple); }
+  .sheet-card[data-color="purple"]:hover { border-color: var(--purple); }
+
+  .sheet-num {
+    font-size: 2rem;
+    font-weight: 800;
+    opacity: 0.15;
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+    line-height: 1;
+  }
+
+  .sheet-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .sheet-desc {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  .sheet-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: auto;
+  }
+  .tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .tag-amber { background: var(--amber-dim); color: var(--amber); }
+  .tag-blue { background: var(--blue-dim); color: var(--blue); }
+  .tag-green { background: var(--green-dim); color: var(--green); }
+  .tag-cyan { background: var(--cyan-dim); color: var(--cyan); }
+  .tag-red { background: var(--red-dim); color: var(--red); }
+  .tag-purple { background: var(--purple-dim); color: var(--purple); }
+
+  .domain-map {
+    margin-top: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .domain-map h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--amber);
+  }
+  .domain-bar {
+    display: flex;
+    gap: 2px;
+    height: 32px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+  }
+  .domain-bar > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #000;
+    white-space: nowrap;
+    padding: 0 4px;
+  }
+  .domain-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.8rem;
+  }
+  .domain-legend > div {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .footer {
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+  }
+  .footer a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+
+  @media print {
+    body { background: #fff; color: #000; }
+    .sheet-card { border: 1px solid #ccc; }
+    .hero { background: none; border: 1px solid #ccc; }
+    .hero h1 { background: none; -webkit-text-fill-color: #333; color: #333; }
+  }
+  @media (max-width: 768px) {
+    .grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2rem; }
+    .stats { gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>AI-102 Cram Library</h1>
+  <div class="subtitle">Microsoft Certified: Azure AI Engineer Associate</div>
+  <div class="exam-badge">PASSING SCORE: 700 / 1000</div>
+  <div class="stats">
+    <div class="stat">
+      <div class="num">6</div>
+      <div class="label">Exam Domains</div>
+    </div>
+    <div class="stat">
+      <div class="num">10</div>
+      <div class="label">Cheat Sheets</div>
+    </div>
+    <div class="stat">
+      <div class="num">11+</div>
+      <div class="label">Azure Services</div>
+    </div>
+    <div class="stat">
+      <div class="num">14</div>
+      <div class="label">Portal Workflows</div>
+    </div>
+  </div>
+</div>
+
+<!-- Domain Weight Bar -->
+<div class="domain-map">
+  <h2>Exam Domain Weights</h2>
+  <div class="domain-bar">
+    <div style="width:22.5%;background:var(--amber);">D1 20-25%</div>
+    <div style="width:17.5%;background:var(--blue);">D2 15-20%</div>
+    <div style="width:7.5%;background:var(--purple);">D3</div>
+    <div style="width:12.5%;background:var(--green);">D4 10-15%</div>
+    <div style="width:17.5%;background:var(--cyan);">D5 15-20%</div>
+    <div style="width:17.5%;background:var(--red);">D6 15-20%</div>
+  </div>
+  <div class="domain-legend">
+    <div><div class="legend-dot" style="background:var(--amber);"></div> D1: Plan &amp; Manage</div>
+    <div><div class="legend-dot" style="background:var(--blue);"></div> D2: Generative AI</div>
+    <div><div class="legend-dot" style="background:var(--purple);"></div> D3: Agentic (5-10%)</div>
+    <div><div class="legend-dot" style="background:var(--green);"></div> D4: Computer Vision</div>
+    <div><div class="legend-dot" style="background:var(--cyan);"></div> D5: NLP</div>
+    <div><div class="legend-dot" style="background:var(--red);"></div> D6: Knowledge Mining</div>
+  </div>
+</div>
+
+<!-- Sheet Cards -->
+<h2 style="margin:2rem 0 1rem;font-size:1.3rem;color:var(--text);">Cheat Sheets</h2>
+<div class="grid">
+
+  <a href="00-exam-overview.html" class="sheet-card" data-color="amber">
+    <span class="sheet-num">00</span>
+    <div class="sheet-title">Exam Overview &amp; Service Map</div>
+    <div class="sheet-desc">Domain weights, service selection decision tree, resource types, authentication methods, and exam strategy tips.</div>
+    <div class="sheet-tags">
+      <span class="tag tag-amber">D1-D6</span>
+      <span class="tag tag-amber">Start Here</span>
+    </div>
+  </a>
+
+  <a href="01-azure-openai.html" class="sheet-card" data-color="blue">
+    <span class="sheet-num">01</span>
+    <div class="sheet-title">Azure OpenAI &amp; Generative AI</div>
+    <div class="sheet-desc">Models, token limits, Chat Completions API, parameters, deployment types, DALL-E, prompt engineering, fine-tuning, content filters.</div>
+    <div class="sheet-tags">
+      <span class="tag tag-blue">D2</span>
+      <span class="tag tag-blue">15-20%</span>
+    </div>
+  </a>
+
+  <a href="02-computer-vision.html" class="sheet-card" data-color="green">
+    <span class="sheet-num">02</span>
+    <div class="sheet-title">Computer Vision &amp; Document Intelligence</div>
+    <div class="sheet-desc">Image Analysis features, OCR, Custom Vision, Video Indexer, Document Intelligence prebuilt/custom models, file limits.</div>
+    <div class="sheet-tags">
+      <span class="tag tag-green">D4</span>
+      <span class="tag tag-red">D6</span>
+      <span class="tag tag-green">10-15%</span>
+    </div>
+  </a>
+
+  <a href="03-nlp-speech.html" class="sheet-card" data-color="cyan">
+    <span class="sheet-num">03</span>
+    <div class="sheet-title">NLP, Speech &amp; Language</div>
+    <div class="sheet-desc">Text Analytics, CLU, Custom QnA, Speech-to-Text, Text-to-Speech, SSML reference, Translator, Speaker Recognition.</div>
+    <div class="sheet-tags">
+      <span class="tag tag-cyan">D5</span>
+      <span class="tag tag-cyan">15-20%</span>
+    </div>
+  </a>
+
+  <a href="04-search-knowledge.html" class="sheet-card" data-color="red">
+    <span class="sheet-num">04</span>
+    <div class="sheet-title">Azure AI Search &amp; Knowledge Mining</div>
+    <div class="sheet-desc">Service tiers, index schema, field types, skillsets, query syntax, semantic search, vector search, knowledge store, enrichment pipeline.</div>
+    <div class="sheet-tags">
+      <span class="tag tag-red">D6</span>
+      <span class="tag tag-red">15-20%</span>
+    </div>
+  </a>
+
+  <a href="05-responsible-ai.html" class="sheet-card" data-color="amber">
+    <span class="sheet-num">05</span>
+    <div class="sheet-title">Responsible AI &amp; Content Safety</div>
+    <div class="sheet-desc">6 RAI principles, Content Safety categories &amp; severity, content filters, prompt shields, blocklists, protected material, governance.</div>
+    <div class="sheet-tags">
+      <span class="tag tag-amber">D1</span>
+      <span class="tag tag-amber">20-25%</span>
+    </div>
+  </a>
+
+  <a href="06-foundry-agents.html" class="sheet-card" data-color="purple">
+    <span class="sheet-num">06</span>
+    <div class="sheet-title">AI Foundry &amp; Agents</div>
+    <div class="sheet-desc">Foundry architecture, model catalog, playground, prompt flow, evaluation, Agent Service, tools, multi-agent patterns, deployment.</div>
+    <div class="sheet-tags">
+      <span class="tag tag-blue">D2</span>
+      <span class="tag tag-purple">D3</span>
+      <span class="tag tag-purple">5-10%</span>
+    </div>
+  </a>
+
+  <a href="07-sdk-reference.html" class="sheet-card" data-color="blue">
+    <span class="sheet-num">07</span>
+    <div class="sheet-title">SDK Quick Reference &amp; Code Patterns</div>
+    <div class="sheet-desc">All SDK packages (Python &amp; C#), authentication patterns, endpoint URLs, cURL examples, complete code for every service, RBAC roles.</div>
+    <div class="sheet-tags">
+      <span class="tag tag-blue">All Domains</span>
+      <span class="tag tag-blue">Code</span>
+    </div>
+  </a>
+
+  <a href="08-portal-workflows.html" class="sheet-card" data-color="green">
+    <span class="sheet-num">08</span>
+    <div class="sheet-title">Portal Workflows &amp; Step-by-Step Guides</div>
+    <div class="sheet-desc">14 step-by-step portal walkthroughs: deploy models, create indexes, configure filters, set up RAG, build agents, monitor resources.</div>
+    <div class="sheet-tags">
+      <span class="tag tag-green">All Domains</span>
+      <span class="tag tag-green">Hands-On</span>
+    </div>
+  </a>
+
+  <a href="09-glossary.html" class="sheet-card" data-color="amber">
+    <span class="sheet-num">09</span>
+    <div class="sheet-title">Glossary &amp; Quick Reference</div>
+    <div class="sheet-desc">Searchable glossary of 150+ terms: services, acronyms, API parameters, limits, RBAC roles, and exam traps with instant filtering.</div>
+    <div class="sheet-tags">
+      <span class="tag tag-amber">All Domains</span>
+      <span class="tag tag-amber">Reference</span>
+    </div>
+  </a>
+
+</div>
+
+<!-- Practice Tests -->
+<h2 style="margin:2rem 0 1rem;font-size:1.3rem;color:var(--text);">Practice Tests</h2>
+<div class="grid">
+
+  <a href="tests/index.html" class="sheet-card" data-color="amber">
+    <span class="sheet-num">T</span>
+    <div class="sheet-title">Practice Test Library</div>
+    <div class="sheet-desc">110 interactive questions across 6 domain tests + a full 50-question practice exam with timer, scoring, and explanations.</div>
+    <div class="sheet-tags">
+      <span class="tag tag-amber">D1</span>
+      <span class="tag tag-blue">D2</span>
+      <span class="tag tag-purple">D3</span>
+      <span class="tag tag-green">D4</span>
+      <span class="tag tag-cyan">D5</span>
+      <span class="tag tag-red">D6</span>
+    </div>
+  </a>
+
+  <a href="tests/test-full.html" class="sheet-card" data-color="amber">
+    <span class="sheet-num">FE</span>
+    <div class="sheet-title">Full Practice Exam</div>
+    <div class="sheet-desc">50 randomly sampled questions weighted by domain. Timed (100 min). Different questions each attempt. Pass at 70%.</div>
+    <div class="sheet-tags">
+      <span class="tag tag-amber">50 Questions</span>
+      <span class="tag tag-amber">Timed</span>
+    </div>
+  </a>
+
+</div>
+
+<!-- Language Note -->
+<div style="text-align:center;margin:2rem 0 1rem;color:var(--text-dim);font-size:0.85rem;">
+  Code examples available in <strong style="color:var(--cyan);">Python</strong>,
+  <strong style="color:var(--blue);">C#</strong>, and
+  <strong style="color:var(--green);">cURL</strong> &mdash;
+  switch languages with the tab bar on each code block
+</div>
+
+<div class="footer">
+  <p>AI-102 Cram Library &mdash; Tech901 Azure AI Engineer Associate</p>
+  <p>Exam skills measured as of December 23, 2025 &mdash; <a href="https://learn.microsoft.com/credentials/certifications/resources/study-guides/ai-102" target="_blank">Official Study Guide</a></p>
+  <p style="margin-top:0.5rem;color:var(--red);">Exam retires June 30, 2026</p>
+</div>
+
+</body>
+</html>
