@@ -390,16 +390,17 @@ const QUESTIONS = [
     id: "d5-011",
     type: "order",
     domain: "D5",
-    topic: "Translator",
-    question: "A Memphis city department is translating documents. Place the Translator character limits per hour in order from lowest to highest tier:",
+    topic: "Custom Speech",
+    question: "Place the steps for training and deploying a Custom Speech model in Azure Speech Studio in the correct order:",
     options: [
-      { key: "A", text: "F0 tier — 2 million characters per hour" },
-      { key: "B", text: "S1 tier — 40 million characters per hour" },
-      { key: "C", text: "S3/C3 tier — 120 million characters per hour" },
-      { key: "D", text: "S4/C4 tier — 200 million characters per hour" }
+      { key: "A", text: "Upload training data (audio + transcripts or plain text) to a Speech project" },
+      { key: "B", text: "Create a Custom Speech project and select the base model and locale" },
+      { key: "C", text: "Train the custom model and review accuracy metrics (WER)" },
+      { key: "D", text: "Deploy the custom model to a dedicated endpoint" },
+      { key: "E", text: "Test the model by uploading test audio and comparing transcriptions against ground truth" }
     ],
-    answer: ["A", "B", "C", "D"],
-    explanation: "Azure Translator hourly character limits increase with tier: <strong>F0: 2M</strong>, <strong>S1: 40M</strong>, <strong>S2/C2: 40M</strong>, <strong>S3/C3: 120M</strong>, <strong>S4/C4: 200M</strong>. The hourly quota should be consumed evenly throughout the hour.",
+    answer: ["B", "A", "C", "E", "D"],
+    explanation: "The Custom Speech workflow is: (1) <strong>Create project</strong> (select base model and locale), (2) <strong>Upload training data</strong> (audio+transcripts for acoustic tuning, or plain text for language tuning), (3) <strong>Train</strong> the model and review Word Error Rate (WER), (4) <strong>Test</strong> against ground truth before deploying, (5) <strong>Deploy</strong> to a custom endpoint. Testing before deployment catches accuracy issues early.",
     cramRef: "../03-nlp-speech.html"
   },
   {
@@ -457,15 +458,15 @@ const QUESTIONS = [
     id: "d5-015",
     type: "match",
     domain: "D5",
-    topic: "SSML",
-    question: "Match each SSML break strength value to its approximate duration:",
+    topic: "Text Analytics",
+    question: "Match each Azure AI Language API to the key field it returns in its response:",
     pairs: [
-      { left: "x-weak", right: "250 ms" },
-      { left: "weak", right: "500 ms" },
-      { left: "strong", right: "1,000 ms" },
-      { left: "x-strong", right: "1,250 ms" }
+      { left: "Sentiment Analysis", right: "confidenceScores with positive, neutral, and negative percentages per sentence" },
+      { left: "PII Detection", right: "redactedText with detected entities replaced by asterisks" },
+      { left: "Key Phrase Extraction", right: "keyPhrases array of the most relevant talking points from the text" },
+      { left: "Entity Linking", right: "entities array with Wikipedia URLs and data source references" }
     ],
-    explanation: "SSML break strength values and their durations: <code>x-weak</code> = 250ms, <code>weak</code> = 500ms, <code>medium</code> (default) = 750ms, <code>strong</code> = 1,000ms, <code>x-strong</code> = 1,250ms. If the <code>time</code> attribute is set (e.g., <code>time=\"2s\"</code>), the <code>strength</code> attribute is ignored. Maximum pause is 20,000ms.",
+    explanation: "<strong>Sentiment Analysis</strong> returns <code>confidenceScores</code> (positive/neutral/negative) at both document and sentence level. <strong>PII Detection</strong> returns <code>redactedText</code> with entities masked. <strong>Key Phrase Extraction</strong> returns a <code>keyPhrases</code> array. <strong>Entity Linking</strong> returns entities with links to Wikipedia/data sources, distinguishing it from NER which returns entity categories without links.",
     cramRef: "../03-nlp-speech.html"
   },
   {
@@ -515,21 +516,19 @@ const QUESTIONS = [
     id: "d5-019",
     type: "hotarea",
     domain: "D5",
-    topic: "Translator",
-    question: "Select the line(s) that contain errors in this Azure Translator API request body:",
+    topic: "Translator REST API",
+    question: "Memphis Tourism Board is setting up a Translator REST API call. Select the line(s) that contain errors:",
     codeLines: [
-      { id: 1, text: "POST /translate?api-version=3.0&to=es&to=fr HTTP/1.1" },
+      { id: 1, text: "POST /translate?api-version=3.0&from=en&to=es HTTP/1.1" },
       { id: 2, text: "Host: api.cognitive.microsofttranslator.com" },
-      { id: 3, text: "Ocp-Apim-Subscription-Key: <your-key>" },
+      { id: 3, text: "Api-Key: <your-key>" },
       { id: 4, text: "Content-Type: application/json" },
-      { id: 5, text: "" },
-      { id: 6, text: "[" },
-      { id: 7, text: "  {\"text\": \"Hello, welcome to Memphis.\"}" },
-      { id: 8, text: "  {\"text\": \"Please visit Beale Street.\"}" },
-      { id: 9, text: "]" }
+      { id: 5, text: "X-Azure-Region: eastus" },
+      { id: 6, text: "" },
+      { id: 7, text: "[{\"text\": \"Welcome to Memphis, Tennessee.\"}]" }
     ],
-    answer: [8],
-    explanation: "Line 8 is missing a <strong>comma after the preceding JSON object</strong> on line 7. The request body is a JSON array, and each element must be separated by a comma. The correct format is: <code>{\"text\": \"Hello...\"}<strong>,</strong></code> on line 7 (or a comma before line 8). The URL with multiple <code>&to=</code> parameters is valid for specifying multiple target languages.",
+    answer: [3, 5],
+    explanation: "Line 3: The correct authentication header is <code>Ocp-Apim-Subscription-Key</code>, not <code>Api-Key</code>. Azure AI Services (including Translator) use the <code>Ocp-Apim-Subscription-Key</code> header for API key authentication. Line 5: The correct region header is <code>Ocp-Apim-Subscription-Region</code>, not <code>X-Azure-Region</code>. This header is required for single-service Translator resources. The URL, host, content type, and request body are all correct.",
     cramRef: "../03-nlp-speech.html"
   },
   {
